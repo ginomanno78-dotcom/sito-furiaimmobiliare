@@ -47,6 +47,15 @@
   --font-corpo: 'Inter', sans-serif;
 }
 
+/* Font Cardo Bold per wordmark navbar */
+@font-face {
+  font-family: 'Cardo';
+  src: url('assets/font/Cardo-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ===== RESET DI BASE ===== */
 *,
 *::before,
@@ -315,19 +324,27 @@ select {
 .navbar-brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .navbar-logo {
+  width: 56px;
+  height: 56px;
   object-fit: contain;
+  flex-shrink: 0;
+  display: block;
 }
 
 .navbar-wordmark {
-  font-family: var(--font-titoli);
-  font-weight: 600;
-  font-size: 1.3rem;
-  color: var(--colore-primario);
-  letter-spacing: 0.01em;
+  font-family: 'Cardo', serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: #cc9a34;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+  /* Allinea alla riga FURIA del logo (sotto l'icona casa) */
+  margin-top: 16px;
 }
 
 .navbar-links {
@@ -463,9 +480,74 @@ select {
   border: 1px solid transparent;
   font-family: var(--font-corpo);
   font-size: 0.95rem;
-  background: #fff;
+  background-color: #fff;
   color: var(--colore-testo);
   width: 100%;
+}
+
+.rr-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2314321E' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+}
+
+/* Dropdown Compra/Affitta — contenuto nel viewport mobile */
+.rr-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.rr-dropdown-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 48px;
+  padding: 0 36px 0 16px;
+  border-radius: var(--raggio-md);
+  border: 1px solid transparent;
+  background-color: #fff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2314321E' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  font-family: var(--font-corpo);
+  font-size: 0.95rem;
+  color: var(--colore-testo);
+  text-align: left;
+  cursor: pointer;
+}
+
+.rr-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 50;
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+  background: #fff;
+  border-radius: var(--raggio-md);
+  box-shadow: var(--ombra-media);
+  overflow: hidden;
+}
+
+.rr-dropdown-menu[hidden] {
+  display: none;
+}
+
+.rr-dropdown-menu li {
+  padding: 12px 16px;
+  font-size: 0.95rem;
+  color: var(--colore-testo);
+  cursor: pointer;
+}
+
+.rr-dropdown-menu li:hover,
+.rr-dropdown-menu li[aria-selected="true"] {
+  background: var(--colore-sfondo-alt);
+  color: var(--colore-primario);
 }
 
 .rr-input:focus,
@@ -510,7 +592,7 @@ select {
 
 .hero-payoff {
   color: var(--colore-oro-vivo);
-  font-size: 0.85rem;
+  font-size: calc(0.85rem + 5px);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -535,7 +617,7 @@ select {
   border: 2px solid #EBB348;
 }
 
-/* Toggle filtri — visibile solo mobile */
+/* Toggle filtri — visibile su mobile e tablet/iPad */
 .filtri-toggle {
   display: flex;
   align-items: center;
@@ -557,7 +639,7 @@ select {
   color: var(--colore-secondario);
 }
 
-/* Sidebar filtri — collassata su mobile, sempre visibile da 768px */
+/* Sidebar filtri — chiusa di default; aperta solo col pulsante (fino a desktop largo) */
 .sidebar-filtri {
   max-height: 0;
   overflow: hidden;
@@ -968,7 +1050,12 @@ select {
 /* --- Sotto 480px: rifiniture per schermi molto piccoli --- */
 @media (max-width: 479px) {
   .navbar-wordmark {
-    font-size: 1.05rem;
+    font-size: 0.95rem;
+  }
+
+  .navbar-logo {
+    width: 48px;
+    height: 48px;
   }
 
   .hero-cta {
@@ -1007,6 +1094,11 @@ select {
     flex: 0 0 170px;
   }
 
+  .rr-dropdown {
+    flex: 0 0 170px;
+    width: auto;
+  }
+
   .rr-input {
     flex: 1;
   }
@@ -1015,35 +1107,16 @@ select {
     width: auto;
   }
 
-  .filtri-toggle {
-    display: none;
-  }
-
-  .sidebar-filtri {
-    max-height: none;
-    overflow: visible;
-    opacity: 1;
-    padding: var(--spazio-5);
-    box-shadow: var(--ombra-base);
-  }
-
   .footer-inner {
     grid-template-columns: 1.4fr 1fr 1fr;
   }
 }
 
-/* Mobile landscape: sidebar chiusa, apre/chiude solo col pulsante */
-@media (min-width: 768px) and (max-height: 500px) {
-  .filtri-toggle {
-    display: flex;
-  }
-
-  .sidebar-filtri {
-    max-height: 0;
-    overflow: hidden;
-    opacity: 0;
-    padding: 0 var(--spazio-5);
-    box-shadow: none;
+/* Hero filtri: su tablet/iPad resta a 1 colonna (sidebar chiusa a comando) */
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .hero-layout.layout-sidebar,
+  .hero-layout.layout-sidebar--inv {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -1099,9 +1172,21 @@ select {
   }
 }
 
-/* Large desktop: 1440px+ */
+/* Large desktop: 1440px+ (oltre iPad Pro) — filtri sempre aperti */
 @media (min-width: 1440px) {
   .container {
     padding: 0 48px;
+  }
+
+  .filtri-toggle {
+    display: none;
+  }
+
+  .sidebar-filtri {
+    max-height: none;
+    overflow: visible;
+    opacity: 1;
+    padding: var(--spazio-5);
+    box-shadow: var(--ombra-base);
   }
 }

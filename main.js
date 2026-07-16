@@ -99,6 +99,48 @@ document.addEventListener('DOMContentLoaded', () => {
     ricercaRapidaForm.addEventListener('submit', scrollToAnnunci);
   }
 
+  /* Dropdown Compra/Affitta (ricerca rapida) */
+  const rrDropdown = document.getElementById('rrDropdown');
+  const rrToggle = document.getElementById('rrDropdownToggle');
+  const rrMenu = document.getElementById('rrDropdownMenu');
+  const rrLabel = document.getElementById('rrDropdownLabel');
+  const rrSelect = document.getElementById('rr-tipo');
+
+  if (rrDropdown && rrToggle && rrMenu && rrLabel && rrSelect) {
+    const chiudiRrDropdown = () => {
+      rrMenu.hidden = true;
+      rrToggle.setAttribute('aria-expanded', 'false');
+    };
+
+    rrToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const aperto = rrMenu.hidden;
+      rrMenu.hidden = !aperto;
+      rrToggle.setAttribute('aria-expanded', String(aperto));
+    });
+
+    rrMenu.querySelectorAll('[role="option"]').forEach((opzione) => {
+      opzione.addEventListener('click', () => {
+        const valore = opzione.getAttribute('data-value');
+        const testo = opzione.textContent.trim();
+        rrSelect.value = valore;
+        rrLabel.textContent = testo;
+        rrMenu.querySelectorAll('[role="option"]').forEach((o) => {
+          o.setAttribute('aria-selected', String(o === opzione));
+        });
+        chiudiRrDropdown();
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!rrDropdown.contains(e.target)) chiudiRrDropdown();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') chiudiRrDropdown();
+    });
+  }
+
   const filtriForm = document.querySelector('.filtri-form');
   if (filtriForm) {
     filtriForm.addEventListener('submit', scrollToAnnunci);
