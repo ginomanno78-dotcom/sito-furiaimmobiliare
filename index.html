@@ -124,8 +124,8 @@
   <header class="navbar" id="navbar">
     <div class="container navbar-inner">
       <a href="#hero" class="navbar-brand" aria-label="Furia Immobiliare - Home">
-        <img src="assets/logo-furia-icon.svg" alt="Furia Immobiliare" class="navbar-logo" width="40" height="40">
-        <span class="navbar-wordmark">Furia Immobiliare</span>
+        <img src="assets/logo-furia-icon.svg" alt="Furia Immobiliare" class="navbar-logo" width="56" height="56">
+        <span class="navbar-wordmark">FURIA IMMOBILIARE SRLS</span>
       </a>
 
       <nav class="navbar-links" aria-label="Menu principale">
@@ -166,10 +166,20 @@
       <div class="container">
         <form class="ricerca-rapida-form" id="ricercaRapidaForm">
           <label class="sr-only" for="rr-tipo">Tipo di ricerca</label>
-          <select id="rr-tipo" name="rr-tipo" class="rr-select">
-            <option value="compra">Compra</option>
-            <option value="affitta">Affitta</option>
-          </select>
+          <div class="rr-dropdown" id="rrDropdown">
+            <button type="button" class="rr-dropdown-toggle" id="rrDropdownToggle" aria-haspopup="listbox"
+              aria-expanded="false" aria-controls="rrDropdownMenu">
+              <span id="rrDropdownLabel">Compra</span>
+            </button>
+            <ul class="rr-dropdown-menu" id="rrDropdownMenu" role="listbox" hidden>
+              <li role="option" data-value="compra" aria-selected="true">Compra</li>
+              <li role="option" data-value="affitta" aria-selected="false">Affitta</li>
+            </ul>
+            <select id="rr-tipo" name="rr-tipo" class="sr-only" tabindex="-1" aria-hidden="true">
+              <option value="compra" selected>Compra</option>
+              <option value="affitta">Affitta</option>
+            </select>
+          </div>
 
           <label class="sr-only" for="rr-query">Cerca per città, zona o indirizzo</label>
           <input type="text" id="rr-query" name="rr-query" class="rr-input"
@@ -277,7 +287,7 @@
           <p class="hero-payoff">La tua casa, chiavi in mano</p>
           <h1>Soluzioni su misura per ogni esigenza immobiliare</h1>
           <p class="hero-sub">Un'agenzia che segue ogni fase dell'acquisto, della vendita o dell'affitto — con
-            un'assistenza dedicata e su misura, nel cuore dell'agro casertano.</p>
+            un'assistenza dedicata e su misura, nel cuore dell'agro Caleno.</p>
           <a href="#annunci" class="btn btn--primario hero-cta">
             <span>Scopri le nostre migliori offerte</span>
             <svg class="icon" aria-hidden="true">
@@ -666,8 +676,8 @@
   </footer>
 
   <!-- Pulsante WhatsApp flottante -->
-  <a href="https://wa.me/393392167130" class="whatsapp-float" id="whatsappBtn"
-    target="_blank" rel="noopener noreferrer" aria-label="Contattaci su WhatsApp">
+  <a href="https://wa.me/393392167130" class="whatsapp-float" id="whatsappBtn" target="_blank" rel="noopener noreferrer"
+    aria-label="Contattaci su WhatsApp">
     <svg class="icon" aria-hidden="true">
       <use href="#icon-whatsapp"></use>
     </svg>
