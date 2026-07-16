@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Furia Immobiliare — Agenzia immobiliare a Sparanise (CE)</title>
+  <meta name="description"
+    content="Furia Immobiliare Srls: agenzia immobiliare a Sparanise, attiva su Calvi Risorta, Pignataro Maggiore, Teano e Capua. La tua casa, chiavi in mano.">
+
+  <meta property="og:title" content="Furia Immobiliare — La tua casa, chiavi in mano">
+  <meta property="og:description"
+    content="Agenzia immobiliare a Sparanise (CE): compra, vendi o affitta casa nell'agro casertano con un'assistenza completa e su misura.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.furiaimmobiliare.it">
+  <meta property="og:locale" content="it_IT">
+  <meta property="og:image" content="assets/foto-hero.webp">
+
+  <link rel="icon" type="image/svg+xml" href="assets/logo-furia-icon.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <script src="main.js" defer></script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "RealEstateAgent",
+    "name": "Furia Immobiliare Srls",
+    "founder": {
+      "@type": "Person",
+      "name": "Maria Grazia Sorvillo"
+    },
+    "image": "https://www.furiaimmobiliare.it/assets/logo-furia.svg",
+    "url": "https://www.furiaimmobiliare.it",
+    "telephone": "+39 339 216 7130",
+    "email": "mariagrazia.sorvillo@virgilio.it",
+    "vatID": "04967300619",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "P.tta Pasquale Graziadei, 40",
+      "addressLocality": "Sparanise",
+      "postalCode": "81056",
+      "addressRegion": "CE",
+      "addressCountry": "IT"
+    },
+    "areaServed": [
+      { "@type": "City", "name": "Sparanise" },
+      { "@type": "City", "name": "Calvi Risorta" },
+      { "@type": "City", "name": "Pignataro Maggiore" },
+      { "@type": "City", "name": "Teano" },
+      { "@type": "City", "name": "Capua" }
+    ]
+  }
+  </script>
+</head>
+
+<body>
+
+  <a class="skip-link" href="#main">Vai al contenuto principale</a>
+
+  <!-- Sprite icone SVG riutilizzabili -->
+  <svg class="icon-sprite" aria-hidden="true">
+    <defs>
+      <symbol id="icon-search" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2" />
+        <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      </symbol>
+      <symbol id="icon-arrow-right" viewBox="0 0 24 24">
+        <line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        <polyline points="13,5 20,12 13,19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" />
+      </symbol>
+      <symbol id="icon-pin" viewBox="0 0 24 24">
+        <path d="M12 22s7-7.58 7-12.5A7 7 0 0 0 5 9.5C5 14.42 12 22 12 22z" fill="none" stroke="currentColor"
+          stroke-width="1.8" stroke-linejoin="round" />
+        <circle cx="12" cy="9.5" r="2.4" fill="none" stroke="currentColor" stroke-width="1.8" />
+      </symbol>
+      <symbol id="icon-phone" viewBox="0 0 24 24">
+        <path
+          d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.5.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.5.1.4 0 .8-.2 1L6.6 10.8z"
+          fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="icon-mail" viewBox="0 0 24 24">
+        <rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.6" />
+        <path d="M4 7l8 6 8-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+          stroke-linejoin="round" />
+      </symbol>
+      <symbol id="icon-check" viewBox="0 0 24 24">
+        <polyline points="4,13 9,18 20,6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+          stroke-linejoin="round" />
+      </symbol>
+      <symbol id="icon-filter" viewBox="0 0 24 24">
+        <line x1="4" y1="6" x2="20" y2="6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        <line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        <line x1="4" y1="18" x2="20" y2="18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        <circle cx="9" cy="6" r="2" fill="currentColor" />
+        <circle cx="16" cy="12" r="2" fill="currentColor" />
+        <circle cx="10" cy="18" r="2" fill="currentColor" />
+      </symbol>
+      <symbol id="icon-facebook" viewBox="0 0 24 24">
+        <path
+          d="M15 8.5h2.5V5.2c-.4-.05-1.9-.2-3.2-.2-3.2 0-5 1.9-5 5.4v2.6H6v3.7h3.3V21h3.9v-4.3h3.2l.5-3.7h-3.7v-2.2c0-1.1.3-1.8 1.8-1.8z"
+          fill="currentColor" />
+      </symbol>
+      <symbol id="icon-instagram" viewBox="0 0 24 24">
+        <rect x="3.5" y="3.5" width="17" height="17" rx="5" fill="none" stroke="currentColor" stroke-width="1.6" />
+        <circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.6" />
+        <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" />
+      </symbol>
+      <symbol id="icon-whatsapp" viewBox="0 0 24 24">
+        <path fill="currentColor"
+          d="M17.5 14.4c-.3-.1-1.6-.8-1.8-.9-.2-.1-.4-.1-.6.1-.2.3-.7.9-.8 1-.2.1-.3.2-.6.1-.3-.1-1.2-.4-2.3-1.5-1-.9-1.5-1.9-1.6-2.2-.1-.3 0-.4.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.1-.6-1.4-.8-1.9-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-.9.9-.9 2.1s.9 2.4 1 2.6c.1.2 1.8 2.8 4.4 3.9 1.6.6 2.2.7 3 .6.5-.1 1.6-.6 1.8-1.3.2-.6.2-1.2.1-1.3-.1-.1-.3-.2-.6-.3zM12.1 2C6.6 2 2.1 6.5 2.1 12c0 1.8.5 3.4 1.3 4.9L2 22l5.3-1.4c1.4.8 3 .9 4.7.9h.1c5.5 0 10-4.5 10-10S17.6 2 12.1 2zm0 18.2h-.1c-1.5 0-3-.4-4.3-1.2l-.3-.2-3.1.8.8-3-.2-.3c-.8-1.3-1.3-2.9-1.3-4.4 0-4.7 3.8-8.5 8.5-8.5s8.5 3.8 8.5 8.5-3.8 8.5-8.5 8.5z" />
+      </symbol>
+    </defs>
+  </svg>
+
+  <!-- ===== NAVBAR ===== -->
+  <header class="navbar" id="navbar">
+    <div class="container navbar-inner">
+      <a href="#hero" class="navbar-brand" aria-label="Furia Immobiliare - Home">
+        <img src="assets/logo-furia-icon.svg" alt="Furia Immobiliare" class="navbar-logo" width="40" height="40">
+        <span class="navbar-wordmark">Furia Immobiliare</span>
+      </a>
+
+      <nav class="navbar-links" aria-label="Menu principale">
+        <a href="#hero">Home</a>
+        <a href="#annunci">Compra</a>
+        <a href="#annunci">Affitta</a>
+        <a href="#valuta">Vendi</a>
+        <a href="#valuta">Valuta</a>
+        <a href="#contatti">Servizi</a>
+        <a href="#contatti">Contatti</a>
+      </nav>
+
+      <button class="hamburger" id="hamburger" aria-label="Apri menu" aria-expanded="false"
+        aria-controls="mobileDrawer">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Drawer mobile -->
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <nav class="mobile-drawer" id="mobileDrawer" aria-label="Menu mobile">
+    <a href="#hero">Home</a>
+    <a href="#annunci">Compra</a>
+    <a href="#annunci">Affitta</a>
+    <a href="#valuta">Vendi</a>
+    <a href="#valuta">Valuta</a>
+    <a href="#contatti">Servizi</a>
+    <a href="#contatti">Contatti</a>
+  </nav>
+
+  <main id="main">
+
+    <!-- ===== BARRA DI RICERCA RAPIDA ===== -->
+    <section class="ricerca-rapida" aria-label="Ricerca rapida immobili">
+      <div class="container">
+        <form class="ricerca-rapida-form" id="ricercaRapidaForm">
+          <label class="sr-only" for="rr-tipo">Tipo di ricerca</label>
+          <select id="rr-tipo" name="rr-tipo" class="rr-select">
+            <option value="compra">Compra</option>
+            <option value="affitta">Affitta</option>
+          </select>
+
+          <label class="sr-only" for="rr-query">Cerca per città, zona o indirizzo</label>
+          <input type="text" id="rr-query" name="rr-query" class="rr-input"
+            placeholder="Cerca per città, zona o indirizzo...">
+
+          <button type="submit" class="rr-btn btn btn--oro">
+            <svg class="icon" aria-hidden="true">
+              <use href="#icon-search"></use>
+            </svg>
+            <span>Cerca</span>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero" id="hero">
+      <div class="hero-bg"></div>
+
+      <div class="container hero-layout layout-sidebar layout-sidebar--inv">
+
+        <!-- Sidebar filtri -->
+        <button class="filtri-toggle" id="filtriToggle" aria-expanded="false" aria-controls="sidebarFiltri">
+          <svg class="icon" aria-hidden="true">
+            <use href="#icon-filter"></use>
+          </svg>
+          <span>Filtra ricerca</span>
+        </button>
+
+        <aside class="sidebar-filtri" id="sidebarFiltri" aria-labelledby="sidebar-filtri-label">
+          <p class="sidebar-filtri-titolo" id="sidebar-filtri-label">Filtra ricerca</p>
+          <form class="filtri-form">
+
+            <div class="form__gruppo">
+              <label for="f-citta">Città</label>
+              <select id="f-citta" name="citta">
+                <option value="">Tutte le città</option>
+                <option value="sparanise">Sparanise</option>
+                <option value="calvi-risorta">Calvi Risorta</option>
+                <option value="pignataro-maggiore">Pignataro Maggiore</option>
+                <option value="teano">Teano</option>
+                <option value="capua">Capua</option>
+              </select>
+            </div>
+
+            <div class="form__gruppo">
+              <label for="f-tipologia">Tipologia</label>
+              <select id="f-tipologia" name="tipologia">
+                <option value="">Qualsiasi tipologia</option>
+                <option value="appartamento">Appartamento</option>
+                <option value="villa">Villa</option>
+                <option value="attico">Attico</option>
+                <option value="rustico">Rustico/Casale</option>
+                <option value="terreno">Terreno</option>
+              </select>
+            </div>
+
+            <div class="form__gruppo">
+              <label for="f-categoria">Categoria</label>
+              <select id="f-categoria" name="categoria">
+                <option value="residenziale">Residenziale</option>
+                <option value="commerciale">Commerciale</option>
+              </select>
+            </div>
+
+            <div class="form__gruppo">
+              <label for="f-prezzo">Prezzo</label>
+              <select id="f-prezzo" name="prezzo">
+                <option value="">Qualsiasi prezzo</option>
+                <option value="0-100000">Fino a 100.000€</option>
+                <option value="100000-200000">100.000 – 200.000€</option>
+                <option value="200000-350000">200.000 – 350.000€</option>
+                <option value="350000+">Oltre 350.000€</option>
+              </select>
+            </div>
+
+            <div class="form__gruppo">
+              <label for="f-stanze">Stanze</label>
+              <select id="f-stanze" name="stanze">
+                <option value="">Qualsiasi</option>
+                <option value="2">2+</option>
+                <option value="3">3+</option>
+                <option value="4">4+</option>
+                <option value="5">5+</option>
+              </select>
+            </div>
+
+            <div class="form__gruppo">
+              <label for="f-mq">Mq</label>
+              <select id="f-mq" name="mq">
+                <option value="">Qualsiasi</option>
+                <option value="50">50+</option>
+                <option value="80">80+</option>
+                <option value="120">120+</option>
+                <option value="200">200+</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn--primario btn--full">Cerca immobili</button>
+          </form>
+        </aside>
+
+        <!-- Contenuto hero -->
+        <div class="hero-content">
+          <p class="hero-payoff">La tua casa, chiavi in mano</p>
+          <h1>Soluzioni su misura per ogni esigenza immobiliare</h1>
+          <p class="hero-sub">Un'agenzia che segue ogni fase dell'acquisto, della vendita o dell'affitto — con
+            un'assistenza dedicata e su misura, nel cuore dell'agro casertano.</p>
+          <a href="#annunci" class="btn btn--primario hero-cta">
+            <span>Scopri le nostre migliori offerte</span>
+            <svg class="icon" aria-hidden="true">
+              <use href="#icon-arrow-right"></use>
+            </svg>
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===== ULTIMI ANNUNCI ===== -->
+    <section class="annunci section-fade" id="annunci">
+      <div class="container">
+        <div class="section-header">
+          <h2>Ultimi annunci</h2>
+        </div>
+
+        <div class="annunci-grid layout-3col">
+
+          <article class="card card--immagine">
+            <img class="card-img"
+              src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=800&q=60"
+              alt="Appartamento luminoso in centro a Sparanise" width="400" height="280" loading="lazy">
+            <div class="card-body">
+              <p class="card-prezzo">€ 98.000</p>
+              <h3 class="card-titolo">Appartamento luminoso in centro</h3>
+              <p class="card-ubicazione">
+                <svg class="icon icon--sm" aria-hidden="true">
+                  <use href="#icon-pin"></use>
+                </svg>
+                Sparanise (CE)
+              </p>
+              <ul class="card-specifiche">
+                <li>90 m²</li>
+                <li>3 locali</li>
+                <li>1 bagno</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="card card--immagine">
+            <img class="card-img"
+              src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=60"
+              alt="Villa singola con giardino a Calvi Risorta" width="400" height="280" loading="lazy">
+            <div class="card-body">
+              <p class="card-prezzo">€ 285.000</p>
+              <h3 class="card-titolo">Villa singola con giardino</h3>
+              <p class="card-ubicazione">
+                <svg class="icon icon--sm" aria-hidden="true">
+                  <use href="#icon-pin"></use>
+                </svg>
+                Calvi Risorta (CE)
+              </p>
+              <ul class="card-specifiche">
+                <li>220 m²</li>
+                <li>6 locali</li>
+                <li>giardino</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="card card--immagine">
+            <img class="card-img"
+              src="https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=800&q=60"
+              alt="Casale ristrutturato con terreno a Pignataro Maggiore" width="400" height="280" loading="lazy">
+            <div class="card-body">
+              <p class="card-prezzo">€ 175.000</p>
+              <h3 class="card-titolo">Casale ristrutturato con terreno</h3>
+              <p class="card-ubicazione">
+                <svg class="icon icon--sm" aria-hidden="true">
+                  <use href="#icon-pin"></use>
+                </svg>
+                Pignataro Maggiore (CE)
+              </p>
+              <ul class="card-specifiche">
+                <li>160 m²</li>
+                <li>5 locali</li>
+                <li>terreno 3.000 m²</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="card card--immagine">
+            <img class="card-img"
+              src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=60"
+              alt="Attico con ampio terrazzo a Teano" width="400" height="280" loading="lazy">
+            <div class="card-body">
+              <p class="card-prezzo">€ 145.000</p>
+              <h3 class="card-titolo">Attico con ampio terrazzo</h3>
+              <p class="card-ubicazione">
+                <svg class="icon icon--sm" aria-hidden="true">
+                  <use href="#icon-pin"></use>
+                </svg>
+                Teano (CE)
+              </p>
+              <ul class="card-specifiche">
+                <li>110 m²</li>
+                <li>4 locali</li>
+                <li>terrazzo</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="card card--immagine">
+            <img class="card-img"
+              src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=60"
+              alt="Bilocale nel centro storico di Capua" width="400" height="280" loading="lazy">
+            <div class="card-body">
+              <p class="card-prezzo">€ 89.000</p>
+              <h3 class="card-titolo">Bilocale nel centro storico</h3>
+              <p class="card-ubicazione">
+                <svg class="icon icon--sm" aria-hidden="true">
+                  <use href="#icon-pin"></use>
+                </svg>
+                Capua (CE)
+              </p>
+              <ul class="card-specifiche">
+                <li>75 m²</li>
+                <li>2 locali</li>
+                <li>1 bagno</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="card card--immagine">
+            <img class="card-img"
+              src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=60"
+              alt="Terreno edificabile residenziale a Sparanise" width="400" height="280" loading="lazy">
+            <div class="card-body">
+              <p class="card-prezzo">€ 45.000</p>
+              <h3 class="card-titolo">Terreno edificabile residenziale</h3>
+              <p class="card-ubicazione">
+                <svg class="icon icon--sm" aria-hidden="true">
+                  <use href="#icon-pin"></use>
+                </svg>
+                Sparanise (CE)
+              </p>
+              <ul class="card-specifiche">
+                <li>1.200 m²</li>
+                <li>edificabile</li>
+              </ul>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== VALUTA IL TUO IMMOBILE ===== -->
+    <section class="valuta section-fade" id="valuta">
+      <div class="container">
+        <div class="section-header">
+          <h2>Scopri il valore della tua casa</h2>
+          <p>Ottieni una stima precisa del valore del tuo immobile basata sui dati di mercato più recenti.</p>
+        </div>
+
+        <div class="valuta-layout layout-sidebar">
+
+          <div class="valuta-testo">
+            <p>Conoscere il vero valore della tua casa è il primo passo per venderla nei tempi e al prezzo giusto.
+              Analizziamo le caratteristiche del tuo immobile e le confrontiamo con l'andamento del mercato nella
+              tua zona.</p>
+            <p>Nessun impegno: la valutazione è gratuita e ti viene restituita da un nostro consulente, con una
+              stima motivata e senza sorprese.</p>
+          </div>
+
+          <div class="valuta-form-wrap">
+            <form class="valuta-form" id="valutaForm" novalidate>
+
+              <div class="form__gruppo">
+                <label for="v-locali">Locali</label>
+                <select id="v-locali" name="locali">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6+</option>
+                </select>
+              </div>
+
+              <div class="form__gruppo">
+                <label for="v-superficie">Superficie (m²)</label>
+                <input type="number" id="v-superficie" name="superficie" min="1" step="1" placeholder="Es. 90" required>
+              </div>
+
+              <div class="form__gruppo">
+                <label for="v-bagni">Bagni</label>
+                <select id="v-bagni" name="bagni">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4+</option>
+                </select>
+              </div>
+
+              <div class="form__gruppo">
+                <label for="v-terrazzo">Terrazzo/Balconi</label>
+                <select id="v-terrazzo" name="terrazzo">
+                  <option value="si">Sì</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+
+              <div class="form__gruppo">
+                <label for="v-giardino">Giardino</label>
+                <select id="v-giardino" name="giardino">
+                  <option value="si">Sì</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+
+              <div class="form__gruppo">
+                <label for="v-garage">Garage</label>
+                <select id="v-garage" name="garage">
+                  <option value="si">Sì</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+
+              <div class="form__gruppo">
+                <label for="v-piano">Piano</label>
+                <select id="v-piano" name="piano">
+                  <option value="terra">Piano terra</option>
+                  <option value="1">1°</option>
+                  <option value="2">2°</option>
+                  <option value="3">3°</option>
+                  <option value="4+">4°+</option>
+                  <option value="attico">Attico</option>
+                </select>
+              </div>
+
+              <button type="submit" class="btn btn--primario btn--full">Richiedi la tua valutazione gratuita</button>
+
+              <p class="form-success" id="valutaFormSuccess" role="status" aria-live="polite">
+                <svg class="icon" aria-hidden="true">
+                  <use href="#icon-check"></use>
+                </svg>
+                Richiesta inviata! Ti contatteremo a breve con la tua stima.
+              </p>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CONTATTI ===== -->
+    <section class="contatti section-fade" id="contatti">
+      <div class="container">
+        <div class="section-header">
+          <h2>Contattaci</h2>
+        </div>
+
+        <div class="contatti-layout">
+
+          <div class="contatti-form-wrap">
+            <form class="contatti-form" id="contactForm" novalidate>
+
+              <div class="form__gruppo">
+                <label for="c-nome">Nome*</label>
+                <input type="text" id="c-nome" name="nome" autocomplete="name" required>
+              </div>
+
+              <div class="form__gruppo">
+                <label for="c-email">Email*</label>
+                <input type="email" id="c-email" name="email" autocomplete="email" required>
+              </div>
+
+              <div class="form__gruppo">
+                <label for="c-cellulare">Cellulare</label>
+                <input type="tel" id="c-cellulare" name="cellulare" autocomplete="tel" required>
+              </div>
+
+              <div class="form__gruppo">
+                <label for="c-descrizione">Descrizione</label>
+                <textarea id="c-descrizione" name="descrizione" rows="4"></textarea>
+              </div>
+
+              <button type="submit" class="btn btn--primario btn--full">Invia richiesta</button>
+
+              <p class="form-success" id="contactFormSuccess" role="status" aria-live="polite">
+                <svg class="icon" aria-hidden="true">
+                  <use href="#icon-check"></use>
+                </svg>
+                Richiesta inviata! Ti risponderemo il prima possibile.
+              </p>
+            </form>
+          </div>
+
+          <div class="contatti-info">
+            <ul class="info-list">
+              <li class="info-item">
+                <svg class="icon" aria-hidden="true">
+                  <use href="#icon-pin"></use>
+                </svg>
+                <span>Furia Immobiliare Srls<br>P.tta Pasquale Graziadei, 40 - 81056 Sparanise (CE)</span>
+              </li>
+              <li class="info-item">
+                <svg class="icon" aria-hidden="true">
+                  <use href="#icon-phone"></use>
+                </svg>
+                <span><a href="tel:+393392167130">+39 339 216 7130</a></span>
+              </li>
+              <li class="info-item">
+                <svg class="icon" aria-hidden="true">
+                  <use href="#icon-mail"></use>
+                </svg>
+                <span><a href="mailto:mariagrazia.sorvillo@virgilio.it">mariagrazia.sorvillo@virgilio.it</a></span>
+              </li>
+              <li class="info-item">
+                <svg class="icon" aria-hidden="true">
+                  <use href="#icon-mail"></use>
+                </svg>
+                <span>PEC: <a href="mailto:furia.immobiliare@pec.it">furia.immobiliare@pec.it</a></span>
+              </li>
+            </ul>
+
+            <div class="contatti-mappa">
+              <iframe src="https://www.google.com/maps?q=P.tta+Pasquale+Graziadei+40+Sparanise+CE&output=embed"
+                title="Mappa: P.tta Pasquale Graziadei 40, Sparanise (CE)" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container footer-inner">
+
+      <div class="footer-col footer-brand">
+        <p class="footer-ragione-sociale"><span class="footer-srls">Furia Immobiliare Srls</span><br>di Maria Grazia
+          Sorvillo</p>
+        <p>P.tta Pasquale Graziadei, 40 - 81056 Sparanise (CE)</p>
+        <p>P.IVA 04967300619</p>
+        <p class="footer-pec"><span>PEC:</span> <a href="mailto:furia.immobiliare@pec.it">furia.immobiliare@pec.it</a>
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <p class="footer-col-title">Link rapidi</p>
+        <a href="#hero">Home</a>
+        <a href="#annunci">Ultimi annunci</a>
+        <a href="#valuta">Valuta la tua casa</a>
+        <a href="#contatti">Contatti</a>
+      </div>
+
+      <div class="footer-col">
+        <p class="footer-col-title">Contatti</p>
+        <a href="tel:+393392167130" class="footer-contatto">
+          <svg class="icon icon--sm" aria-hidden="true">
+            <use href="#icon-phone"></use>
+          </svg>
+          +39 339 216 7130
+        </a>
+        <a href="mailto:mariagrazia.sorvillo@virgilio.it" class="footer-contatto">
+          <svg class="icon icon--sm" aria-hidden="true">
+            <use href="#icon-mail"></use>
+          </svg>
+          mariagrazia.sorvillo@virgilio.it
+        </a>
+        <div class="footer-social">
+          <a href="#" aria-label="Furia Immobiliare su Facebook">
+            <svg class="icon" aria-hidden="true">
+              <use href="#icon-facebook"></use>
+            </svg>
+          </a>
+          <a href="#" aria-label="Furia Immobiliare su Instagram">
+            <svg class="icon" aria-hidden="true">
+              <use href="#icon-instagram"></use>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Furia Immobiliare Srls — Tutti i diritti riservati</p>
+    </div>
+  </footer>
+
+  <!-- Pulsante WhatsApp flottante -->
+  <a href="https://wa.me/393392167130" class="whatsapp-float" id="whatsappBtn"
+    target="_blank" rel="noopener noreferrer" aria-label="Contattaci su WhatsApp">
+    <svg class="icon" aria-hidden="true">
+      <use href="#icon-whatsapp"></use>
+    </svg>
+  </a>
+
+</body>
+
+</html>
