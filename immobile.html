@@ -72,50 +72,52 @@
 
             <div class="container pagina-immobile-inner">
 
-                <a href="index.html#immobili-vendita" class="immobile-torna">
-                    <img src="assets/images/icons/icon-arrow-left.svg" alt="" width="20" height="20">
-                    Torna agli immobili
-                </a>
-
                 <header class="immobile-header">
                     <p class="immobile-contratto" id="immobileContratto"></p>
                     <h1 class="immobile-titolo" id="immobileTitolo"></h1>
-                    <p class="immobile-indirizzo" id="immobileIndirizzo"></p>
+                    <p class="immobile-comune" id="immobileComune"></p>
                     <p class="immobile-prezzo" id="immobilePrezzo"></p>
                 </header>
 
-                <!-- Galleria foto -->
-                <section class="immobile-galleria" aria-label="Galleria fotografica">
+                <!-- Griglia: foto | scheda ; thumbs sotto foto (stessa base della scheda) -->
+                <div class="immobile-media">
                     <div class="immobile-galleria-principale">
-                        <img src="" alt="" id="immobileFotoPrincipale" width="1200" height="800">
+                        <img src="" alt="" id="immobileFotoPrincipale">
                     </div>
-                    <div class="immobile-galleria-thumbs" id="immobileThumbs" role="list"></div>
-                </section>
 
-                <div class="immobile-corpo">
-
-                    <!-- Descrizione -->
-                    <section class="immobile-descrizione" aria-labelledby="titolo-descrizione">
-                        <h2 id="titolo-descrizione">Descrizione</h2>
-                        <p id="immobileDescrizione"></p>
-                    </section>
-
-                    <!-- Scheda tecnica (dati da SCHEDA.xlsx) -->
                     <section class="immobile-scheda" aria-labelledby="titolo-scheda">
                         <h2 id="titolo-scheda">Scheda tecnica</h2>
                         <dl class="immobile-scheda-lista" id="immobileSchedaLista"></dl>
                     </section>
 
+                    <div class="immobile-thumbs-carousel">
+                        <button type="button" class="immobile-thumbs-btn" id="immobileThumbsPrev"
+                            aria-label="Miniature precedenti">
+                            <img src="assets/images/icons/icon-arrow-left.svg" alt="" width="20" height="20">
+                        </button>
+                        <div class="immobile-galleria-thumbs" id="immobileThumbs" role="list"
+                            aria-label="Miniature galleria"></div>
+                        <button type="button" class="immobile-thumbs-btn" id="immobileThumbsNext"
+                            aria-label="Miniature successive">
+                            <img src="assets/images/icons/icon-arrow-right.svg" alt="" width="20" height="20">
+                        </button>
+                    </div>
                 </div>
 
-                <!-- Planimetria originale dalle tavole -->
-                <section class="immobile-planimetria" aria-labelledby="titolo-planimetria">
-                    <h2 id="titolo-planimetria">Planimetria</h2>
-                    <figure class="immobile-planimetria-figura">
-                        <img src="" alt="Planimetria originale dell'immobile" id="immobilePlanimetria" width="1200"
-                            height="900" loading="lazy">
-                        <figcaption>Tavola planimetrica originale</figcaption>
-                    </figure>
+                <div class="immobile-corpo">
+                    <section class="immobile-descrizione" aria-labelledby="titolo-descrizione">
+                        <h2 id="titolo-descrizione">Descrizione</h2>
+                        <p id="immobileDescrizione"></p>
+                    </section>
+                </div>
+
+                <!-- Mappa ubicazione: tutta la larghezza del container -->
+                <section class="immobile-mappa-sezione" aria-label="Ubicazione dell'immobile">
+                    <h2 class="immobile-mappa-titolo">Dove si trova</h2>
+                    <div class="immobile-mappa">
+                        <iframe id="immobileMappa" title="Mappa ubicazione immobile" loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade" src=""></iframe>
+                    </div>
                 </section>
 
                 <aside class="immobile-cta" aria-label="Contatta l'agenzia">
@@ -134,6 +136,26 @@
         </div>
 
     </main>
+
+    <!-- Lightbox galleria: overlay scuro, foto centrata adattiva all'orientamento -->
+    <div class="immobile-lightbox" id="immobileLightbox" hidden role="dialog" aria-modal="true"
+        aria-label="Galleria fotografica">
+        <button type="button" class="immobile-lightbox-nav immobile-lightbox-nav--prev" id="immobileLightboxPrev"
+            aria-label="Foto precedente">
+            <img src="assets/images/icons/icon-arrow-left.svg" alt="" width="28" height="28">
+        </button>
+
+        <div class="immobile-lightbox-frame">
+            <button type="button" class="immobile-lightbox-chiudi" id="immobileLightboxChiudi"
+                aria-label="Chiudi galleria">&times;</button>
+            <img src="" alt="" id="immobileLightboxFoto">
+        </div>
+
+        <button type="button" class="immobile-lightbox-nav immobile-lightbox-nav--next" id="immobileLightboxNext"
+            aria-label="Foto successiva">
+            <img src="assets/images/icons/icon-arrow-right.svg" alt="" width="28" height="28">
+        </button>
+    </div>
 
     <!-- ===== FOOTER ===== -->
     <footer class="site-footer" id="footer">
