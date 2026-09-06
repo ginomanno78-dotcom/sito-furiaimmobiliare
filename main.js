@@ -1,251 +1,669 @@
 /* ============================================
-   FURIA IMMOBILIARE — MAIN.JS
+   FURIA IMMOBILIARE SRLS — MAIN.JS
+   Navbar, drawer, dropdown hero
    ============================================ */
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
+  const navbar = document.getElementById("navbar");
+  const hamburger = document.getElementById("hamburger");
+  const drawer = document.getElementById("mobileDrawer");
+  const overlay = document.getElementById("drawerOverlay");
 
-  const navbar = document.getElementById('navbar');
-  const hamburger = document.getElementById('hamburger');
-  const drawer = document.getElementById('mobileDrawer');
-  const overlay = document.getElementById('drawerOverlay');
-  const drawerLinks = drawer.querySelectorAll('a');
-
-  /* === 1. Ombra navbar allo scroll === */
-  const onScroll = () => {
-    if (window.scrollY > 10) {
-      navbar.classList.add('scrolled');
-    } else {
-      navbar.classList.remove('scrolled');
-    }
+  /* === Ombra navbar allo scroll === */
+  const onScrollNavbar = () => {
+    if (!navbar) return;
+    navbar.classList.toggle("is-scrolled", window.scrollY > 8);
   };
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
+  window.addEventListener("scroll", onScrollNavbar, { passive: true });
+  onScrollNavbar();
 
-  /* === 2. Drawer mobile === */
-  const openDrawer = () => {
-    hamburger.classList.add('active');
-    hamburger.setAttribute('aria-expanded', 'true');
-    drawer.classList.add('open');
-    overlay.classList.add('visible');
-    document.body.style.overflow = 'hidden';
+  /* === Drawer mobile === */
+  const apriDrawer = () => {
+    if (!drawer || !overlay || !hamburger) return;
+    drawer.hidden = false;
+    overlay.hidden = false;
+    hamburger.classList.add("is-open");
+    hamburger.setAttribute("aria-expanded", "true");
+    hamburger.setAttribute("aria-label", "Chiudi menu");
+    document.body.style.overflow = "hidden";
   };
 
-  const closeDrawer = () => {
-    hamburger.classList.remove('active');
-    hamburger.setAttribute('aria-expanded', 'false');
-    drawer.classList.remove('open');
-    overlay.classList.remove('visible');
-    document.body.style.overflow = '';
+  const chiudiDrawer = () => {
+    if (!drawer || !overlay || !hamburger) return;
+    drawer.hidden = true;
+    overlay.hidden = true;
+    hamburger.classList.remove("is-open");
+    hamburger.setAttribute("aria-expanded", "false");
+    hamburger.setAttribute("aria-label", "Apri menu");
+    document.body.style.overflow = "";
   };
 
-  hamburger.addEventListener('click', () => {
-    if (drawer.classList.contains('open')) {
-      closeDrawer();
-    } else {
-      openDrawer();
-    }
-  });
-
-  overlay.addEventListener('click', closeDrawer);
-  drawerLinks.forEach(link => link.addEventListener('click', closeDrawer));
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && drawer.classList.contains('open')) {
-      closeDrawer();
-    }
-  });
-
-  /* === 3. Smooth scroll su anchor link (compensa altezza navbar sticky) === */
-  const anchorLinks = document.querySelectorAll('a[href^="#"]');
-  anchorLinks.forEach(link => {
-    link.addEventListener('click', function (e) {
-      const targetId = this.getAttribute('href');
-      if (targetId === '#') return;
-      const target = document.querySelector(targetId);
-      if (target) {
-        e.preventDefault();
-        const navHeight = navbar.offsetHeight;
-        const top = target.getBoundingClientRect().top + window.pageYOffset - navHeight;
-        window.scrollTo({ top, behavior: 'smooth' });
-      }
+  if (hamburger && drawer && overlay) {
+    hamburger.addEventListener("click", () => {
+      if (drawer.hidden) apriDrawer();
+      else chiudiDrawer();
     });
-  });
-
-  /* === 4. Toggle sidebar filtri su mobile (accordion) === */
-  const filtriToggle = document.getElementById('filtriToggle');
-  const sidebarFiltri = document.getElementById('sidebarFiltri');
-
-  if (filtriToggle && sidebarFiltri) {
-    filtriToggle.addEventListener('click', () => {
-      const aperta = sidebarFiltri.classList.toggle('aperta');
-      filtriToggle.setAttribute('aria-expanded', String(aperta));
+    overlay.addEventListener("click", chiudiDrawer);
+    drawer.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", chiudiDrawer);
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !drawer.hidden) chiudiDrawer();
     });
   }
 
-  /* === 5. Ricerca rapida e filtri: nessun backend, scorre agli annunci === */
-  // TODO: collegare la ricerca reale (filtro annunci) quando sarà disponibile un backend
-  const scrollToAnnunci = (e) => {
-    e.preventDefault();
-    const target = document.getElementById('annunci');
-    if (target) {
-      const navHeight = navbar.offsetHeight;
-      const top = target.getBoundingClientRect().top + window.pageYOffset - navHeight;
-      window.scrollTo({ top, behavior: 'smooth' });
-    }
-  };
+  /* === Helper dropdown generico === */
+  const setupDropdown = ({ toggle, menu, onSelect }) => {
+    if (!toggle || !menu) return;
 
-  const ricercaRapidaForm = document.getElementById('ricercaRapidaForm');
-  if (ricercaRapidaForm) {
-    ricercaRapidaForm.addEventListener('submit', scrollToAnnunci);
-  }
-
-  /* Dropdown Compra/Affitta (ricerca rapida) */
-  const rrDropdown = document.getElementById('rrDropdown');
-  const rrToggle = document.getElementById('rrDropdownToggle');
-  const rrMenu = document.getElementById('rrDropdownMenu');
-  const rrLabel = document.getElementById('rrDropdownLabel');
-  const rrSelect = document.getElementById('rr-tipo');
-
-  if (rrDropdown && rrToggle && rrMenu && rrLabel && rrSelect) {
-    const chiudiRrDropdown = () => {
-      rrMenu.hidden = true;
-      rrToggle.setAttribute('aria-expanded', 'false');
+    const chiudi = () => {
+      menu.hidden = true;
+      toggle.setAttribute("aria-expanded", "false");
     };
 
-    rrToggle.addEventListener('click', (e) => {
+    const apri = () => {
+      menu.hidden = false;
+      toggle.setAttribute("aria-expanded", "true");
+    };
+
+    toggle.addEventListener("click", (e) => {
       e.stopPropagation();
-      const aperto = rrMenu.hidden;
-      rrMenu.hidden = !aperto;
-      rrToggle.setAttribute('aria-expanded', String(aperto));
+      if (menu.hidden) apri();
+      else chiudi();
     });
 
-    rrMenu.querySelectorAll('[role="option"]').forEach((opzione) => {
-      opzione.addEventListener('click', () => {
-        const valore = opzione.getAttribute('data-value');
-        const testo = opzione.textContent.trim();
-        rrSelect.value = valore;
-        rrLabel.textContent = testo;
-        rrMenu.querySelectorAll('[role="option"]').forEach((o) => {
-          o.setAttribute('aria-selected', String(o === opzione));
-        });
-        chiudiRrDropdown();
+    menu.querySelectorAll('[role="option"], a').forEach((item) => {
+      item.addEventListener("click", (e) => {
+        if (onSelect) onSelect(item, e);
+        chiudi();
       });
     });
 
-    document.addEventListener('click', (e) => {
-      if (!rrDropdown.contains(e.target)) chiudiRrDropdown();
+    document.addEventListener("click", (e) => {
+      if (!toggle.contains(e.target) && !menu.contains(e.target)) chiudi();
     });
 
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') chiudiRrDropdown();
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") chiudi();
     });
-  }
-
-  const filtriForm = document.querySelector('.filtri-form');
-  if (filtriForm) {
-    filtriForm.addEventListener('submit', scrollToAnnunci);
-  }
-
-  /* === 6. Validazione form Contatti === */
-  const contactForm = document.getElementById('contactForm');
-  const contactFormSuccess = document.getElementById('contactFormSuccess');
-
-  const emailValida = (valore) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valore);
-
-  const segnalaCampoInvalido = (campo) => {
-    campo.classList.add('invalido');
-    campo.focus();
-    setTimeout(() => campo.classList.remove('invalido'), 2500);
   };
 
-  if (contactForm) {
-    contactForm.addEventListener('submit', (e) => {
+  /* === Dropdown navbar Vendi === */
+  setupDropdown({
+    toggle: document.getElementById("navVendiToggle"),
+    menu: document.getElementById("navVendiMenu"),
+  });
+
+  /* === Dropdown ricerca: Compra / Affitta / Vendi === */
+  const azioneLabel = document.getElementById("searchAzioneLabel");
+  const azioneInput = document.getElementById("searchAzione");
+
+  setupDropdown({
+    toggle: document.getElementById("searchAzioneToggle"),
+    menu: document.getElementById("searchAzioneMenu"),
+    onSelect: (item) => {
+      const valore = item.getAttribute("data-value");
+      const testo = item.textContent.trim();
+      if (azioneLabel) azioneLabel.textContent = testo;
+      if (azioneInput) azioneInput.value = valore;
+      item.parentElement.querySelectorAll('[role="option"]').forEach((opt) => {
+        opt.setAttribute("aria-selected", String(opt === item));
+      });
+    },
+  });
+
+  /* === Dropdown ricerca: tipologia === */
+  const tipoInput = document.getElementById("searchTipo");
+  const tipoToggle = document.getElementById("searchTipoToggle");
+
+  setupDropdown({
+    toggle: tipoToggle,
+    menu: document.getElementById("searchTipoMenu"),
+    onSelect: (item) => {
+      const valore = item.getAttribute("data-value");
+      const icona = item.querySelector("img");
+      if (tipoInput) tipoInput.value = valore;
+      if (tipoToggle && icona) {
+        const iconaToggle = tipoToggle.querySelector("img");
+        if (iconaToggle) {
+          iconaToggle.src = icona.src;
+          // Cottage sul pulsante chiuso resta leggermente più grande
+          iconaToggle.classList.toggle("icon--cottage", valore === "case-ville");
+        }
+      }
+      item.parentElement.querySelectorAll('[role="option"]').forEach((opt) => {
+        opt.setAttribute("aria-selected", String(opt === item));
+      });
+    },
+  });
+
+  /* === Submit ricerca (placeholder: scroll agli annunci vendita) === */
+  // TODO: collegare filtro reale quando disponibili listing/pagine
+  const heroSearchForm = document.getElementById("heroSearchForm");
+  if (heroSearchForm) {
+    heroSearchForm.addEventListener("submit", (e) => {
       e.preventDefault();
-
-      const nome = contactForm.querySelector('#c-nome');
-      const email = contactForm.querySelector('#c-email');
-      const cellulare = contactForm.querySelector('#c-cellulare');
-
-      if (!nome.value.trim()) {
-        segnalaCampoInvalido(nome);
+      const azione = azioneInput ? azioneInput.value : "compra";
+      if (azione === "affitta") {
+        window.location.href = "affitto.html";
         return;
       }
-      if (!email.value.trim() || !emailValida(email.value.trim())) {
-        segnalaCampoInvalido(email);
+      if (azione === "vendi") {
+        const target = document.getElementById("vendi");
+        if (target) {
+          target.scrollIntoView({ behavior: "smooth" });
+        } else {
+          window.location.hash = "vendi";
+        }
         return;
       }
-      if (!cellulare.value.trim()) {
-        segnalaCampoInvalido(cellulare);
-        return;
-      }
-
-      // TODO: collegare endpoint Formspree quando disponibile
-      contactFormSuccess.classList.add('visible');
-      contactForm.reset();
-      setTimeout(() => contactFormSuccess.classList.remove('visible'), 5000);
+      window.location.href = "vendita.html";
     });
   }
 
-  /* === 7. Validazione form Valutazione immobile === */
-  const valutaForm = document.getElementById('valutaForm');
-  const valutaFormSuccess = document.getElementById('valutaFormSuccess');
+  /* === Immobili in Vendita: render card + carosello === */
+  const trackVendita = document.getElementById("carouselVenditaTrack");
+  const dotsVendita = document.getElementById("carouselVenditaDots");
+  const carouselVendita = document.querySelector('[data-carousel="vendita"]');
 
-  if (valutaForm) {
-    valutaForm.addEventListener('submit', (e) => {
-      e.preventDefault();
+  const creaCardAnnuncio = (annuncio) => {
+    const article = document.createElement("article");
+    article.className = "card-annuncio" + (annuncio.placeholder ? " card-annuncio--vuota" : "");
+    article.dataset.id = annuncio.id;
 
-      const superficie = valutaForm.querySelector('#v-superficie');
+    if (annuncio.placeholder) {
+      article.innerHTML = `
+        <div class="card-annuncio-media card-annuncio-media--vuota">
+          <span>Prossimamente</span>
+        </div>
+        <div class="card-annuncio-body">
+          <p class="card-annuncio-tipo">Nuovo annuncio</p>
+          <div class="card-annuncio-riga">
+            <p class="card-annuncio-comune">In arrivo</p>
+            <p class="card-annuncio-prezzo">—</p>
+          </div>
+          <div class="card-annuncio-meta">
+            <div class="card-annuncio-specs">
+              <div class="card-spec"><span class="card-spec-icon"><img src="assets/images/icons/icon-planimetria.svg" alt="" width="26" height="26"></span><span>— mq.</span></div>
+              <div class="card-spec"><span class="card-spec-icon"><img src="assets/images/icons/icon-camera-letto.svg" alt="" width="26" height="26"></span><span>— locali</span></div>
+              <div class="card-spec"><span class="card-spec-icon"><img src="assets/images/icons/icon-bagno.svg" alt="" width="26" height="26"></span><span>— bagno</span></div>
+              <div class="card-spec"><span class="card-spec-icon"><img src="assets/images/icons/icon-scale.svg" alt="" width="26" height="26"></span><span>— piano</span></div>
+            </div>
+            <span class="card-annuncio-cta">Scopri &gt;</span>
+          </div>
+        </div>
+      `;
+      return article;
+    }
 
-      if (!superficie.value || Number(superficie.value) <= 0) {
-        segnalaCampoInvalido(superficie);
-        return;
-      }
+    const titolo = formatTipologia(annuncio);
+    const prezzo = formatPrezzo(annuncio.prezzo);
+    const href = annuncio.collegabile ? `immobile.html?id=${encodeURIComponent(annuncio.id)}` : "";
+    const cta = href
+      ? `<a href="${href}" class="card-annuncio-cta">Scopri &gt;</a>`
+      : `<span class="card-annuncio-cta">Scopri &gt;</span>`;
 
-      // TODO: collegare endpoint Formspree quando disponibile
-      valutaFormSuccess.classList.add('visible');
-      valutaForm.reset();
-      setTimeout(() => valutaFormSuccess.classList.remove('visible'), 5000);
-    });
-  }
+    article.innerHTML = `
+      <div class="card-annuncio-media">
+        <img src="${annuncio.cover}" alt="${titolo} a ${annuncio.comune}" width="600" height="400" loading="lazy">
+      </div>
+      <div class="card-annuncio-body">
+        <p class="card-annuncio-tipo">${titolo}</p>
+        <div class="card-annuncio-riga">
+          <p class="card-annuncio-comune">${annuncio.comune}</p>
+          <p class="card-annuncio-prezzo">${prezzo}</p>
+        </div>
+        <div class="card-annuncio-meta">
+          <div class="card-annuncio-specs">
+            <div class="card-spec"><span class="card-spec-icon"><img src="assets/images/icons/icon-planimetria.svg" alt="" width="26" height="26"></span><span>${annuncio.mq} mq.</span></div>
+            <div class="card-spec"><span class="card-spec-icon"><img src="assets/images/icons/icon-camera-letto.svg" alt="" width="26" height="26"></span><span>${annuncio.camere} locali</span></div>
+            <div class="card-spec"><span class="card-spec-icon"><img src="assets/images/icons/icon-bagno.svg" alt="" width="26" height="26"></span><span>${annuncio.bagni} bagno${annuncio.bagni === 1 ? "" : "i"}</span></div>
+            <div class="card-spec"><span class="card-spec-icon"><img src="assets/images/icons/icon-scale.svg" alt="" width="26" height="26"></span><span>${formatPiano(annuncio.piano)}</span></div>
+          </div>
+          ${cta}
+        </div>
+      </div>
+    `;
+    return article;
+  };
 
-  /* === 8. Fade-in allo scroll con IntersectionObserver === */
-  const fadeElements = document.querySelectorAll('.section-fade');
+  const initCarousel = (carouselEl, trackEl, dotsEl, items) => {
+    if (!carouselEl || !trackEl || !dotsEl) return;
 
-  if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver((entries, obs) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          obs.unobserve(entry.target);
+    trackEl.innerHTML = "";
+    dotsEl.innerHTML = "";
+    items.forEach((item) => trackEl.appendChild(creaCardAnnuncio(item)));
+
+    const cards = () => [...trackEl.querySelectorAll(".card-annuncio")];
+    const singolo = items.length <= 1;
+    carouselEl.classList.toggle("is-singolo", singolo);
+
+    // Dot navigation: un punto ogni “pagina” (max 4 come mockup, o = n card)
+    const maxDots = Math.min(4, Math.max(items.length, 1));
+    for (let i = 0; i < maxDots; i += 1) {
+      const dot = document.createElement("button");
+      dot.type = "button";
+      dot.className = "carousel-dot" + (i === 0 ? " is-active" : "");
+      dot.setAttribute("aria-label", `Vai alla posizione ${i + 1}`);
+      dot.addEventListener("click", () => {
+        const list = cards();
+        const target = list[Math.min(i, list.length - 1)];
+        if (target) {
+          trackEl.style.scrollSnapType = "x mandatory";
+          target.scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
         }
       });
-    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+      dotsEl.appendChild(dot);
+    }
 
-    fadeElements.forEach(el => observer.observe(el));
-  } else {
-    // Fallback: rendi tutto visibile su browser obsoleti
-    fadeElements.forEach(el => el.classList.add('visible'));
+    const getCardStep = () => {
+      const first = cards()[0];
+      if (!first) return 300;
+      const gap = parseFloat(getComputedStyle(trackEl).gap) || 20;
+      return first.getBoundingClientRect().width + gap;
+    };
+
+    const scrollByCard = (direzione) => {
+      trackEl.style.scrollSnapType = "x mandatory";
+      trackEl.scrollBy({ left: direzione * getCardStep(), behavior: "smooth" });
+    };
+
+    const btnPrev = carouselEl.querySelector(".carousel-btn--prev");
+    const btnNext = carouselEl.querySelector(".carousel-btn--next");
+    if (btnPrev) btnPrev.addEventListener("click", () => scrollByCard(-1));
+    if (btnNext) btnNext.addEventListener("click", () => scrollByCard(1));
+
+    const aggiornaDots = () => {
+      const list = cards();
+      if (!list.length) return;
+      const step = getCardStep();
+      const index = Math.round(trackEl.scrollLeft / step);
+      const dots = [...dotsEl.querySelectorAll(".carousel-dot")];
+      const active = Math.min(Math.max(index, 0), dots.length - 1);
+      dots.forEach((d, i) => d.classList.toggle("is-active", i === active));
+    };
+
+    trackEl.addEventListener("scroll", aggiornaDots, { passive: true });
+
+    // Drag con pointer events (snap off durante il drag)
+    let dragging = false;
+    let startX = 0;
+    let startScroll = 0;
+
+    trackEl.addEventListener("pointerdown", (e) => {
+      if (e.button !== 0) return;
+      /* Non avviare il drag su link/pulsanti: altrimenti «Scopri» non apre immobile.html */
+      if (e.target.closest("a, button")) return;
+      dragging = true;
+      startX = e.clientX;
+      startScroll = trackEl.scrollLeft;
+      trackEl.classList.add("is-dragging");
+      trackEl.style.scrollSnapType = "none";
+      trackEl.setPointerCapture(e.pointerId);
+    });
+
+    trackEl.addEventListener("pointermove", (e) => {
+      if (!dragging) return;
+      const dx = e.clientX - startX;
+      trackEl.scrollLeft = startScroll - dx;
+    });
+
+    const fineDrag = (e) => {
+      if (!dragging) return;
+      dragging = false;
+      trackEl.classList.remove("is-dragging");
+      // piccola inerzia
+      const dx = e.clientX - startX;
+      trackEl.scrollLeft = startScroll - dx * 1.15;
+      trackEl.style.scrollSnapType = "x mandatory";
+      aggiornaDots();
+    };
+
+    trackEl.addEventListener("pointerup", fineDrag);
+    trackEl.addEventListener("pointercancel", fineDrag);
+  };
+
+  if (typeof getAnnunciVenditaHome === "function") {
+    initCarousel(carouselVendita, trackVendita, dotsVendita, getAnnunciVenditaHome());
   }
 
-  /* === Pulsante WhatsApp: nasconde in scroll giù, mostra in scroll su === */
-  const whatsappBtn = document.getElementById('whatsappBtn');
-  if (whatsappBtn) {
-    let ultimoScrollY = window.scrollY;
+  /* ===== FORM VALUTA ===== */
+  const formValuta = document.getElementById("formValutazioneOnline");
+  const valutaMsg = document.getElementById("valutaFormMsg");
 
-    window.addEventListener('scroll', () => {
-      const scrollY = window.scrollY;
-      const delta = scrollY - ultimoScrollY;
+  const setupValutaDropdown = (toggleId, menuId, inputId, labelId) => {
+    const toggle = document.getElementById(toggleId);
+    const menu = document.getElementById(menuId);
+    const input = document.getElementById(inputId);
+    const label = document.getElementById(labelId);
+    if (!toggle || !menu || !input || !label) return;
 
-      if (Math.abs(delta) < 8) return;
+    setupDropdown({
+      toggle,
+      menu,
+      onSelect: (item) => {
+        const value = item.getAttribute("data-value") || "";
+        const text = item.textContent.trim();
+        input.value = value;
+        label.textContent = text;
+        label.classList.add("is-selected");
+        menu.querySelectorAll('[role="option"]').forEach((opt) => {
+          opt.setAttribute("aria-selected", opt === item ? "true" : "false");
+        });
+      },
+    });
+  };
 
-      if (delta > 0 && scrollY > 80) {
-        whatsappBtn.classList.add('whatsapp-float--nascosto');
-      } else {
-        whatsappBtn.classList.remove('whatsapp-float--nascosto');
+  setupValutaDropdown("valutaTipologiaToggle", "valutaTipologiaMenu", "valutaTipologia", "valutaTipologiaLabel");
+  setupValutaDropdown("valutaStatoToggle", "valutaStatoMenu", "valutaStato", "valutaStatoLabel");
+
+  if (formValuta) {
+    formValuta.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (valutaMsg) {
+        valutaMsg.hidden = true;
+        valutaMsg.classList.remove("is-errore", "is-ok");
       }
 
-      ultimoScrollY = scrollY;
-    }, { passive: true });
+      const tipologia = document.getElementById("valutaTipologia");
+      const privacy = formValuta.querySelector('input[name="privacy"]');
+
+      if (!formValuta.checkValidity() || (tipologia && !tipologia.value) || (privacy && !privacy.checked)) {
+        formValuta.reportValidity();
+        if (valutaMsg) {
+          valutaMsg.hidden = false;
+          valutaMsg.classList.add("is-errore");
+          valutaMsg.textContent = "Compila tutti i campi obbligatori (*) e accetta la privacy.";
+        }
+        return;
+      }
+
+      // TODO: Formspree — invio reale del form
+      if (valutaMsg) {
+        valutaMsg.hidden = false;
+        valutaMsg.classList.add("is-ok");
+        valutaMsg.textContent = "Richiesta pronta. L'invio sarà collegato a Formspree.";
+      }
+    });
   }
 
+  /* ===== FAQ accordion ===== */
+  const faqLista = document.querySelector("[data-faq]");
+  if (faqLista) {
+    faqLista.querySelectorAll(".faq-item").forEach((item) => {
+      const btn = item.querySelector(".faq-domanda");
+      const risposta = item.querySelector(".faq-risposta");
+      const toggle = item.querySelector(".faq-toggle");
+      if (!btn || !risposta || !toggle) return;
+
+      btn.addEventListener("click", () => {
+        const aperto = item.classList.contains("is-open");
+
+        // Chiude le altre (una aperta alla volta)
+        faqLista.querySelectorAll(".faq-item.is-open").forEach((altro) => {
+          if (altro === item) return;
+          altro.classList.remove("is-open");
+          const aBtn = altro.querySelector(".faq-domanda");
+          const aRis = altro.querySelector(".faq-risposta");
+          const aTog = altro.querySelector(".faq-toggle");
+          if (aBtn) aBtn.setAttribute("aria-expanded", "false");
+          if (aRis) aRis.hidden = true;
+          if (aTog) aTog.textContent = "+";
+        });
+
+        if (aperto) {
+          item.classList.remove("is-open");
+          btn.setAttribute("aria-expanded", "false");
+          risposta.hidden = true;
+          toggle.textContent = "+";
+        } else {
+          item.classList.add("is-open");
+          btn.setAttribute("aria-expanded", "true");
+          risposta.hidden = false;
+          toggle.textContent = "−";
+        }
+      });
+    });
+  }
+
+  /* ===== FORM CONTATTI (secondo Seleziona vincolato al primo) ===== */
+  const dettagliPerIntento = {
+    compra: [{ value: "acquistare-immobile", label: "Acquistare un immobile" }],
+    affitta: [
+      { value: "affitta-immobile", label: "Affitta un immobile" },
+      { value: "affittare-proprieta", label: "Affittare una proprietà" },
+    ],
+    vendi: [
+      { value: "vendere-immobile", label: "Vendere un immobile" },
+      { value: "valutare-proprieta", label: "Valutare una proprietà" },
+    ],
+  };
+
+  const contattiIntento = document.getElementById("contattiIntento");
+  const contattiIntentoToggle = document.getElementById("contattiIntentoToggle");
+  const contattiIntentoMenu = document.getElementById("contattiIntentoMenu");
+  const contattiIntentoLabel = document.getElementById("contattiIntentoLabel");
+  const contattiDettaglio = document.getElementById("contattiDettaglio");
+  const contattiDettaglioToggle = document.getElementById("contattiDettaglioToggle");
+  const contattiDettaglioMenu = document.getElementById("contattiDettaglioMenu");
+  const contattiDettaglioLabel = document.getElementById("contattiDettaglioLabel");
+  const formContatti = document.getElementById("formContatti");
+  const contattiMsg = document.getElementById("contattiFormMsg");
+
+  // Ricostruisce il secondo menu solo con le voci dell'intento scelto
+  const aggiornaDettaglioContatti = (intento) => {
+    if (!contattiDettaglioMenu || !contattiDettaglio || !contattiDettaglioLabel || !contattiDettaglioToggle) return;
+
+    const opzioni = dettagliPerIntento[intento] || [];
+    contattiDettaglioMenu.innerHTML = "";
+    contattiDettaglioMenu.hidden = true;
+    contattiDettaglioToggle.setAttribute("aria-expanded", "false");
+    contattiDettaglio.value = "";
+    contattiDettaglioLabel.textContent = "Seleziona";
+    contattiDettaglioLabel.classList.remove("is-selected");
+
+    opzioni.forEach((opt) => {
+      const li = document.createElement("li");
+      li.setAttribute("role", "option");
+      li.setAttribute("data-value", opt.value);
+      li.textContent = opt.label;
+      li.addEventListener("click", () => {
+        contattiDettaglio.value = opt.value;
+        contattiDettaglioLabel.textContent = opt.label;
+        contattiDettaglioLabel.classList.add("is-selected");
+        contattiDettaglioMenu.hidden = true;
+        contattiDettaglioToggle.setAttribute("aria-expanded", "false");
+      });
+      contattiDettaglioMenu.appendChild(li);
+    });
+  };
+
+  if (contattiIntentoToggle && contattiIntentoMenu) {
+    setupDropdown({
+      toggle: contattiIntentoToggle,
+      menu: contattiIntentoMenu,
+      onSelect: (item) => {
+        const value = item.getAttribute("data-value") || "";
+        const text = item.textContent.trim();
+        if (contattiIntento) contattiIntento.value = value;
+        if (contattiIntentoLabel) {
+          contattiIntentoLabel.textContent = text;
+          contattiIntentoLabel.classList.add("is-selected");
+        }
+        aggiornaDettaglioContatti(value);
+      },
+    });
+  }
+
+  if (contattiDettaglioToggle && contattiDettaglioMenu) {
+    setupDropdown({
+      toggle: contattiDettaglioToggle,
+      menu: contattiDettaglioMenu,
+    });
+  }
+
+  if (formContatti) {
+    formContatti.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (contattiMsg) {
+        contattiMsg.hidden = true;
+        contattiMsg.classList.remove("is-errore", "is-ok");
+      }
+
+      const privacy = formContatti.querySelector('input[name="privacy"]');
+      const ok =
+        formContatti.checkValidity() &&
+        contattiIntento &&
+        contattiIntento.value &&
+        contattiDettaglio &&
+        contattiDettaglio.value &&
+        privacy &&
+        privacy.checked;
+
+      if (!ok) {
+        formContatti.reportValidity();
+        if (contattiMsg) {
+          contattiMsg.hidden = false;
+          contattiMsg.classList.add("is-errore");
+          contattiMsg.textContent = "Compila tutti i campi obbligatori (*) e accetta la privacy.";
+        }
+        return;
+      }
+
+      // TODO: Formspree — invio reale del form contatti
+      if (contattiMsg) {
+        contattiMsg.hidden = false;
+        contattiMsg.classList.add("is-ok");
+        contattiMsg.textContent = "Richiesta pronta. L'invio sarà collegato a Formspree.";
+      }
+    });
+  }
+
+  /* === Pagina dettaglio immobile (?id=) === */
+  const paginaImmobile = document.getElementById("paginaImmobile");
+  const paginaImmobileErrore = document.getElementById("paginaImmobileErrore");
+
+  if (paginaImmobile) {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    const trovaAnnuncio = (annuncioId) => {
+      if (!annuncioId || typeof annunci === "undefined") return null;
+      const lista = [...(annunci.vendita || []), ...(annunci.affitto || [])];
+      return lista.find((a) => a.id === annuncioId && !a.placeholder && a.collegabile) || null;
+    };
+
+    const annuncio = trovaAnnuncio(id);
+
+    if (!annuncio) {
+      paginaImmobile.hidden = true;
+      if (paginaImmobileErrore) paginaImmobileErrore.hidden = false;
+    } else {
+      if (paginaImmobileErrore) paginaImmobileErrore.hidden = true;
+      paginaImmobile.hidden = false;
+      paginaImmobile.dataset.stato = "pronto";
+
+      const titolo = typeof formatTipologia === "function" ? formatTipologia(annuncio) : annuncio.tipologia;
+      const prezzo = typeof formatPrezzo === "function" ? formatPrezzo(annuncio.prezzo) : "";
+      const indirizzoParti = [annuncio.via, annuncio.comune].filter(Boolean);
+      let indirizzo = indirizzoParti.join(", ");
+      if (annuncio.angoloCon) {
+        indirizzo += ` (angolo con ${annuncio.angoloCon})`;
+      }
+
+      document.title = `${titolo} — Furia Immobiliare Srls`;
+
+      const elContratto = document.getElementById("immobileContratto");
+      const elTitolo = document.getElementById("immobileTitolo");
+      const elIndirizzo = document.getElementById("immobileIndirizzo");
+      const elPrezzo = document.getElementById("immobilePrezzo");
+      const elDescrizione = document.getElementById("immobileDescrizione");
+      const elFoto = document.getElementById("immobileFotoPrincipale");
+      const elThumbs = document.getElementById("immobileThumbs");
+      const elScheda = document.getElementById("immobileSchedaLista");
+      const elPlanimetria = document.getElementById("immobilePlanimetria");
+
+      if (elContratto) elContratto.textContent = annuncio.contratto || "Vendita";
+      if (elTitolo) elTitolo.textContent = titolo;
+      if (elIndirizzo) elIndirizzo.textContent = indirizzo;
+      if (elPrezzo) elPrezzo.textContent = prezzo;
+      if (elDescrizione) elDescrizione.textContent = annuncio.descrizione || "";
+
+      /* Galleria: cover + foto (senza duplicati) */
+      const fotoLista = [];
+      if (annuncio.cover) fotoLista.push(annuncio.cover);
+      (annuncio.galleria || []).forEach((src) => {
+        if (src && !fotoLista.includes(src)) fotoLista.push(src);
+      });
+
+      const mostraFoto = (src, alt) => {
+        if (!elFoto) return;
+        elFoto.src = src;
+        elFoto.alt = alt || titolo;
+      };
+
+      if (fotoLista.length) {
+        mostraFoto(fotoLista[0], `${titolo} — foto 1`);
+      }
+
+      if (elThumbs) {
+        elThumbs.innerHTML = "";
+        fotoLista.forEach((src, i) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "immobile-thumb" + (i === 0 ? " is-active" : "");
+          btn.setAttribute("aria-label", `Foto ${i + 1}`);
+          btn.innerHTML = `<img src="${src}" alt="" width="100" height="72" loading="lazy">`;
+          btn.addEventListener("click", () => {
+            mostraFoto(src, `${titolo} — foto ${i + 1}`);
+            elThumbs.querySelectorAll(".immobile-thumb").forEach((t) => t.classList.remove("is-active"));
+            btn.classList.add("is-active");
+          });
+          elThumbs.appendChild(btn);
+        });
+      }
+
+      /* Scheda tecnica */
+      if (elScheda) {
+        const siNo = (v) => (v ? "Sì" : "No");
+        const righe = [
+          ["Tipologia", annuncio.tipologia],
+          ["Contratto", annuncio.contratto],
+          ["Indirizzo", annuncio.via],
+          ["Comune", annuncio.comune],
+          ["Superficie", annuncio.mq != null ? `${annuncio.mq} mq` : null],
+          ["Locali", annuncio.locali],
+          ["Camere da letto", annuncio.camere],
+          ["Bagni", annuncio.bagni],
+          ["Cucina", annuncio.cucina],
+          ["Piano", typeof formatPiano === "function" ? formatPiano(annuncio.piano) : annuncio.piano],
+          ["Piani edificio", annuncio.pianiEdificio],
+          ["Ascensore", annuncio.ascensore == null ? null : siNo(annuncio.ascensore)],
+          ["Balconi", annuncio.balconi],
+          ["Arredato", annuncio.arredato == null ? null : siNo(annuncio.arredato)],
+          ["Pertinenze", annuncio.pertinenze],
+          ["Riscaldamento", annuncio.riscaldamento],
+          ["Classe energetica", annuncio.classeEnergetica]
+        ].filter(([, val]) => val != null && val !== "");
+
+        elScheda.innerHTML = righe
+          .map(
+            ([label, val]) =>
+              `<div><dt>${label}</dt><dd>${val}</dd></div>`
+          )
+          .join("");
+      }
+
+      /* Planimetria */
+      if (elPlanimetria) {
+        if (annuncio.planimetria) {
+          elPlanimetria.src = annuncio.planimetria;
+          elPlanimetria.alt = `Planimetria — ${titolo}`;
+          elPlanimetria.closest(".immobile-planimetria")?.removeAttribute("hidden");
+        } else {
+          elPlanimetria.closest(".immobile-planimetria")?.setAttribute("hidden", "");
+        }
+      }
+    }
+  }
 });

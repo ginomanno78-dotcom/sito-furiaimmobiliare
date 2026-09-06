@@ -2,687 +2,867 @@
 <html lang="it">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Furia Immobiliare — Agenzia immobiliare a Sparanise (CE)</title>
-  <meta name="description"
-    content="Furia Immobiliare Srls: agenzia immobiliare a Sparanise, attiva su Calvi Risorta, Pignataro Maggiore, Teano e Capua. La tua casa, chiavi in mano.">
-
-  <meta property="og:title" content="Furia Immobiliare — La tua casa, chiavi in mano">
-  <meta property="og:description"
-    content="Agenzia immobiliare a Sparanise (CE): compra, vendi o affitta casa nell'agro casertano con un'assistenza completa e su misura.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://www.furiaimmobiliare.it">
-  <meta property="og:locale" content="it_IT">
-  <meta property="og:image" content="assets/foto-hero.webp">
-
-  <link rel="icon" type="image/svg+xml" href="assets/logo-furia-icon.svg">
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"
-    rel="stylesheet">
-
-  <link rel="stylesheet" href="style.css">
-  <script src="main.js" defer></script>
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "RealEstateAgent",
-    "name": "Furia Immobiliare Srls",
-    "founder": {
-      "@type": "Person",
-      "name": "Maria Grazia Sorvillo"
-    },
-    "image": "https://www.furiaimmobiliare.it/assets/logo-furia.svg",
-    "url": "https://www.furiaimmobiliare.it",
-    "telephone": "+39 339 216 7130",
-    "email": "mariagrazia.sorvillo@virgilio.it",
-    "vatID": "04967300619",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "P.tta Pasquale Graziadei, 40",
-      "addressLocality": "Sparanise",
-      "postalCode": "81056",
-      "addressRegion": "CE",
-      "addressCountry": "IT"
-    },
-    "areaServed": [
-      { "@type": "City", "name": "Sparanise" },
-      { "@type": "City", "name": "Calvi Risorta" },
-      { "@type": "City", "name": "Pignataro Maggiore" },
-      { "@type": "City", "name": "Teano" },
-      { "@type": "City", "name": "Capua" }
-    ]
-  }
-  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Furia Immobiliare Srls — Agenzia immobiliare a Sparanise (CE)</title>
+    <meta name="description"
+        content="Furia Immobiliare Srls: agenzia immobiliare a Sparanise. Compra, vendi o affitta casa nell'agro caleno con assistenza dedicata. La tua casa, chiavi in mano.">
+    <meta property="og:title" content="Furia Immobiliare Srls — La tua casa, chiavi in mano">
+    <meta property="og:description"
+        content="Agenzia immobiliare a Sparanise (CE): soluzioni su misura per ogni esigenza immobiliare nell'Agro Caleno.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="it_IT">
+    <meta property="og:image" content="assets/images/hero-furia.webp">
+    <link rel="icon" type="image/svg+xml" href="assets/logo-furia-favicon.svg">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-  <a class="skip-link" href="#main">Vai al contenuto principale</a>
+    <!-- ===== NAVBAR ===== -->
+    <header class="navbar" id="navbar">
+        <div class="container navbar-inner">
+            <a href="index.html" class="navbar-brand" aria-label="Furia Immobiliare Srls — Home">
+                <img src="assets/logo-furia.png" alt="" class="navbar-logo" width="40" height="40">
+                <span class="navbar-wordmark">FURIA IMMOBILIARE SRLS</span>
+            </a>
 
-  <!-- Sprite icone SVG riutilizzabili -->
-  <svg class="icon-sprite" aria-hidden="true">
-    <defs>
-      <symbol id="icon-search" viewBox="0 0 24 24">
-        <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2" />
-        <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-      </symbol>
-      <symbol id="icon-arrow-right" viewBox="0 0 24 24">
-        <line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-        <polyline points="13,5 20,12 13,19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-          stroke-linejoin="round" />
-      </symbol>
-      <symbol id="icon-pin" viewBox="0 0 24 24">
-        <path d="M12 22s7-7.58 7-12.5A7 7 0 0 0 5 9.5C5 14.42 12 22 12 22z" fill="none" stroke="currentColor"
-          stroke-width="1.8" stroke-linejoin="round" />
-        <circle cx="12" cy="9.5" r="2.4" fill="none" stroke="currentColor" stroke-width="1.8" />
-      </symbol>
-      <symbol id="icon-phone" viewBox="0 0 24 24">
-        <path
-          d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.5.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.5.1.4 0 .8-.2 1L6.6 10.8z"
-          fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
-      </symbol>
-      <symbol id="icon-mail" viewBox="0 0 24 24">
-        <rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.6" />
-        <path d="M4 7l8 6 8-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
-          stroke-linejoin="round" />
-      </symbol>
-      <symbol id="icon-check" viewBox="0 0 24 24">
-        <polyline points="4,13 9,18 20,6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
-          stroke-linejoin="round" />
-      </symbol>
-      <symbol id="icon-filter" viewBox="0 0 24 24">
-        <line x1="4" y1="6" x2="20" y2="6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-        <line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-        <line x1="4" y1="18" x2="20" y2="18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-        <circle cx="9" cy="6" r="2" fill="currentColor" />
-        <circle cx="16" cy="12" r="2" fill="currentColor" />
-        <circle cx="10" cy="18" r="2" fill="currentColor" />
-      </symbol>
-      <symbol id="icon-facebook" viewBox="0 0 24 24">
-        <path
-          d="M15 8.5h2.5V5.2c-.4-.05-1.9-.2-3.2-.2-3.2 0-5 1.9-5 5.4v2.6H6v3.7h3.3V21h3.9v-4.3h3.2l.5-3.7h-3.7v-2.2c0-1.1.3-1.8 1.8-1.8z"
-          fill="currentColor" />
-      </symbol>
-      <symbol id="icon-instagram" viewBox="0 0 24 24">
-        <rect x="3.5" y="3.5" width="17" height="17" rx="5" fill="none" stroke="currentColor" stroke-width="1.6" />
-        <circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.6" />
-        <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" />
-      </symbol>
-      <symbol id="icon-whatsapp" viewBox="0 0 24 24">
-        <path fill="currentColor"
-          d="M17.5 14.4c-.3-.1-1.6-.8-1.8-.9-.2-.1-.4-.1-.6.1-.2.3-.7.9-.8 1-.2.1-.3.2-.6.1-.3-.1-1.2-.4-2.3-1.5-1-.9-1.5-1.9-1.6-2.2-.1-.3 0-.4.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.1-.6-1.4-.8-1.9-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-.9.9-.9 2.1s.9 2.4 1 2.6c.1.2 1.8 2.8 4.4 3.9 1.6.6 2.2.7 3 .6.5-.1 1.6-.6 1.8-1.3.2-.6.2-1.2.1-1.3-.1-.1-.3-.2-.6-.3zM12.1 2C6.6 2 2.1 6.5 2.1 12c0 1.8.5 3.4 1.3 4.9L2 22l5.3-1.4c1.4.8 3 .9 4.7.9h.1c5.5 0 10-4.5 10-10S17.6 2 12.1 2zm0 18.2h-.1c-1.5 0-3-.4-4.3-1.2l-.3-.2-3.1.8.8-3-.2-.3c-.8-1.3-1.3-2.9-1.3-4.4 0-4.7 3.8-8.5 8.5-8.5s8.5 3.8 8.5 8.5-3.8 8.5-8.5 8.5z" />
-      </symbol>
-    </defs>
-  </svg>
+            <nav class="navbar-links" aria-label="Menu principale">
+                <a href="index.html" class="is-active">Home</a>
+                <a href="vendita.html">Compra</a>
+                <a href="affitto.html">Affitta</a>
 
-  <!-- ===== NAVBAR ===== -->
-  <header class="navbar" id="navbar">
-    <div class="container navbar-inner">
-      <a href="#hero" class="navbar-brand" aria-label="Furia Immobiliare - Home">
-        <img src="assets/logo-furia-icon.svg" alt="Furia Immobiliare" class="navbar-logo" width="56" height="56">
-        <span class="navbar-wordmark">FURIA IMMOBILIARE SRLS</span>
-      </a>
+                <!-- Dropdown Vendi: Vendi casa + Valuta -->
+                <div class="nav-dropdown">
+                    <button type="button" class="nav-dropdown-toggle" id="navVendiToggle" aria-expanded="false"
+                        aria-haspopup="true" aria-controls="navVendiMenu">
+                        Vendi
+                        <img src="assets/images/icons/icon-chevron-down.svg" alt="" class="icon icon--sm" width="16"
+                            height="16">
+                    </button>
+                    <ul class="nav-dropdown-menu" id="navVendiMenu" hidden>
+                        <li><a href="#vendi">Vendi casa</a></li>
+                        <li><a href="#valuta">Valuta</a></li>
+                    </ul>
+                </div>
 
-      <nav class="navbar-links" aria-label="Menu principale">
-        <a href="#hero">Home</a>
-        <a href="#annunci">Compra</a>
-        <a href="#annunci">Affitta</a>
-        <a href="#valuta">Vendi</a>
-        <a href="#valuta">Valuta</a>
-        <a href="#contatti">Servizi</a>
-        <a href="#contatti">Contatti</a>
-      </nav>
+                <a href="#servizi">Servizi</a>
+                <a href="#contatti">Contatti</a>
+            </nav>
 
-      <button class="hamburger" id="hamburger" aria-label="Apri menu" aria-expanded="false"
-        aria-controls="mobileDrawer">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-    </div>
-  </header>
-
-  <!-- Drawer mobile -->
-  <div class="drawer-overlay" id="drawerOverlay"></div>
-  <nav class="mobile-drawer" id="mobileDrawer" aria-label="Menu mobile">
-    <a href="#hero">Home</a>
-    <a href="#annunci">Compra</a>
-    <a href="#annunci">Affitta</a>
-    <a href="#valuta">Vendi</a>
-    <a href="#valuta">Valuta</a>
-    <a href="#contatti">Servizi</a>
-    <a href="#contatti">Contatti</a>
-  </nav>
-
-  <main id="main">
-
-    <!-- ===== BARRA DI RICERCA RAPIDA ===== -->
-    <section class="ricerca-rapida" aria-label="Ricerca rapida immobili">
-      <div class="container">
-        <form class="ricerca-rapida-form" id="ricercaRapidaForm">
-          <label class="sr-only" for="rr-tipo">Tipo di ricerca</label>
-          <div class="rr-dropdown" id="rrDropdown">
-            <button type="button" class="rr-dropdown-toggle" id="rrDropdownToggle" aria-haspopup="listbox"
-              aria-expanded="false" aria-controls="rrDropdownMenu">
-              <span id="rrDropdownLabel">Compra</span>
+            <button type="button" class="hamburger" id="hamburger" aria-label="Apri menu" aria-expanded="false"
+                aria-controls="mobileDrawer">
+                <span></span>
+                <span></span>
+                <span></span>
             </button>
-            <ul class="rr-dropdown-menu" id="rrDropdownMenu" role="listbox" hidden>
-              <li role="option" data-value="compra" aria-selected="true">Compra</li>
-              <li role="option" data-value="affitta" aria-selected="false">Affitta</li>
-            </ul>
-            <select id="rr-tipo" name="rr-tipo" class="sr-only" tabindex="-1" aria-hidden="true">
-              <option value="compra" selected>Compra</option>
-              <option value="affitta">Affitta</option>
-            </select>
-          </div>
-
-          <label class="sr-only" for="rr-query">Cerca per città, zona o indirizzo</label>
-          <input type="text" id="rr-query" name="rr-query" class="rr-input"
-            placeholder="Cerca per città, zona o indirizzo...">
-
-          <button type="submit" class="rr-btn btn btn--oro">
-            <svg class="icon" aria-hidden="true">
-              <use href="#icon-search"></use>
-            </svg>
-            <span>Cerca</span>
-          </button>
-        </form>
-      </div>
-    </section>
-
-    <!-- ===== HERO ===== -->
-    <section class="hero" id="hero">
-      <div class="hero-bg"></div>
-
-      <div class="container hero-layout layout-sidebar layout-sidebar--inv">
-
-        <!-- Sidebar filtri -->
-        <button class="filtri-toggle" id="filtriToggle" aria-expanded="false" aria-controls="sidebarFiltri">
-          <svg class="icon" aria-hidden="true">
-            <use href="#icon-filter"></use>
-          </svg>
-          <span>Filtra ricerca</span>
-        </button>
-
-        <aside class="sidebar-filtri" id="sidebarFiltri" aria-labelledby="sidebar-filtri-label">
-          <p class="sidebar-filtri-titolo" id="sidebar-filtri-label">Filtra ricerca</p>
-          <form class="filtri-form">
-
-            <div class="form__gruppo">
-              <label for="f-citta">Città</label>
-              <select id="f-citta" name="citta">
-                <option value="">Tutte le città</option>
-                <option value="sparanise">Sparanise</option>
-                <option value="calvi-risorta">Calvi Risorta</option>
-                <option value="pignataro-maggiore">Pignataro Maggiore</option>
-                <option value="teano">Teano</option>
-                <option value="capua">Capua</option>
-              </select>
-            </div>
-
-            <div class="form__gruppo">
-              <label for="f-tipologia">Tipologia</label>
-              <select id="f-tipologia" name="tipologia">
-                <option value="">Qualsiasi tipologia</option>
-                <option value="appartamento">Appartamento</option>
-                <option value="villa">Villa</option>
-                <option value="attico">Attico</option>
-                <option value="rustico">Rustico/Casale</option>
-                <option value="terreno">Terreno</option>
-              </select>
-            </div>
-
-            <div class="form__gruppo">
-              <label for="f-categoria">Categoria</label>
-              <select id="f-categoria" name="categoria">
-                <option value="residenziale">Residenziale</option>
-                <option value="commerciale">Commerciale</option>
-              </select>
-            </div>
-
-            <div class="form__gruppo">
-              <label for="f-prezzo">Prezzo</label>
-              <select id="f-prezzo" name="prezzo">
-                <option value="">Qualsiasi prezzo</option>
-                <option value="0-100000">Fino a 100.000€</option>
-                <option value="100000-200000">100.000 – 200.000€</option>
-                <option value="200000-350000">200.000 – 350.000€</option>
-                <option value="350000+">Oltre 350.000€</option>
-              </select>
-            </div>
-
-            <div class="form__gruppo">
-              <label for="f-stanze">Stanze</label>
-              <select id="f-stanze" name="stanze">
-                <option value="">Qualsiasi</option>
-                <option value="2">2+</option>
-                <option value="3">3+</option>
-                <option value="4">4+</option>
-                <option value="5">5+</option>
-              </select>
-            </div>
-
-            <div class="form__gruppo">
-              <label for="f-mq">Mq</label>
-              <select id="f-mq" name="mq">
-                <option value="">Qualsiasi</option>
-                <option value="50">50+</option>
-                <option value="80">80+</option>
-                <option value="120">120+</option>
-                <option value="200">200+</option>
-              </select>
-            </div>
-
-            <button type="submit" class="btn btn--primario btn--full">Cerca immobili</button>
-          </form>
-        </aside>
-
-        <!-- Contenuto hero -->
-        <div class="hero-content">
-          <p class="hero-payoff">La tua casa, chiavi in mano</p>
-          <h1>Soluzioni su misura per ogni esigenza immobiliare</h1>
-          <p class="hero-sub">Un'agenzia che segue ogni fase dell'acquisto, della vendita o dell'affitto — con
-            un'assistenza dedicata e su misura, nel cuore dell'agro Caleno.</p>
-          <a href="#annunci" class="btn btn--primario hero-cta">
-            <span>Scopri le nostre migliori offerte</span>
-            <svg class="icon" aria-hidden="true">
-              <use href="#icon-arrow-right"></use>
-            </svg>
-          </a>
         </div>
+    </header>
 
-      </div>
-    </section>
-
-    <!-- ===== ULTIMI ANNUNCI ===== -->
-    <section class="annunci section-fade" id="annunci">
-      <div class="container">
-        <div class="section-header">
-          <h2>Ultimi annunci</h2>
-        </div>
-
-        <div class="annunci-grid layout-3col">
-
-          <article class="card card--immagine">
-            <img class="card-img"
-              src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=800&q=60"
-              alt="Appartamento luminoso in centro a Sparanise" width="400" height="280" loading="lazy">
-            <div class="card-body">
-              <p class="card-prezzo">€ 98.000</p>
-              <h3 class="card-titolo">Appartamento luminoso in centro</h3>
-              <p class="card-ubicazione">
-                <svg class="icon icon--sm" aria-hidden="true">
-                  <use href="#icon-pin"></use>
-                </svg>
-                Sparanise (CE)
-              </p>
-              <ul class="card-specifiche">
-                <li>90 m²</li>
-                <li>3 locali</li>
-                <li>1 bagno</li>
-              </ul>
-            </div>
-          </article>
-
-          <article class="card card--immagine">
-            <img class="card-img"
-              src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=60"
-              alt="Villa singola con giardino a Calvi Risorta" width="400" height="280" loading="lazy">
-            <div class="card-body">
-              <p class="card-prezzo">€ 285.000</p>
-              <h3 class="card-titolo">Villa singola con giardino</h3>
-              <p class="card-ubicazione">
-                <svg class="icon icon--sm" aria-hidden="true">
-                  <use href="#icon-pin"></use>
-                </svg>
-                Calvi Risorta (CE)
-              </p>
-              <ul class="card-specifiche">
-                <li>220 m²</li>
-                <li>6 locali</li>
-                <li>giardino</li>
-              </ul>
-            </div>
-          </article>
-
-          <article class="card card--immagine">
-            <img class="card-img"
-              src="https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=800&q=60"
-              alt="Casale ristrutturato con terreno a Pignataro Maggiore" width="400" height="280" loading="lazy">
-            <div class="card-body">
-              <p class="card-prezzo">€ 175.000</p>
-              <h3 class="card-titolo">Casale ristrutturato con terreno</h3>
-              <p class="card-ubicazione">
-                <svg class="icon icon--sm" aria-hidden="true">
-                  <use href="#icon-pin"></use>
-                </svg>
-                Pignataro Maggiore (CE)
-              </p>
-              <ul class="card-specifiche">
-                <li>160 m²</li>
-                <li>5 locali</li>
-                <li>terreno 3.000 m²</li>
-              </ul>
-            </div>
-          </article>
-
-          <article class="card card--immagine">
-            <img class="card-img"
-              src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=60"
-              alt="Attico con ampio terrazzo a Teano" width="400" height="280" loading="lazy">
-            <div class="card-body">
-              <p class="card-prezzo">€ 145.000</p>
-              <h3 class="card-titolo">Attico con ampio terrazzo</h3>
-              <p class="card-ubicazione">
-                <svg class="icon icon--sm" aria-hidden="true">
-                  <use href="#icon-pin"></use>
-                </svg>
-                Teano (CE)
-              </p>
-              <ul class="card-specifiche">
-                <li>110 m²</li>
-                <li>4 locali</li>
-                <li>terrazzo</li>
-              </ul>
-            </div>
-          </article>
-
-          <article class="card card--immagine">
-            <img class="card-img"
-              src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=60"
-              alt="Bilocale nel centro storico di Capua" width="400" height="280" loading="lazy">
-            <div class="card-body">
-              <p class="card-prezzo">€ 89.000</p>
-              <h3 class="card-titolo">Bilocale nel centro storico</h3>
-              <p class="card-ubicazione">
-                <svg class="icon icon--sm" aria-hidden="true">
-                  <use href="#icon-pin"></use>
-                </svg>
-                Capua (CE)
-              </p>
-              <ul class="card-specifiche">
-                <li>75 m²</li>
-                <li>2 locali</li>
-                <li>1 bagno</li>
-              </ul>
-            </div>
-          </article>
-
-          <article class="card card--immagine">
-            <img class="card-img"
-              src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=60"
-              alt="Terreno edificabile residenziale a Sparanise" width="400" height="280" loading="lazy">
-            <div class="card-body">
-              <p class="card-prezzo">€ 45.000</p>
-              <h3 class="card-titolo">Terreno edificabile residenziale</h3>
-              <p class="card-ubicazione">
-                <svg class="icon icon--sm" aria-hidden="true">
-                  <use href="#icon-pin"></use>
-                </svg>
-                Sparanise (CE)
-              </p>
-              <ul class="card-specifiche">
-                <li>1.200 m²</li>
-                <li>edificabile</li>
-              </ul>
-            </div>
-          </article>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== VALUTA IL TUO IMMOBILE ===== -->
-    <section class="valuta section-fade" id="valuta">
-      <div class="container">
-        <div class="section-header">
-          <h2>Scopri il valore della tua casa</h2>
-          <p>Ottieni una stima precisa del valore del tuo immobile basata sui dati di mercato più recenti.</p>
-        </div>
-
-        <div class="valuta-layout layout-sidebar">
-
-          <div class="valuta-testo">
-            <p>Conoscere il vero valore della tua casa è il primo passo per venderla nei tempi e al prezzo giusto.
-              Analizziamo le caratteristiche del tuo immobile e le confrontiamo con l'andamento del mercato nella
-              tua zona.</p>
-            <p>Nessun impegno: la valutazione è gratuita e ti viene restituita da un nostro consulente, con una
-              stima motivata e senza sorprese.</p>
-          </div>
-
-          <div class="valuta-form-wrap">
-            <form class="valuta-form" id="valutaForm" novalidate>
-
-              <div class="form__gruppo">
-                <label for="v-locali">Locali</label>
-                <select id="v-locali" name="locali">
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                  <option value="6">6+</option>
-                </select>
-              </div>
-
-              <div class="form__gruppo">
-                <label for="v-superficie">Superficie (m²)</label>
-                <input type="number" id="v-superficie" name="superficie" min="1" step="1" placeholder="Es. 90" required>
-              </div>
-
-              <div class="form__gruppo">
-                <label for="v-bagni">Bagni</label>
-                <select id="v-bagni" name="bagni">
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4+</option>
-                </select>
-              </div>
-
-              <div class="form__gruppo">
-                <label for="v-terrazzo">Terrazzo/Balconi</label>
-                <select id="v-terrazzo" name="terrazzo">
-                  <option value="si">Sì</option>
-                  <option value="no">No</option>
-                </select>
-              </div>
-
-              <div class="form__gruppo">
-                <label for="v-giardino">Giardino</label>
-                <select id="v-giardino" name="giardino">
-                  <option value="si">Sì</option>
-                  <option value="no">No</option>
-                </select>
-              </div>
-
-              <div class="form__gruppo">
-                <label for="v-garage">Garage</label>
-                <select id="v-garage" name="garage">
-                  <option value="si">Sì</option>
-                  <option value="no">No</option>
-                </select>
-              </div>
-
-              <div class="form__gruppo">
-                <label for="v-piano">Piano</label>
-                <select id="v-piano" name="piano">
-                  <option value="terra">Piano terra</option>
-                  <option value="1">1°</option>
-                  <option value="2">2°</option>
-                  <option value="3">3°</option>
-                  <option value="4+">4°+</option>
-                  <option value="attico">Attico</option>
-                </select>
-              </div>
-
-              <button type="submit" class="btn btn--primario btn--full">Richiedi la tua valutazione gratuita</button>
-
-              <p class="form-success" id="valutaFormSuccess" role="status" aria-live="polite">
-                <svg class="icon" aria-hidden="true">
-                  <use href="#icon-check"></use>
-                </svg>
-                Richiesta inviata! Ti contatteremo a breve con la tua stima.
-              </p>
-            </form>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== CONTATTI ===== -->
-    <section class="contatti section-fade" id="contatti">
-      <div class="container">
-        <div class="section-header">
-          <h2>Contattaci</h2>
-        </div>
-
-        <div class="contatti-layout">
-
-          <div class="contatti-form-wrap">
-            <form class="contatti-form" id="contactForm" novalidate>
-
-              <div class="form__gruppo">
-                <label for="c-nome">Nome*</label>
-                <input type="text" id="c-nome" name="nome" autocomplete="name" required>
-              </div>
-
-              <div class="form__gruppo">
-                <label for="c-email">Email*</label>
-                <input type="email" id="c-email" name="email" autocomplete="email" required>
-              </div>
-
-              <div class="form__gruppo">
-                <label for="c-cellulare">Cellulare</label>
-                <input type="tel" id="c-cellulare" name="cellulare" autocomplete="tel" required>
-              </div>
-
-              <div class="form__gruppo">
-                <label for="c-descrizione">Descrizione</label>
-                <textarea id="c-descrizione" name="descrizione" rows="4"></textarea>
-              </div>
-
-              <button type="submit" class="btn btn--primario btn--full">Invia richiesta</button>
-
-              <p class="form-success" id="contactFormSuccess" role="status" aria-live="polite">
-                <svg class="icon" aria-hidden="true">
-                  <use href="#icon-check"></use>
-                </svg>
-                Richiesta inviata! Ti risponderemo il prima possibile.
-              </p>
-            </form>
-          </div>
-
-          <div class="contatti-info">
-            <ul class="info-list">
-              <li class="info-item">
-                <svg class="icon" aria-hidden="true">
-                  <use href="#icon-pin"></use>
-                </svg>
-                <span>Furia Immobiliare Srls<br>P.tta Pasquale Graziadei, 40 - 81056 Sparanise (CE)</span>
-              </li>
-              <li class="info-item">
-                <svg class="icon" aria-hidden="true">
-                  <use href="#icon-phone"></use>
-                </svg>
-                <span><a href="tel:+393392167130">+39 339 216 7130</a></span>
-              </li>
-              <li class="info-item">
-                <svg class="icon" aria-hidden="true">
-                  <use href="#icon-mail"></use>
-                </svg>
-                <span><a href="mailto:mariagrazia.sorvillo@virgilio.it">mariagrazia.sorvillo@virgilio.it</a></span>
-              </li>
-              <li class="info-item">
-                <svg class="icon" aria-hidden="true">
-                  <use href="#icon-mail"></use>
-                </svg>
-                <span>PEC: <a href="mailto:furia.immobiliare@pec.it">furia.immobiliare@pec.it</a></span>
-              </li>
-            </ul>
-
-            <div class="contatti-mappa">
-              <iframe src="https://www.google.com/maps?q=P.tta+Pasquale+Graziadei+40+Sparanise+CE&output=embed"
-                title="Mappa: P.tta Pasquale Graziadei 40, Sparanise (CE)" loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade"></iframe>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- ===== FOOTER ===== -->
-  <footer class="footer">
-    <div class="container footer-inner">
-
-      <div class="footer-col footer-brand">
-        <p class="footer-ragione-sociale"><span class="footer-srls">Furia Immobiliare Srls</span><br>di Maria Grazia
-          Sorvillo</p>
-        <p>P.tta Pasquale Graziadei, 40 - 81056 Sparanise (CE)</p>
-        <p>P.IVA 04967300619</p>
-        <p class="footer-pec"><span>PEC:</span> <a href="mailto:furia.immobiliare@pec.it">furia.immobiliare@pec.it</a>
-        </p>
-      </div>
-
-      <div class="footer-col">
-        <p class="footer-col-title">Link rapidi</p>
-        <a href="#hero">Home</a>
-        <a href="#annunci">Ultimi annunci</a>
-        <a href="#valuta">Valuta la tua casa</a>
+    <!-- Drawer mobile -->
+    <div class="drawer-overlay" id="drawerOverlay" hidden></div>
+    <nav class="mobile-drawer" id="mobileDrawer" aria-label="Menu mobile" hidden>
+        <a href="index.html">Home</a>
+        <a href="vendita.html">Compra</a>
+        <a href="affitto.html">Affitta</a>
+        <a href="#vendi">Vendi casa</a>
+        <a href="#valuta">Valuta</a>
+        <a href="#servizi">Servizi</a>
         <a href="#contatti">Contatti</a>
-      </div>
+    </nav>
 
-      <div class="footer-col">
-        <p class="footer-col-title">Contatti</p>
-        <a href="tel:+393392167130" class="footer-contatto">
-          <svg class="icon icon--sm" aria-hidden="true">
-            <use href="#icon-phone"></use>
-          </svg>
-          +39 339 216 7130
-        </a>
-        <a href="mailto:mariagrazia.sorvillo@virgilio.it" class="footer-contatto">
-          <svg class="icon icon--sm" aria-hidden="true">
-            <use href="#icon-mail"></use>
-          </svg>
-          mariagrazia.sorvillo@virgilio.it
-        </a>
-        <div class="footer-social">
-          <a href="#" aria-label="Furia Immobiliare su Facebook">
-            <svg class="icon" aria-hidden="true">
-              <use href="#icon-facebook"></use>
-            </svg>
-          </a>
-          <a href="#" aria-label="Furia Immobiliare su Instagram">
-            <svg class="icon" aria-hidden="true">
-              <use href="#icon-instagram"></use>
-            </svg>
-          </a>
+    <main id="main">
+
+        <!-- ===== HERO ===== -->
+        <section class="hero" id="hero" aria-label="Presentazione">
+            <img src="assets/images/hero-furia.webp" alt="" class="hero-bg" width="1920" height="1080"
+                fetchpriority="high">
+
+            <div class="container hero-inner">
+
+                <!-- Widget ricerca -->
+                <form class="hero-search" id="heroSearchForm" role="search" aria-label="Ricerca immobili">
+
+                    <!-- 1) Compra / Affitta / Vendi -->
+                    <div class="search-dropdown search-dropdown--azione">
+                        <button type="button" class="search-dropdown-toggle search-dropdown-toggle--oro"
+                            id="searchAzioneToggle" aria-expanded="false" aria-haspopup="listbox"
+                            aria-controls="searchAzioneMenu">
+                            <span id="searchAzioneLabel">Compra</span>
+                            <img src="assets/images/icons/icon-chevron-down.svg" alt="" class="icon icon--sm" width="16"
+                                height="16">
+                        </button>
+                        <ul class="search-dropdown-menu" id="searchAzioneMenu" role="listbox" hidden>
+                            <li role="option" data-value="compra" aria-selected="true">Compra</li>
+                            <li role="option" data-value="affitta" aria-selected="false">Affitta</li>
+                            <li role="option" data-value="vendi" aria-selected="false">Vendi</li>
+                        </ul>
+                        <input type="hidden" name="azione" id="searchAzione" value="compra">
+                    </div>
+
+                    <!-- 2) Tipologia immobile -->
+                    <div class="search-dropdown search-dropdown--tipo">
+                        <button type="button" class="search-dropdown-toggle" id="searchTipoToggle" aria-expanded="false"
+                            aria-haspopup="listbox" aria-controls="searchTipoMenu" aria-label="Tipologia immobile">
+                            <img src="assets/images/icons/icon-cottage.svg" alt="" class="icon icon--sm icon--cottage"
+                                width="18" height="18">
+                            <img src="assets/images/icons/icon-chevron-down.svg" alt="" class="icon icon--sm" width="16"
+                                height="16">
+                        </button>
+                        <ul class="search-dropdown-menu search-dropdown-menu--tipo" id="searchTipoMenu" role="listbox"
+                            hidden>
+                            <li role="option" data-value="case-ville" aria-selected="false">
+                                <img src="assets/images/icons/icon-cottage.svg" alt=""
+                                    class="icon icon--sm icon--cottage" width="18" height="18">
+                                Case - Ville
+                            </li>
+                            <li role="option" data-value="appartamenti" aria-selected="false">
+                                <img src="assets/images/icons/icon-appartamenti.svg" alt="" class="icon icon--sm"
+                                    width="18" height="18">
+                                Appartamenti
+                            </li>
+                            <li role="option" data-value="terreno" aria-selected="false">
+                                <img src="assets/images/icons/icon-terreno.svg" alt="" class="icon icon--sm" width="18"
+                                    height="18">
+                                Terreno
+                            </li>
+                            <li role="option" data-value="commerciale" aria-selected="false">
+                                <img src="assets/images/icons/icon-commerciale.svg" alt="" class="icon icon--sm"
+                                    width="18" height="18">
+                                Commerciale
+                            </li>
+                            <li role="option" data-value="garage" aria-selected="false">
+                                <img src="assets/images/icons/icon-garage.svg" alt="" class="icon icon--sm" width="18"
+                                    height="18">
+                                Garage
+                            </li>
+                            <li role="option" data-value="nuove-costruzioni" aria-selected="false">
+                                <img src="assets/images/icons/icon-nuove-costruzioni.svg" alt="" class="icon icon--sm"
+                                    width="18" height="18">
+                                Nuove Costruzione
+                            </li>
+                        </ul>
+                        <input type="hidden" name="tipologia" id="searchTipo" value="">
+                    </div>
+
+                    <!-- 3) Query + cerca -->
+                    <label class="sr-only" for="searchQuery">Cerca per città, zona o indirizzo</label>
+                    <input type="search" id="searchQuery" name="q" class="hero-search-input"
+                        placeholder="Cerca per città, zona o indirizzo...">
+
+                    <button type="submit" class="hero-search-btn" aria-label="Cerca">
+                        <img src="assets/images/icons/icon-search.svg" alt="" class="icon" width="20" height="20">
+                    </button>
+                </form>
+
+                <!-- Payoff + H1 + CTA -->
+                <div class="hero-content">
+                    <p class="hero-payoff">La tua casa, chiavi in mano</p>
+                    <h1 class="hero-title">
+                        <span class="hero-title-riga">Soluzioni su misura per ogni</span>
+                        <span class="hero-title-riga">esigenza immobiliare</span>
+                    </h1>
+                    <p class="hero-sub">Un'agenzia che segue ogni fase dell'acquisto, della vendita o dell'affitto
+                        con un'assistenza dedicata e su misura, nel cuore dell'Agro Caleno.</p>
+                    <a href="#immobili-vendita" class="btn btn--oro hero-cta">
+                        Scopri le nostre migliori offerte
+                        <span class="hero-cta-arrow" aria-hidden="true">→</span>
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ===== IMMOBILI IN VENDITA ===== -->
+        <section class="sezione-annunci" id="immobili-vendita" aria-labelledby="titolo-vendita">
+            <div class="container">
+                <h2 class="sezione-titolo" id="titolo-vendita">
+                    <img src="assets/images/icons/elenco-puntato.svg" alt="" class="sezione-titolo-bullet" width="33"
+                        height="35" aria-hidden="true">
+                    <span class="sezione-titolo-testo">Immobili In <span>Vendita</span></span>
+                </h2>
+
+                <div class="carousel" data-carousel="vendita">
+                    <div class="carousel-viewport">
+                        <div class="carousel-track" id="carouselVenditaTrack">
+                            <!-- Card generate da data/annunci.js -->
+                        </div>
+                    </div>
+
+                    <div class="carousel-footer">
+                        <div class="carousel-dots" id="carouselVenditaDots" aria-label="Paginazione carosello"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== VENDI ===== -->
+        <section class="sezione-vendi" id="vendi" aria-labelledby="titolo-vendi">
+            <div class="container">
+                <h2 class="sezione-titolo" id="titolo-vendi">
+                    <img src="assets/images/icons/elenco-puntato.svg" alt="" class="sezione-titolo-bullet" width="33"
+                        height="35" aria-hidden="true">
+                    <span class="sezione-titolo-testo"><span>Vendi</span></span>
+                </h2>
+
+                <p class="vendi-occhiello">Come vendere casa velocemente...</p>
+                <p class="vendi-intro">
+                    <span class="vendi-intro-riga">La vendita di un immobile richiede una grande professionalità.</span>
+                    <span class="vendi-intro-riga">Come primo passo, valuteremo l'intero potenziale del tuo immobile, con
+                        tutti i suoi dettagli e le sue caratteristiche.</span>
+                </p>
+            </div>
+
+            <!-- Banner a tutta larghezza (altezza naturale, non full-viewport) -->
+            <div class="vendi-banner">
+                <img src="assets/images/banner-vendi-casa.webp" alt="Vendi casa senza pensieri, affidati a noi"
+                    width="1920" height="700" loading="lazy">
+            </div>
+
+            <div class="container">
+                <p class="vendi-tagline">Grazie alla nostra attività, ti metteremo in contatto con l'acquirente ideale per ottenere il prezzo di vendita ottimale.</p>
+
+                <div class="vendi-cards">
+                    <article class="vendi-card">
+                        <h3 class="vendi-card-titolo">Valutazione sui dati</h3>
+                        <div class="vendi-card-box">
+                            <div class="vendi-card-media">
+                                <img src="assets/images/vendi/Valutazione-sui-dati.webp" alt="" width="400" height="280"
+                                    loading="lazy">
+                            </div>
+                            <div class="vendi-card-body">
+                                <p>Ti supporteremo su tutte le decisioni durante l'intero processo di vendita. La nostra
+                                    valutazione si basa su dati di mercato aggiornati e su approfondimenti locali.</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="vendi-card">
+                        <h3 class="vendi-card-titolo">Visibilità su misura</h3>
+                        <div class="vendi-card-box">
+                            <div class="vendi-card-media">
+                                <img src="assets/images/vendi/Visibilità-su-misura.webp" alt="" width="400" height="280"
+                                    loading="lazy">
+                            </div>
+                            <div class="vendi-card-body">
+                                <p>Apprezziamo l'unicità della tua proprietà e, grazie ad attività di marketing, le daremo
+                                    la visibilità che merita. Saremo al tuo fianco in ogni fase del processo di vendita,
+                                    garantendo trasparenza durante tutte le attività.</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="vendi-card">
+                        <h3 class="vendi-card-titolo">Per ogni cliente</h3>
+                        <div class="vendi-card-box">
+                            <div class="vendi-card-media">
+                                <img src="assets/images/vendi/Per-ogni-cliente.webp" alt="" width="400" height="280"
+                                    loading="lazy">
+                            </div>
+                            <div class="vendi-card-body">
+                                <p>Un servizio pensato per privati, investitori immobiliari e imprese di costruzione: chi ci
+                                    affida la vendita o la gestione del proprio immobile può contare sui nostri strumenti
+                                    più avanzati per farlo conoscere al mercato.</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="vendi-card">
+                        <h3 class="vendi-card-titolo">Consulenza a 360°</h3>
+                        <div class="vendi-card-box">
+                            <div class="vendi-card-media">
+                                <img src="assets/images/vendi/Consulenza-360°.webp" alt="" width="400" height="280"
+                                    loading="lazy">
+                            </div>
+                            <div class="vendi-card-body">
+                                <p>Il servizio offerto al cliente prevede consulenze tecniche e professionali a 360°, un
+                                    sito web moderno con tutte le offerte immobiliari residenziali e commerciali, con
+                                    informazioni chiare su ogni aspetto tecnico dell'immobile.</p>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== VALUTA ===== -->
+        <section class="sezione-valuta" id="valuta" aria-labelledby="titolo-valuta">
+            <div class="container">
+                <h2 class="sezione-titolo" id="titolo-valuta">
+                    <img src="assets/images/icons/elenco-puntato.svg" alt="" class="sezione-titolo-bullet" width="33"
+                        height="35" aria-hidden="true">
+                    <span class="sezione-titolo-testo"><span>Valuta</span></span>
+                </h2>
+
+                <p class="valuta-headline">Sei curioso di sapere quanto vale la tua casa?</p>
+                <p class="valuta-subhead">Che sia online o in loco, è gratuita e non vincolante.</p>
+
+                <!-- Box 1: Valutazione online + dati immobile -->
+                <form class="valuta-form" id="formValutazioneOnline" novalidate>
+                    <div class="valuta-box">
+                        <div class="valuta-intro-grid">
+                            <div class="valuta-intro-col">
+                                <div class="valuta-intro-head">
+                                    <img src="assets/images/icons/icon-online.svg" alt="" width="48" height="48">
+                                    <h3>Valutazione online:</h3>
+                                </div>
+                                <p>La nostra valutazione online è un punto di partenza semplice per una prima e rapida
+                                    stima del tuo immobile, che potrai decidere di approfondire in agenzia, in modo
+                                    gratuito e non vincolante.</p>
+                            </div>
+                            <div class="valuta-intro-col">
+                                <div class="valuta-intro-head">
+                                    <img src="assets/images/icons/icon-file-text.svg" alt="" width="48" height="48">
+                                    <h3>Come funziona?</h3>
+                                </div>
+                                <p>Compila i campi con le caratteristiche dell'immobile inserendo la tipologia,
+                                    l'indirizzo e tutti i dati dell'immobile nel form qui sotto.</p>
+                            </div>
+                        </div>
+
+                        <div class="valuta-campi">
+                            <label class="valuta-field valuta-field--full">
+                                <span class="sr-only">Indirizzo (obbligatorio)</span>
+                                <input type="text" name="indirizzo" required placeholder="*indirizzo" autocomplete="street-address">
+                            </label>
+
+                            <div class="valuta-field valuta-field--full valuta-dropdown" data-valuta-dropdown>
+                                <span class="sr-only">Tipologia (obbligatorio)</span>
+                                <input type="hidden" name="tipologia" id="valutaTipologia" value="" required>
+                                <button type="button" class="valuta-dropdown-toggle" id="valutaTipologiaToggle"
+                                    aria-expanded="false" aria-haspopup="listbox">
+                                    <span id="valutaTipologiaLabel">*tipologia</span>
+                                    <img src="assets/images/icons/icon-chevron-down.svg" alt="" width="16" height="16">
+                                </button>
+                                <ul class="valuta-dropdown-menu" id="valutaTipologiaMenu" role="listbox" hidden>
+                                    <li role="option" data-value="case-ville">
+                                        <img src="assets/images/icons/icon-cottage.svg" alt="" width="18" height="18">
+                                        Case - Ville
+                                    </li>
+                                    <li role="option" data-value="appartamenti">
+                                        <img src="assets/images/icons/icon-appartamenti.svg" alt="" width="18" height="18">
+                                        Appartamenti
+                                    </li>
+                                    <li role="option" data-value="commerciale">
+                                        <img src="assets/images/icons/icon-commerciale.svg" alt="" width="18" height="18">
+                                        Commerciale
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <label class="valuta-field">
+                                <span class="sr-only">Totale mq (obbligatorio)</span>
+                                <input type="number" name="mq" required min="1" placeholder="*totale mq." inputmode="numeric">
+                            </label>
+                            <label class="valuta-field">
+                                <span class="sr-only">Locali (obbligatorio)</span>
+                                <input type="number" name="locali" required min="1" placeholder="*locali" inputmode="numeric">
+                            </label>
+                            <label class="valuta-field">
+                                <span class="sr-only">Bagni</span>
+                                <input type="number" name="bagni" min="0" placeholder="bagni" inputmode="numeric">
+                            </label>
+
+                            <div class="valuta-field valuta-dropdown" data-valuta-dropdown>
+                                <span class="sr-only">Stato immobile</span>
+                                <input type="hidden" name="stato" id="valutaStato" value="">
+                                <button type="button" class="valuta-dropdown-toggle" id="valutaStatoToggle"
+                                    aria-expanded="false" aria-haspopup="listbox">
+                                    <span id="valutaStatoLabel">stato immobile</span>
+                                    <img src="assets/images/icons/icon-chevron-down.svg" alt="" width="16" height="16">
+                                </button>
+                                <ul class="valuta-dropdown-menu" id="valutaStatoMenu" role="listbox" hidden>
+                                    <li role="option" data-value="da-ristrutturare">Da Ristrutturare</li>
+                                    <li role="option" data-value="abitabile">Abitabile</li>
+                                    <li role="option" data-value="nuovo">Nuovo</li>
+                                </ul>
+                            </div>
+
+                            <div class="valuta-checks">
+                                <label class="valuta-check">
+                                    <input type="checkbox" name="extra" value="terrazzo-balcone">
+                                    <span>terrazzo/balcone</span>
+                                </label>
+                                <label class="valuta-check">
+                                    <input type="checkbox" name="extra" value="giardino">
+                                    <span>giardino</span>
+                                </label>
+                                <label class="valuta-check">
+                                    <input type="checkbox" name="extra" value="box">
+                                    <span>box</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="valuta-dati-titolo">Inserisci i tuoi dati per ricevere la valutazione</p>
+
+                    <!-- Box 2: dati personali -->
+                    <div class="valuta-box">
+                        <div class="valuta-campi valuta-campi--dati">
+                            <label class="valuta-field">
+                                <span class="sr-only">Nome (obbligatorio)</span>
+                                <input type="text" name="nome" required placeholder="*nome" autocomplete="given-name">
+                            </label>
+                            <label class="valuta-field">
+                                <span class="sr-only">Cognome (obbligatorio)</span>
+                                <input type="text" name="cognome" required placeholder="*cognome" autocomplete="family-name">
+                            </label>
+                            <label class="valuta-field">
+                                <span class="sr-only">Telefono</span>
+                                <input type="tel" name="telefono" placeholder="telefono" autocomplete="tel">
+                            </label>
+                            <label class="valuta-field">
+                                <span class="sr-only">Email (obbligatorio)</span>
+                                <input type="email" name="email" required placeholder="*email" autocomplete="email">
+                            </label>
+                        </div>
+
+                        <div class="valuta-footer">
+                            <label class="valuta-privacy">
+                                <input type="checkbox" name="privacy" required>
+                                <span>* Compilando ed inviando questo modulo di richiesta, autorizzo il trattamento dei
+                                    miei dati personali ai sensi dell'attuale normativa e confermo di aver preso visione
+                                    dell'informativa privacy.</span>
+                            </label>
+                            <button type="submit" class="btn btn--oro valuta-btn">
+                                Invia <span aria-hidden="true">&gt;</span>
+                            </button>
+                        </div>
+                        <p class="valuta-form-msg" id="valutaFormMsg" hidden></p>
+                    </div>
+                </form>
+
+                <p class="valuta-loco-titolo">Valutazione in loco</p>
+
+                <!-- Valutazione in loco: banner già completo di testi -->
+                <div class="valuta-loco">
+                    <img class="valuta-loco-bg" src="assets/images/banner-valutazioni-loco.webp"
+                        alt="Valutazione in loco — prenota un sopralluogo gratuito" width="1400" height="700"
+                        loading="lazy">
+                    <a href="#contatti" class="btn btn--oro valuta-btn valuta-loco-cta">
+                        Prenota un sopralluogo gratuito <span aria-hidden="true">&gt;</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SERVIZI ===== -->
+        <section class="sezione-servizi" id="servizi" aria-labelledby="titolo-servizi">
+            <div class="container">
+                <h2 class="sezione-titolo" id="titolo-servizi">
+                    <img src="assets/images/icons/elenco-puntato.svg" alt="" class="sezione-titolo-bullet" width="33"
+                        height="35" aria-hidden="true">
+                    <span class="sezione-titolo-testo"><span>Servizi</span></span>
+                </h2>
+
+                <div class="servizi-grid">
+                    <article class="servizi-col">
+                        <div class="servizi-col-head">
+                            <img class="servizi-icona" src="assets/images/icons/icon-chart-no-axes-combined.svg" alt=""
+                                width="48" height="48">
+                            <h3 class="servizi-col-titolo"><span>Valutazione &amp;</span><span>Perizie</span></h3>
+                        </div>
+                        <div class="servizi-voce">
+                            <p class="servizi-voce-titolo">Valutazione<br>commerciale:</p>
+                            <p class="servizi-voce-testo">Analizziamo il tuo immobile e il mercato di riferimento per
+                                indicarti un prezzo di vendita o affitto realistico, basato su dati concreti e non su
+                                stime a caso.</p>
+                        </div>
+                        <div class="servizi-voce">
+                            <p class="servizi-voce-titolo">Perizie estimative<br>scritte:</p>
+                            <p class="servizi-voce-testo">Un documento tecnico formale con la stima dettagliata del
+                                valore dell'immobile, utile per successioni, divisioni patrimoniali o pratiche
+                                bancarie.</p>
+                        </div>
+                        <div class="servizi-voce">
+                            <p class="servizi-voce-titolo">Studi di fattibilità<br>per operazioni:</p>
+                            <p class="servizi-voce-testo">Valutiamo la fattibilità tecnica ed economica di un progetto
+                                immobiliare prima che tu investa tempo e risorse, per capire se l'operazione ha
+                                davvero senso.</p>
+                        </div>
+                        <div class="servizi-voce servizi-voce--vuota" aria-hidden="true"></div>
+                    </article>
+
+                    <article class="servizi-col">
+                        <div class="servizi-col-head">
+                            <img class="servizi-icona" src="assets/images/icons/icon-image-play.svg" alt="" width="48"
+                                height="48">
+                            <h3 class="servizi-col-titolo"><span>Marketing &amp;</span><span>Presentazione</span></h3>
+                        </div>
+                        <div class="servizi-voce">
+                            <p class="servizi-voce-titolo">Servizio<br>fotografico:</p>
+                            <p class="servizi-voce-testo">Fotografie professionali che mettono in luce ogni ambiente,
+                                perché un annuncio si nota prima di tutto con lo sguardo.</p>
+                        </div>
+                        <div class="servizi-voce">
+                            <p class="servizi-voce-titolo">Promozione pubblicitaria<br>online:</p>
+                            <p class="servizi-voce-testo">Il tuo immobile visibile sul nostro sito immobiliare e sui
+                                nostri canali social, con un annuncio curato in ogni dettaglio.</p>
+                        </div>
+                        <div class="servizi-voce">
+                            <p class="servizi-voce-titolo">Visite clientela<br>selezionata:</p>
+                            <p class="servizi-voce-testo">Organizziamo le visite solo con persone realmente
+                                interessate e in target, per non farti perdere tempo con semplici curiosi.</p>
+                        </div>
+                        <div class="servizi-voce servizi-voce--vuota" aria-hidden="true"></div>
+                    </article>
+
+                    <article class="servizi-col">
+                        <div class="servizi-col-head">
+                            <img class="servizi-icona" src="assets/images/icons/icon-file-text.svg" alt="" width="48"
+                                height="48">
+                            <h3 class="servizi-col-titolo"><span>Pratiche &amp;</span><span>Contratti</span></h3>
+                        </div>
+                        <div class="servizi-voce">
+                            <p class="servizi-voce-titolo">Registrazione contratti<br>di locazione:</p>
+                            <p class="servizi-voce-testo">Registriamo il contratto di affitto nei tempi previsti dalla
+                                legge, senza che tu debba destreggiarti tra scadenze e moduli.</p>
+                        </div>
+                        <div class="servizi-voce">
+                            <p class="servizi-voce-titolo">Redazione<br>preliminari:</p>
+                            <p class="servizi-voce-testo">Prepariamo il contratto preliminare di compravendita con
+                                tutte le clausole necessarie a tutelare entrambe le parti.</p>
+                        </div>
+                        <div class="servizi-voce">
+                            <p class="servizi-voce-titolo">Redazione contratti<br>di locazione:</p>
+                            <p class="servizi-voce-testo">Contratti di affitto redatti secondo la normativa vigente,
+                                con le clausole più adatte alla tua situazione specifica.</p>
+                        </div>
+                        <div class="servizi-voce">
+                            <p class="servizi-voce-titolo">Registrazione<br>preliminari:</p>
+                            <p class="servizi-voce-testo">Ci occupiamo della registrazione del preliminare presso
+                                l'Agenzia delle Entrate, con tutti gli adempimenti fiscali del caso.</p>
+                        </div>
+                    </article>
+
+                    <article class="servizi-col">
+                        <div class="servizi-col-head">
+                            <img class="servizi-icona" src="assets/images/icons/icon-loco.svg" alt="" width="48"
+                                height="48">
+                            <h3 class="servizi-col-titolo"><span>Consulenza &amp;</span><span>Assistenza</span></h3>
+                        </div>
+                        <div class="servizi-voce">
+                            <p class="servizi-voce-titolo">Assistenza<br>notarile:</p>
+                            <p class="servizi-voce-testo">Ti accompagniamo fino al rogito, coordinandoci con il notaio
+                                per verificare che tutto sia in ordine prima della firma.</p>
+                        </div>
+                        <div class="servizi-voce">
+                            <p class="servizi-voce-titolo">Assistenza tecnica<br>architettonica:</p>
+                            <p class="servizi-voce-testo">Un tecnico di fiducia a tua disposizione per verifiche,
+                                pratiche edilizie o consulenze su ristrutturazioni e progetti.</p>
+                        </div>
+                        <div class="servizi-voce">
+                            <p class="servizi-voce-titolo">Verifiche<br>energetiche:</p>
+                            <p class="servizi-voce-testo">Controlliamo la classe energetica dell'immobile e ti
+                                supportiamo nell'ottenere l'APE quando manca o va aggiornato.</p>
+                        </div>
+                        <div class="servizi-voce">
+                            <p class="servizi-voce-titolo">Assistenza<br>creditizia:</p>
+                            <p class="servizi-voce-testo">Ti mettiamo in contatto con i partner giusti per orientarti
+                                tra mutui e finanziamenti, senza perderti in mille preventivi.</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== FAQ ===== -->
+        <section class="sezione-faq" id="faq" aria-labelledby="titolo-faq">
+            <div class="container">
+                <h2 class="sezione-titolo" id="titolo-faq">
+                    <img src="assets/images/icons/elenco-puntato.svg" alt="" class="sezione-titolo-bullet" width="33"
+                        height="35" aria-hidden="true">
+                    <span class="sezione-titolo-testo"><span>Faq</span></span>
+                </h2>
+                <p class="faq-occhiello">Domande Frequenti</p>
+
+                <div class="faq-lista" data-faq>
+                    <div class="faq-item">
+                        <button type="button" class="faq-domanda" aria-expanded="false">
+                            <span>1. Quanto tempo serve per vendere un immobile?</span>
+                            <span class="faq-toggle" aria-hidden="true">+</span>
+                        </button>
+                        <div class="faq-risposta" hidden>
+                            <p>I tempi dipendono da diversi fattori: zona, prezzo richiesto, stato dell'immobile e
+                                condizioni di mercato. In media, con una valutazione corretta e una buona esposizione, la
+                                vendita si conclude in 6-9 mesi. Una valutazione realistica fin dall'inizio è il modo più
+                                efficace per non allungare i tempi.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button type="button" class="faq-domanda" aria-expanded="false">
+                            <span>2. Quali documenti servono per vendere casa?</span>
+                            <span class="faq-toggle" aria-hidden="true">+</span>
+                        </button>
+                        <div class="faq-risposta" hidden>
+                            <p>I principali sono: visura catastale, planimetria aggiornata e conforme allo stato dei
+                                luoghi, atto di provenienza (rogito, successione o donazione), Attestato di Prestazione
+                                Energetica (APE) e, se presenti, le dichiarazioni di conformità degli impianti. Ti
+                                aiutiamo a verificare che tutto sia in regola prima di mettere l'immobile sul mercato.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button type="button" class="faq-domanda" aria-expanded="false">
+                            <span>3. Quanto costano i servizi dell'agenzia?</span>
+                            <span class="faq-toggle" aria-hidden="true">+</span>
+                        </button>
+                        <div class="faq-risposta" hidden>
+                            <p>Le nostre provvigioni variano in base al tipo di servizio richiesto (vendita, affitto,
+                                consulenza tecnica). Ogni condizione viene comunicata in modo chiaro e scritto prima di
+                                qualsiasi incarico.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button type="button" class="faq-domanda" aria-expanded="false">
+                            <span>4. Che differenza c'è tra valutazione online e valutazione in loco?</span>
+                            <span class="faq-toggle" aria-hidden="true">+</span>
+                        </button>
+                        <div class="faq-risposta" hidden>
+                            <p>La valutazione online è una prima stima indicativa, gratuita e non vincolante, basata sui
+                                dati che inserisci tu stesso (indirizzo, mq, locali, stato dell'immobile). La valutazione
+                                in loco prevede un sopralluogo di persona da parte di un tecnico, con documentazione
+                                fotografica e verifica diretta delle caratteristiche — è il passaggio consigliato prima
+                                di fissare un prezzo definitivo di vendita.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button type="button" class="faq-domanda" aria-expanded="false">
+                            <span>5. La valutazione è davvero gratuita?</span>
+                            <span class="faq-toggle" aria-hidden="true">+</span>
+                        </button>
+                        <div class="faq-risposta" hidden>
+                            <p>Sì, sia quella online che quella in loco (quest'ultima entro 50 km dalla sede) sono
+                                gratuite e non ti impegnano in alcun modo.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button type="button" class="faq-domanda" aria-expanded="false">
+                            <span>6. In quali zone opera Furia Immobiliare?</span>
+                            <span class="faq-toggle" aria-hidden="true">+</span>
+                        </button>
+                        <div class="faq-risposta" hidden>
+                            <p>Operiamo principalmente nell'agro caleno e nella provincia di Caserta, anche se nulla ci
+                                vieta di arrivare perfino oltre regione.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button type="button" class="faq-domanda" aria-expanded="false">
+                            <span>7. Cosa serve per mettere il mio immobile in affitto?</span>
+                            <span class="faq-toggle" aria-hidden="true">+</span>
+                        </button>
+                        <div class="faq-risposta" hidden>
+                            <p>Servono gli stessi documenti base della vendita (visura, planimetria, APE) più, se già
+                                esistente, copia dell'ultimo contratto di locazione registrato. Ci occupiamo noi della
+                                ricerca dell'inquilino, della verifica dei requisiti e della redazione del contratto.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button type="button" class="faq-domanda" aria-expanded="false">
+                            <span>8. Vi occupate anche di terreni e immobili commerciali?</span>
+                            <span class="faq-toggle" aria-hidden="true">+</span>
+                        </button>
+                        <div class="faq-risposta" hidden>
+                            <p>Sì, oltre a case e appartamenti trattiamo anche terreni, immobili commerciali, garage e
+                                nuove costruzioni.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button type="button" class="faq-domanda" aria-expanded="false">
+                            <span>9. Ho inviato la richiesta di valutazione online, cosa succede adesso?</span>
+                            <span class="faq-toggle" aria-hidden="true">+</span>
+                        </button>
+                        <div class="faq-risposta" hidden>
+                            <p>Riceverai una prima stima indicativa via email entro 48 ore lavorative. Da lì potrai
+                                decidere, senza alcun impegno, se approfondire con un sopralluogo gratuito in agenzia.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button type="button" class="faq-domanda" aria-expanded="false">
+                            <span>10. Serve l'Attestato di Prestazione Energetica (APE) per vendere o affittare?</span>
+                            <span class="faq-toggle" aria-hidden="true">+</span>
+                        </button>
+                        <div class="faq-risposta" hidden>
+                            <p>Sì, è obbligatorio per legge sia per la vendita che per la locazione. Se non ne sei ancora
+                                in possesso, ti mettiamo in contatto con un tecnico abilitato per farlo redigere.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== CONTATTI ===== -->
+        <section class="sezione-contatti" id="contatti" aria-labelledby="titolo-contatti">
+            <div class="container">
+                <h2 class="sezione-titolo" id="titolo-contatti">
+                    <img src="assets/images/icons/elenco-puntato.svg" alt="" class="sezione-titolo-bullet" width="33"
+                        height="35" aria-hidden="true">
+                    <span class="sezione-titolo-testo"><span>Contatti</span></span>
+                </h2>
+
+                <div class="contatti-top">
+                    <div class="contatti-info">
+                        <p class="contatti-ragione">Furia Immobiliare Srls</p>
+                        <ul class="contatti-lista">
+                            <li>
+                                <img src="assets/images/icons/icon-pin.svg" alt="" width="20" height="20">
+                                <span>P.tta Pasquale Graziadei, 40 - 81056 Sparanise (CE)</span>
+                            </li>
+                            <li>
+                                <img src="assets/images/icons/icon-phone.svg" alt="" width="20" height="20">
+                                <a href="tel:+393392167130">+39 339 216 7130</a>
+                            </li>
+                            <li>
+                                <img src="assets/images/icons/icon-email.svg" alt="" width="20" height="20">
+                                <a href="mailto:info@furiaimmobiliare.com">info@furiaimmobiliare.com</a>
+                            </li>
+                            <li>
+                                <img src="assets/images/icons/icon-email.svg" alt="" width="20" height="20">
+                                <a href="mailto:mariagrazia@furiaimmobiliare.com">mariagrazia@furiaimmobiliare.com</a>
+                            </li>
+                            <li>
+                                <img src="assets/images/icons/icon-pec.svg" alt="" width="20" height="20">
+                                <span>PEC: <a href="mailto:furia.immobiliare@pec.it">furia.immobiliare@pec.it</a></span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="contatti-mappa">
+                        <iframe
+                            title="Mappa Furia Immobiliare Srls — Sparanise"
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1510!2d14.0928183!3d41.18634!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x133ae5368b532e81%3A0x58b1526210bbbf80!2sPiazzetta%20Pasquale%20Graziadei%2C%2040%2C%2081056%20Sparanise%20CE!5e0!3m2!1sit!2sit!4v0!5m2!1sit!2sit">
+                        </iframe>
+                    </div>
+                </div>
+
+                <p class="contatti-aiuto">Ciao come possiamo aiutarti</p>
+
+                <form class="contatti-form" id="formContatti" novalidate>
+                    <div class="contatti-aiuto-riga">
+                        <div class="contatti-aiuto-seleziona">
+                            <div class="valuta-field valuta-dropdown contatti-dropdown">
+                                <span class="sr-only">Tipo richiesta</span>
+                                <input type="hidden" name="intento" id="contattiIntento" value="" required>
+                                <button type="button" class="valuta-dropdown-toggle" id="contattiIntentoToggle"
+                                    aria-expanded="false" aria-haspopup="listbox">
+                                    <span id="contattiIntentoLabel">Seleziona</span>
+                                    <img src="assets/images/icons/icon-chevron-down.svg" alt="" width="16" height="16">
+                                </button>
+                                <ul class="valuta-dropdown-menu" id="contattiIntentoMenu" role="listbox" hidden>
+                                    <li role="option" data-value="compra">Compra</li>
+                                    <li role="option" data-value="affitta">Affitta</li>
+                                    <li role="option" data-value="vendi">Vendi</li>
+                                </ul>
+                            </div>
+
+                            <div class="valuta-field valuta-dropdown contatti-dropdown">
+                                <span class="sr-only">Dettaglio richiesta</span>
+                                <input type="hidden" name="dettaglio" id="contattiDettaglio" value="" required>
+                                <button type="button" class="valuta-dropdown-toggle" id="contattiDettaglioToggle"
+                                    aria-expanded="false" aria-haspopup="listbox">
+                                    <span id="contattiDettaglioLabel">Seleziona</span>
+                                    <img src="assets/images/icons/icon-chevron-down.svg" alt="" width="16" height="16">
+                                </button>
+                                <ul class="valuta-dropdown-menu" id="contattiDettaglioMenu" role="listbox" hidden></ul>
+                            </div>
+                        </div>
+
+                        <label class="valuta-field contatti-descrizione">
+                            <span class="sr-only">Descrizione (obbligatorio)</span>
+                            <textarea name="descrizione" id="contattiDescrizione" required
+                                placeholder="*Descrizione" rows="4"></textarea>
+                        </label>
+                    </div>
+
+                    <p class="valuta-dati-titolo contatti-dati-titolo">Lascia i tuoi contatti</p>
+
+                    <div class="valuta-box">
+                        <div class="valuta-campi valuta-campi--dati">
+                            <label class="valuta-field">
+                                <span class="sr-only">Nome (obbligatorio)</span>
+                                <input type="text" name="nome" required placeholder="*nome" autocomplete="given-name">
+                            </label>
+                            <label class="valuta-field">
+                                <span class="sr-only">Cognome (obbligatorio)</span>
+                                <input type="text" name="cognome" required placeholder="*cognome" autocomplete="family-name">
+                            </label>
+                            <label class="valuta-field">
+                                <span class="sr-only">Telefono</span>
+                                <input type="tel" name="telefono" placeholder="telefono" autocomplete="tel">
+                            </label>
+                            <label class="valuta-field">
+                                <span class="sr-only">Email (obbligatorio)</span>
+                                <input type="email" name="email" required placeholder="*email" autocomplete="email">
+                            </label>
+                        </div>
+
+                        <div class="valuta-footer">
+                            <label class="valuta-privacy">
+                                <input type="checkbox" name="privacy" required>
+                                <span>* Compilando ed inviando questo modulo di richiesta, autorizzo il trattamento dei
+                                    miei dati personali ai sensi dell'attuale normativa e confermo di aver preso visione
+                                    dell'informativa privacy.</span>
+                            </label>
+                            <button type="submit" class="btn btn--oro valuta-btn">
+                                Invia <span aria-hidden="true">&gt;</span>
+                            </button>
+                        </div>
+                        <p class="valuta-form-msg" id="contattiFormMsg" hidden></p>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="site-footer" id="footer">
+        <div class="site-footer-bg" aria-hidden="true">
+            <img src="assets/images/footer-skyline-sparanise.webp" alt="" width="1920" height="600" loading="lazy">
         </div>
-      </div>
+        <div class="container site-footer-inner">
+            <div class="footer-col footer-col--info">
+                <p class="footer-ragione">Furia Immobiliare Srls</p>
+                <ul class="footer-info">
+                    <li>P.tta Pasquale Graziadei, 40<br>81056 Sparanise (CE)</li>
+                    <li>P. IVA 04967300619</li>
+                    <li><a href="mailto:info@furiaimmobiliare.com">info@furiaimmobiliare.com</a></li>
+                    <li><a href="mailto:furia.immobiliare@pec.it">furia.immobiliare@pec.it</a></li>
+                </ul>
+            </div>
+            <div class="footer-col footer-col--link">
+                <p class="footer-titolo">Link rapidi</p>
+                <ul class="footer-link">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="immobile.html">Immobile</a></li>
+                    <li><a href="affitto.html">Affitto</a></li>
+                    <li><a href="vendita.html">Vendita</a></li>
+                    <li><a href="#valuta">Valuta</a></li>
+                    <li><a href="nuove-costruzioni.html">Nuove costruzioni</a></li>
+                </ul>
+            </div>
+            <div class="footer-col footer-col--contatti">
+                <p class="footer-titolo">Contatti</p>
+                <p><a href="tel:+393392167130">+39 339 216 7130</a></p>
+                <p><a href="mailto:info@furiaimmobiliare.com">info@furiaimmobiliare.com</a></p>
+            </div>
+        </div>
+        <p class="footer-copy">© 2026 Furia Immobiliare Srls - Tutti i diritti riservati</p>
+    </footer>
 
-    </div>
-    <div class="footer-bottom">
-      <p>&copy; 2026 Furia Immobiliare Srls — Tutti i diritti riservati</p>
-    </div>
-  </footer>
-
-  <!-- Pulsante WhatsApp flottante -->
-  <a href="https://wa.me/393392167130" class="whatsapp-float" id="whatsappBtn" target="_blank" rel="noopener noreferrer"
-    aria-label="Contattaci su WhatsApp">
-    <svg class="icon" aria-hidden="true">
-      <use href="#icon-whatsapp"></use>
-    </svg>
-  </a>
-
+    <script src="data/annunci.js"></script>
+    <script src="main.js" defer></script>
 </body>
 
 </html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Immobile — Furia Immobiliare Srls</title>
+    <meta name="description" content="Dettaglio immobile — Furia Immobiliare Srls, Sparanise (CE).">
+    <meta property="og:title" content="Immobile — Furia Immobiliare Srls">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="it_IT">
+    <link rel="icon" type="image/svg+xml" href="assets/logo-furia-favicon.svg">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <header class="navbar" id="navbar">
+        <div class="container navbar-inner">
+            <a href="index.html" class="navbar-brand" aria-label="Furia Immobiliare Srls — Home">
+                <img src="assets/logo-furia.png" alt="" class="navbar-logo" width="40" height="40">
+                <span class="navbar-wordmark">FURIA IMMOBILIARE SRLS</span>
+            </a>
+
+            <nav class="navbar-links" aria-label="Menu principale">
+                <a href="index.html">Home</a>
+                <a href="vendita.html">Compra</a>
+                <a href="affitto.html">Affitta</a>
+
+                <div class="nav-dropdown">
+                    <button type="button" class="nav-dropdown-toggle" id="navVendiToggle" aria-expanded="false"
+                        aria-haspopup="true" aria-controls="navVendiMenu">
+                        Vendi
+                        <img src="assets/images/icons/icon-chevron-down.svg" alt="" class="icon icon--sm" width="16"
+                            height="16">
+                    </button>
+                    <ul class="nav-dropdown-menu" id="navVendiMenu" hidden>
+                        <li><a href="index.html#vendi">Vendi casa</a></li>
+                        <li><a href="index.html#valuta">Valuta</a></li>
+                    </ul>
+                </div>
+
+                <a href="index.html#servizi">Servizi</a>
+                <a href="index.html#contatti">Contatti</a>
+            </nav>
+
+            <button type="button" class="hamburger" id="hamburger" aria-label="Apri menu" aria-expanded="false"
+                aria-controls="mobileDrawer">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="drawer-overlay" id="drawerOverlay" hidden></div>
+    <nav class="mobile-drawer" id="mobileDrawer" aria-label="Menu mobile" hidden>
+        <a href="index.html">Home</a>
+        <a href="vendita.html">Compra</a>
+        <a href="affitto.html">Affitta</a>
+        <a href="index.html#vendi">Vendi casa</a>
+        <a href="index.html#valuta">Valuta</a>
+        <a href="index.html#servizi">Servizi</a>
+        <a href="index.html#contatti">Contatti</a>
+    </nav>
+
+    <main id="main">
+
+        <!-- Contenuto popolato da JS in base a ?id= -->
+        <article class="pagina-immobile" id="paginaImmobile" data-stato="caricamento" hidden>
+
+            <div class="container pagina-immobile-inner">
+
+                <a href="index.html#immobili-vendita" class="immobile-torna">
+                    <img src="assets/images/icons/icon-arrow-left.svg" alt="" width="20" height="20">
+                    Torna agli immobili
+                </a>
+
+                <header class="immobile-header">
+                    <p class="immobile-contratto" id="immobileContratto"></p>
+                    <h1 class="immobile-titolo" id="immobileTitolo"></h1>
+                    <p class="immobile-indirizzo" id="immobileIndirizzo"></p>
+                    <p class="immobile-prezzo" id="immobilePrezzo"></p>
+                </header>
+
+                <!-- Galleria foto -->
+                <section class="immobile-galleria" aria-label="Galleria fotografica">
+                    <div class="immobile-galleria-principale">
+                        <img src="" alt="" id="immobileFotoPrincipale" width="1200" height="800">
+                    </div>
+                    <div class="immobile-galleria-thumbs" id="immobileThumbs" role="list"></div>
+                </section>
+
+                <div class="immobile-corpo">
+
+                    <!-- Descrizione -->
+                    <section class="immobile-descrizione" aria-labelledby="titolo-descrizione">
+                        <h2 id="titolo-descrizione">Descrizione</h2>
+                        <p id="immobileDescrizione"></p>
+                    </section>
+
+                    <!-- Scheda tecnica (dati da SCHEDA.xlsx) -->
+                    <section class="immobile-scheda" aria-labelledby="titolo-scheda">
+                        <h2 id="titolo-scheda">Scheda tecnica</h2>
+                        <dl class="immobile-scheda-lista" id="immobileSchedaLista"></dl>
+                    </section>
+
+                </div>
+
+                <!-- Planimetria originale dalle tavole -->
+                <section class="immobile-planimetria" aria-labelledby="titolo-planimetria">
+                    <h2 id="titolo-planimetria">Planimetria</h2>
+                    <figure class="immobile-planimetria-figura">
+                        <img src="" alt="Planimetria originale dell'immobile" id="immobilePlanimetria" width="1200"
+                            height="900" loading="lazy">
+                        <figcaption>Tavola planimetrica originale</figcaption>
+                    </figure>
+                </section>
+
+                <aside class="immobile-cta" aria-label="Contatta l'agenzia">
+                    <p>Interessato a questo immobile?</p>
+                    <a href="index.html#contatti" class="btn btn--oro">Richiedi informazioni</a>
+                </aside>
+
+            </div>
+        </article>
+
+        <!-- Messaggio se id mancante o non trovato -->
+        <div class="container pagina-immobile-errore" id="paginaImmobileErrore" hidden>
+            <h1>Immobile non trovato</h1>
+            <p>L'annuncio richiesto non è disponibile oppure il collegamento non è valido.</p>
+            <a href="index.html#immobili-vendita" class="btn btn--oro">Torna agli immobili</a>
+        </div>
+
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="site-footer" id="footer">
+        <div class="site-footer-bg" aria-hidden="true">
+            <img src="assets/images/footer-skyline-sparanise.webp" alt="" width="1920" height="600" loading="lazy">
+        </div>
+        <div class="container site-footer-inner">
+            <div class="footer-col footer-col--info">
+                <p class="footer-ragione">Furia Immobiliare Srls</p>
+                <ul class="footer-info">
+                    <li>P.tta Pasquale Graziadei, 40<br>81056 Sparanise (CE)</li>
+                    <li>P. IVA 04967300619</li>
+                    <li><a href="mailto:info@furiaimmobiliare.com">info@furiaimmobiliare.com</a></li>
+                    <li><a href="mailto:furia.immobiliare@pec.it">furia.immobiliare@pec.it</a></li>
+                </ul>
+            </div>
+            <div class="footer-col footer-col--link">
+                <p class="footer-titolo">Link rapidi</p>
+                <ul class="footer-link">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="immobile.html">Immobile</a></li>
+                    <li><a href="affitto.html">Affitto</a></li>
+                    <li><a href="vendita.html">Vendita</a></li>
+                    <li><a href="index.html#valuta">Valuta</a></li>
+                    <li><a href="nuove-costruzioni.html">Nuove costruzioni</a></li>
+                </ul>
+            </div>
+            <div class="footer-col footer-col--contatti">
+                <p class="footer-titolo">Contatti</p>
+                <p><a href="tel:+393392167130">+39 339 216 7130</a></p>
+                <p><a href="mailto:info@furiaimmobiliare.com">info@furiaimmobiliare.com</a></p>
+            </div>
+        </div>
+        <p class="footer-copy">© 2026 Furia Immobiliare Srls - Tutti i diritti riservati</p>
+    </footer>
+
+    <script src="data/annunci.js"></script>
+    <script src="main.js" defer></script>
+</body>
+
+</html>
