@@ -216,7 +216,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="card-annuncio-meta">
           <div class="card-annuncio-specs">
             <div class="card-spec"><span class="card-spec-icon"><img src="assets/images/icons/icon-planimetria.svg" alt="" width="26" height="26"></span><span>${annuncio.mq} mq.</span></div>
-            <div class="card-spec"><span class="card-spec-icon"><img src="assets/images/icons/icon-camera-letto.svg" alt="" width="26" height="26"></span><span>${annuncio.camere} locali</span></div>
+            <div class="card-spec"><span class="card-spec-icon"><img src="assets/images/icons/icon-camera-letto.svg" alt="" width="26" height="26"></span><span>${annuncio.locali} locali</span></div>
             <div class="card-spec"><span class="card-spec-icon"><img src="assets/images/icons/icon-bagno.svg" alt="" width="26" height="26"></span><span>${annuncio.bagni} bagno${annuncio.bagni === 1 ? "" : "i"}</span></div>
             <div class="card-spec"><span class="card-spec-icon"><img src="assets/images/icons/icon-scale.svg" alt="" width="26" height="26"></span><span>${formatPiano(annuncio.piano)}</span></div>
           </div>
@@ -563,31 +563,60 @@ document.addEventListener("DOMContentLoaded", () => {
       paginaImmobile.hidden = false;
       paginaImmobile.dataset.stato = "pronto";
 
-      const titolo = typeof formatTipologia === "function" ? formatTipologia(annuncio) : annuncio.tipologia;
       const prezzo = typeof formatPrezzo === "function" ? formatPrezzo(annuncio.prezzo) : "";
-      const indirizzoParti = [annuncio.via, annuncio.comune].filter(Boolean);
-      let indirizzo = indirizzoParti.join(", ");
-      if (annuncio.angoloCon) {
-        indirizzo += ` (angolo con ${annuncio.angoloCon})`;
-      }
-
-      document.title = `${titolo} — Furia Immobiliare Srls`;
 
       const elContratto = document.getElementById("immobileContratto");
       const elTitolo = document.getElementById("immobileTitolo");
-      const elIndirizzo = document.getElementById("immobileIndirizzo");
+      const elComune = document.getElementById("immobileComune");
       const elPrezzo = document.getElementById("immobilePrezzo");
       const elDescrizione = document.getElementById("immobileDescrizione");
       const elFoto = document.getElementById("immobileFotoPrincipale");
       const elThumbs = document.getElementById("immobileThumbs");
+      const elThumbsPrev = document.getElementById("immobileThumbsPrev");
+      const elThumbsNext = document.getElementById("immobileThumbsNext");
       const elScheda = document.getElementById("immobileSchedaLista");
-      const elPlanimetria = document.getElementById("immobilePlanimetria");
+      const elFotoBox = elFoto ? elFoto.closest(".immobile-galleria-principale") : null;
+      const elMappa = document.getElementById("immobileMappa");
 
-      if (elContratto) elContratto.textContent = annuncio.contratto || "Vendita";
-      if (elTitolo) elTitolo.textContent = titolo;
-      if (elIndirizzo) elIndirizzo.textContent = indirizzo;
+      // Etichetta contratto in evidenza (es. IN VENDITA)
+      const contrattoLabel =
+        annuncio.contratto && /affitto/i.test(annuncio.contratto) ? "IN AFFITTO" : "IN VENDITA";
+
+      // Titolo su un rigo: tipologia + via + eventuale angolo
+      const viaTitolo = (annuncio.via || "").replace(/A\.B\./g, "A. B.");
+      let titoloRiga = annuncio.tipologia || "";
+      if (viaTitolo) titoloRiga += ` in ${viaTitolo}`;
+      if (annuncio.angoloCon) {
+        const angolo = annuncio.angoloCon.replace(/^Via\s+/i, "via ");
+        titoloRiga += ` (ad angolo con ${angolo})`;
+      }
+
+      document.title = `${titoloRiga} — Furia Immobiliare Srls`;
+
+      if (elContratto) elContratto.textContent = contrattoLabel;
+      if (elTitolo) elTitolo.textContent = titoloRiga;
+      if (elComune) elComune.textContent = (annuncio.comune || "").toUpperCase();
       if (elPrezzo) elPrezzo.textContent = prezzo;
       if (elDescrizione) elDescrizione.textContent = annuncio.descrizione || "";
+
+      /* Mappa ubicazione (via + comune), larghezza container */
+      if (elMappa) {
+        const queryMappa = [annuncio.via, annuncio.comune].filter(Boolean).join(", ");
+        if (queryMappa) {
+          elMappa.src =
+            "https://maps.google.com/maps?q=" +
+            encodeURIComponent(queryMappa) +
+            "&z=16&output=embed";
+          elMappa.title = "Mappa: " + queryMappa;
+        }
+      }
+
+      /* Segna landscape/portrait sulla foto (bordo aderente all'immagine) */
+      const adattaOrientamentoFoto = () => {
+        if (!elFoto || !elFotoBox || !elFoto.naturalWidth || !elFoto.naturalHeight) return;
+        elFotoBox.dataset.orientamento =
+          elFoto.naturalWidth >= elFoto.naturalHeight ? "landscape" : "portrait";
+      };
 
       /* Galleria: cover + foto (senza duplicati) */
       const fotoLista = [];
@@ -596,14 +625,97 @@ document.addEventListener("DOMContentLoaded", () => {
         if (src && !fotoLista.includes(src)) fotoLista.push(src);
       });
 
+      let indiceFoto = 0;
+
+      const aggiornaThumbsAttive = () => {
+        if (!elThumbs) return;
+        elThumbs.querySelectorAll(".immobile-thumb").forEach((t, i) => {
+          t.classList.toggle("is-active", i === indiceFoto);
+        });
+      };
+
       const mostraFoto = (src, alt) => {
         if (!elFoto) return;
         elFoto.src = src;
-        elFoto.alt = alt || titolo;
+        elFoto.alt = alt || titoloRiga;
+        if (elFoto.complete && elFoto.naturalWidth) adattaOrientamentoFoto();
       };
 
+      if (elFoto) {
+        elFoto.addEventListener("load", adattaOrientamentoFoto);
+      }
+
+      /* ===== Lightbox overlay ===== */
+      const lightbox = document.getElementById("immobileLightbox");
+      const lightboxFoto = document.getElementById("immobileLightboxFoto");
+      const lightboxChiudi = document.getElementById("immobileLightboxChiudi");
+      const lightboxPrev = document.getElementById("immobileLightboxPrev");
+      const lightboxNext = document.getElementById("immobileLightboxNext");
+
+      const aggiornaLightboxFoto = () => {
+        if (!lightboxFoto || !fotoLista.length) return;
+        const src = fotoLista[indiceFoto];
+        lightboxFoto.src = src;
+        lightboxFoto.alt = `${titoloRiga} — foto ${indiceFoto + 1}`;
+        mostraFoto(src, lightboxFoto.alt);
+        aggiornaThumbsAttive();
+      };
+
+      const apriLightbox = (indice) => {
+        if (!lightbox || !fotoLista.length) return;
+        indiceFoto = ((indice % fotoLista.length) + fotoLista.length) % fotoLista.length;
+        aggiornaLightboxFoto();
+        lightbox.hidden = false;
+        document.body.classList.add("immobile-lightbox-open");
+        if (lightboxChiudi) lightboxChiudi.focus();
+      };
+
+      const chiudiLightbox = () => {
+        if (!lightbox) return;
+        lightbox.hidden = true;
+        document.body.classList.remove("immobile-lightbox-open");
+      };
+
+      const lightboxVai = (dir) => {
+        if (!fotoLista.length) return;
+        indiceFoto = (indiceFoto + dir + fotoLista.length) % fotoLista.length;
+        aggiornaLightboxFoto();
+      };
+
+      if (elFotoBox) {
+        elFotoBox.addEventListener("click", () => apriLightbox(indiceFoto));
+      }
+
+      if (lightboxChiudi) lightboxChiudi.addEventListener("click", (e) => {
+        e.stopPropagation();
+        chiudiLightbox();
+      });
+
+      if (lightboxPrev) lightboxPrev.addEventListener("click", (e) => {
+        e.stopPropagation();
+        lightboxVai(-1);
+      });
+
+      if (lightboxNext) lightboxNext.addEventListener("click", (e) => {
+        e.stopPropagation();
+        lightboxVai(1);
+      });
+
+      if (lightbox) {
+        lightbox.addEventListener("click", (e) => {
+          if (e.target === lightbox) chiudiLightbox();
+        });
+      }
+
+      document.addEventListener("keydown", (e) => {
+        if (!lightbox || lightbox.hidden) return;
+        if (e.key === "Escape") chiudiLightbox();
+        if (e.key === "ArrowLeft") lightboxVai(-1);
+        if (e.key === "ArrowRight") lightboxVai(1);
+      });
+
       if (fotoLista.length) {
-        mostraFoto(fotoLista[0], `${titolo} — foto 1`);
+        mostraFoto(fotoLista[0], `${titoloRiga} — foto 1`);
       }
 
       if (elThumbs) {
@@ -615,13 +727,23 @@ document.addEventListener("DOMContentLoaded", () => {
           btn.setAttribute("aria-label", `Foto ${i + 1}`);
           btn.innerHTML = `<img src="${src}" alt="" width="100" height="72" loading="lazy">`;
           btn.addEventListener("click", () => {
-            mostraFoto(src, `${titolo} — foto ${i + 1}`);
-            elThumbs.querySelectorAll(".immobile-thumb").forEach((t) => t.classList.remove("is-active"));
-            btn.classList.add("is-active");
+            indiceFoto = i;
+            mostraFoto(src, `${titoloRiga} — foto ${i + 1}`);
+            aggiornaThumbsAttive();
+            apriLightbox(i);
           });
           elThumbs.appendChild(btn);
         });
       }
+
+      /* Frecce carosello miniature (niente scrollbar visibile) */
+      const scorreThumbs = (dir) => {
+        if (!elThumbs) return;
+        const passo = Math.max(160, Math.floor(elThumbs.clientWidth * 0.7));
+        elThumbs.scrollBy({ left: dir * passo, behavior: "smooth" });
+      };
+      if (elThumbsPrev) elThumbsPrev.addEventListener("click", () => scorreThumbs(-1));
+      if (elThumbsNext) elThumbsNext.addEventListener("click", () => scorreThumbs(1));
 
       /* Scheda tecnica */
       if (elScheda) {
@@ -652,17 +774,6 @@ document.addEventListener("DOMContentLoaded", () => {
               `<div><dt>${label}</dt><dd>${val}</dd></div>`
           )
           .join("");
-      }
-
-      /* Planimetria */
-      if (elPlanimetria) {
-        if (annuncio.planimetria) {
-          elPlanimetria.src = annuncio.planimetria;
-          elPlanimetria.alt = `Planimetria — ${titolo}`;
-          elPlanimetria.closest(".immobile-planimetria")?.removeAttribute("hidden");
-        } else {
-          elPlanimetria.closest(".immobile-planimetria")?.setAttribute("hidden", "");
-        }
       }
     }
   }
