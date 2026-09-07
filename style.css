@@ -1185,18 +1185,43 @@ h2 {
   display: block;
 }
 
-/* Banner: tutta larghezza, altezza proporzionale (non 100vh) */
+/* Banner: tutta larghezza — desktop/tablet = composito; mobile portrait = stack */
 .vendi-banner {
   width: 100%;
   margin: 0 0 var(--spazio-5);
   overflow: hidden;
 }
 
-.vendi-banner img {
+.vendi-banner-desktop {
   display: block;
   width: 100%;
   height: auto;
   vertical-align: middle;
+}
+
+/* Stack mobile nascosto di default (tablet/desktop invariati) */
+.vendi-banner-mobile {
+  display: none;
+}
+
+.vendi-banner-testo,
+.vendi-banner-foto {
+  display: block;
+  width: 100%;
+  height: auto;
+  vertical-align: middle;
+}
+
+/* Solo mobile portrait: testo (immagine) sopra + foto stretta di mano */
+@media (max-width: 767px) and (orientation: portrait) {
+  .vendi-banner-desktop {
+    display: none;
+  }
+
+  .vendi-banner-mobile {
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 .vendi-tagline {
@@ -1209,6 +1234,7 @@ h2 {
 
 .vendi-cards {
   display: grid;
+  /* Mobile portrait: 1 colonna */
   grid-template-columns: 1fr;
   gap: var(--spazio-5);
 }
@@ -1218,6 +1244,7 @@ h2 {
   flex-direction: column;
   gap: calc(var(--spazio-3) - 3mm);
   background: transparent;
+  min-width: 0;
 }
 
 /* Titolo fuori dalla card, sopra, tutto maiuscolo */
@@ -1267,10 +1294,27 @@ h2 {
   color: var(--colore-testo);
 }
 
-@media (min-width: 768px) {
+/* Mobile landscape (tutti i phone, anche larghi): sempre 2 colonne */
+@media (orientation: landscape) and (max-height: 520px) {
   .vendi-cards {
     grid-template-columns: repeat(2, 1fr);
-    gap: var(--spazio-4) var(--spazio-4);
+    gap: var(--spazio-4);
+  }
+}
+
+/* Tablet / iPad portrait: sempre 2 colonne */
+@media (min-width: 768px) and (max-width: 1366px) and (orientation: portrait) {
+  .vendi-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spazio-4);
+  }
+}
+
+/* Tablet / iPad landscape: sempre 4 colonne */
+@media (min-width: 768px) and (max-width: 1366px) and (orientation: landscape) and (min-height: 521px) {
+  .vendi-cards {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spazio-4) var(--spazio-3);
   }
 }
 
@@ -1292,6 +1336,14 @@ h2 {
 
   .vendi-card-body p {
     font-size: 0.82rem;
+  }
+}
+
+/* iPad Pro portrait (~1024×1366): resta 2 colonne, non le 4 del desktop */
+@media (min-width: 1024px) and (max-width: 1366px) and (orientation: portrait) {
+  .vendi-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spazio-4);
   }
 }
 

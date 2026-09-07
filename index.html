@@ -208,19 +208,29 @@
                 <p class="vendi-occhiello">Come vendere casa velocemente...</p>
                 <p class="vendi-intro">
                     <span class="vendi-intro-riga">La vendita di un immobile richiede una grande professionalità.</span>
-                    <span class="vendi-intro-riga">Come primo passo, valuteremo l'intero potenziale del tuo immobile, con
+                    <span class="vendi-intro-riga">Come primo passo, valuteremo l'intero potenziale del tuo immobile,
+                        con
                         tutti i suoi dettagli e le sue caratteristiche.</span>
                 </p>
             </div>
 
-            <!-- Banner a tutta larghezza (altezza naturale, non full-viewport) -->
+            <!-- Banner: desktop/tablet = composito; solo mobile portrait = testo + foto -->
             <div class="vendi-banner">
-                <img src="assets/images/banner-vendi-casa.webp" alt="Vendi casa senza pensieri, affidati a noi"
-                    width="1920" height="700" loading="lazy">
+                <img class="vendi-banner-desktop" src="assets/images/banner-vendi-casa.webp"
+                    alt="Vendi casa senza pensieri, affidati a noi" width="1920" height="700" loading="lazy">
+
+                <div class="vendi-banner-mobile">
+                    <img class="vendi-banner-testo" src="assets/images/banner-vendi-testo-mobile.webp"
+                        alt="Vendi casa senza pensieri, affidati a noi — valutazione gratuita, servizio professionale, assistenza fino alla vendita"
+                        width="828" height="640" loading="lazy">
+                    <img class="vendi-banner-foto" src="assets/images/stretta-mano.webp"
+                        alt="Consegna chiavi — vendita immobiliare" width="1600" height="893" loading="lazy">
+                </div>
             </div>
 
             <div class="container">
-                <p class="vendi-tagline">Grazie alla nostra attività, ti metteremo in contatto con l'acquirente ideale per ottenere il prezzo di vendita ottimale.</p>
+                <p class="vendi-tagline">Grazie alla nostra attività, ti metteremo in contatto con l'acquirente ideale
+                    per ottenere il prezzo di vendita ottimale.</p>
 
                 <div class="vendi-cards">
                     <article class="vendi-card">
@@ -245,7 +255,8 @@
                                     loading="lazy">
                             </div>
                             <div class="vendi-card-body">
-                                <p>Apprezziamo l'unicità della tua proprietà e, grazie ad attività di marketing, le daremo
+                                <p>Apprezziamo l'unicità della tua proprietà e, grazie ad attività di marketing, le
+                                    daremo
                                     la visibilità che merita. Saremo al tuo fianco in ogni fase del processo di vendita,
                                     garantendo trasparenza durante tutte le attività.</p>
                             </div>
@@ -260,8 +271,10 @@
                                     loading="lazy">
                             </div>
                             <div class="vendi-card-body">
-                                <p>Un servizio pensato per privati, investitori immobiliari e imprese di costruzione: chi ci
-                                    affida la vendita o la gestione del proprio immobile può contare sui nostri strumenti
+                                <p>Un servizio pensato per privati, investitori immobiliari e imprese di costruzione:
+                                    chi ci
+                                    affida la vendita o la gestione del proprio immobile può contare sui nostri
+                                    strumenti
                                     più avanzati per farlo conoscere al mercato.</p>
                             </div>
                         </div>
@@ -323,7 +336,8 @@
                         <div class="valuta-campi">
                             <label class="valuta-field valuta-field--full">
                                 <span class="sr-only">Indirizzo (obbligatorio)</span>
-                                <input type="text" name="indirizzo" required placeholder="*indirizzo" autocomplete="street-address">
+                                <input type="text" name="indirizzo" required placeholder="*indirizzo"
+                                    autocomplete="street-address">
                             </label>
 
                             <div class="valuta-field valuta-field--full valuta-dropdown" data-valuta-dropdown>
@@ -340,11 +354,13 @@
                                         Case - Ville
                                     </li>
                                     <li role="option" data-value="appartamenti">
-                                        <img src="assets/images/icons/icon-appartamenti.svg" alt="" width="18" height="18">
+                                        <img src="assets/images/icons/icon-appartamenti.svg" alt="" width="18"
+                                            height="18">
                                         Appartamenti
                                     </li>
                                     <li role="option" data-value="commerciale">
-                                        <img src="assets/images/icons/icon-commerciale.svg" alt="" width="18" height="18">
+                                        <img src="assets/images/icons/icon-commerciale.svg" alt="" width="18"
+                                            height="18">
                                         Commerciale
                                     </li>
                                 </ul>
@@ -352,11 +368,13 @@
 
                             <label class="valuta-field">
                                 <span class="sr-only">Totale mq (obbligatorio)</span>
-                                <input type="number" name="mq" required min="1" placeholder="*totale mq." inputmode="numeric">
+                                <input type="number" name="mq" required min="1" placeholder="*totale mq."
+                                    inputmode="numeric">
                             </label>
                             <label class="valuta-field">
                                 <span class="sr-only">Locali (obbligatorio)</span>
-                                <input type="number" name="locali" required min="1" placeholder="*locali" inputmode="numeric">
+                                <input type="number" name="locali" required min="1" placeholder="*locali"
+                                    inputmode="numeric">
                             </label>
                             <label class="valuta-field">
                                 <span class="sr-only">Bagni</span>
@@ -406,7 +424,8 @@
                             </label>
                             <label class="valuta-field">
                                 <span class="sr-only">Cognome (obbligatorio)</span>
-                                <input type="text" name="cognome" required placeholder="*cognome" autocomplete="family-name">
+                                <input type="text" name="cognome" required placeholder="*cognome"
+                                    autocomplete="family-name">
                             </label>
                             <label class="valuta-field">
                                 <span class="sr-only">Telefono</span>
@@ -585,8 +604,10 @@
                         </button>
                         <div class="faq-risposta" hidden>
                             <p>I tempi dipendono da diversi fattori: zona, prezzo richiesto, stato dell'immobile e
-                                condizioni di mercato. In media, con una valutazione corretta e una buona esposizione, la
-                                vendita si conclude in 6-9 mesi. Una valutazione realistica fin dall'inizio è il modo più
+                                condizioni di mercato. In media, con una valutazione corretta e una buona esposizione,
+                                la
+                                vendita si conclude in 6-9 mesi. Una valutazione realistica fin dall'inizio è il modo
+                                più
                                 efficace per non allungare i tempi.</p>
                         </div>
                     </div>
@@ -600,7 +621,8 @@
                             <p>I principali sono: visura catastale, planimetria aggiornata e conforme allo stato dei
                                 luoghi, atto di provenienza (rogito, successione o donazione), Attestato di Prestazione
                                 Energetica (APE) e, se presenti, le dichiarazioni di conformità degli impianti. Ti
-                                aiutiamo a verificare che tutto sia in regola prima di mettere l'immobile sul mercato.</p>
+                                aiutiamo a verificare che tutto sia in regola prima di mettere l'immobile sul mercato.
+                            </p>
                         </div>
                     </div>
 
@@ -623,7 +645,8 @@
                         </button>
                         <div class="faq-risposta" hidden>
                             <p>La valutazione online è una prima stima indicativa, gratuita e non vincolante, basata sui
-                                dati che inserisci tu stesso (indirizzo, mq, locali, stato dell'immobile). La valutazione
+                                dati che inserisci tu stesso (indirizzo, mq, locali, stato dell'immobile). La
+                                valutazione
                                 in loco prevede un sopralluogo di persona da parte di un tecnico, con documentazione
                                 fotografica e verifica diretta delle caratteristiche — è il passaggio consigliato prima
                                 di fissare un prezzo definitivo di vendita.</p>
@@ -660,7 +683,8 @@
                         <div class="faq-risposta" hidden>
                             <p>Servono gli stessi documenti base della vendita (visura, planimetria, APE) più, se già
                                 esistente, copia dell'ultimo contratto di locazione registrato. Ci occupiamo noi della
-                                ricerca dell'inquilino, della verifica dei requisiti e della redazione del contratto.</p>
+                                ricerca dell'inquilino, della verifica dei requisiti e della redazione del contratto.
+                            </p>
                         </div>
                     </div>
 
@@ -682,7 +706,8 @@
                         </button>
                         <div class="faq-risposta" hidden>
                             <p>Riceverai una prima stima indicativa via email entro 48 ore lavorative. Da lì potrai
-                                decidere, senza alcun impegno, se approfondire con un sopralluogo gratuito in agenzia.</p>
+                                decidere, senza alcun impegno, se approfondire con un sopralluogo gratuito in agenzia.
+                            </p>
                         </div>
                     </div>
 
@@ -692,7 +717,8 @@
                             <span class="faq-toggle" aria-hidden="true">+</span>
                         </button>
                         <div class="faq-risposta" hidden>
-                            <p>Sì, è obbligatorio per legge sia per la vendita che per la locazione. Se non ne sei ancora
+                            <p>Sì, è obbligatorio per legge sia per la vendita che per la locazione. Se non ne sei
+                                ancora
                                 in possesso, ti mettiamo in contatto con un tecnico abilitato per farlo redigere.</p>
                         </div>
                     </div>
@@ -737,9 +763,7 @@
                     </div>
 
                     <div class="contatti-mappa">
-                        <iframe
-                            title="Mappa Furia Immobiliare Srls — Sparanise"
-                            loading="lazy"
+                        <iframe title="Mappa Furia Immobiliare Srls — Sparanise" loading="lazy"
                             referrerpolicy="no-referrer-when-downgrade"
                             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1510!2d14.0928183!3d41.18634!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x133ae5368b532e81%3A0x58b1526210bbbf80!2sPiazzetta%20Pasquale%20Graziadei%2C%2040%2C%2081056%20Sparanise%20CE!5e0!3m2!1sit!2sit!4v0!5m2!1sit!2sit">
                         </iframe>
@@ -780,8 +804,8 @@
 
                         <label class="valuta-field contatti-descrizione">
                             <span class="sr-only">Descrizione (obbligatorio)</span>
-                            <textarea name="descrizione" id="contattiDescrizione" required
-                                placeholder="*Descrizione" rows="4"></textarea>
+                            <textarea name="descrizione" id="contattiDescrizione" required placeholder="*Descrizione"
+                                rows="4"></textarea>
                         </label>
                     </div>
 
@@ -795,7 +819,8 @@
                             </label>
                             <label class="valuta-field">
                                 <span class="sr-only">Cognome (obbligatorio)</span>
-                                <input type="text" name="cognome" required placeholder="*cognome" autocomplete="family-name">
+                                <input type="text" name="cognome" required placeholder="*cognome"
+                                    autocomplete="family-name">
                             </label>
                             <label class="valuta-field">
                                 <span class="sr-only">Telefono</span>
