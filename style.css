@@ -1613,7 +1613,29 @@ h2 {
   border-radius: var(--raggio-md);
 }
 
-.valuta-loco-bg {
+.valuta-loco-desktop {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.valuta-loco-mobile {
+  display: none;
+}
+
+.valuta-loco-testo {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.valuta-loco-foto-wrap {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.valuta-loco-foto {
   display: block;
   width: 100%;
   height: auto;
@@ -1630,7 +1652,71 @@ h2 {
   line-height: 1.25;
 }
 
-/* Mobile: CTA sotto il banner, misura normale (niente pulsante a tutta larghezza) */
+/* Solo mobile portrait: testo sopra + foto sotto, un unico riquadro oro */
+@media (max-width: 767px) and (orientation: portrait) {
+  .valuta-loco {
+    border-radius: 0;
+    overflow: visible;
+  }
+
+  .valuta-loco-desktop {
+    display: none;
+  }
+
+  .valuta-loco-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    line-height: 0;
+    font-size: 0;
+    /* Bordo oro unico intorno a testo+foto (niente linea in mezzo) */
+    border: 1px solid var(--colore-primario);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--colore-secondario);
+  }
+
+  .valuta-loco-testo {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    /* Angoli superiori 10px */
+    border-radius: 10px 10px 0 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .valuta-loco-foto-wrap {
+    aspect-ratio: 16 / 9;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    /* Angoli inferiori 10px */
+    border-radius: 0 0 10px 10px;
+    overflow: hidden;
+    /* Sovrapposizione per eliminare lo spiraglio di luce */
+    margin-top: -2px;
+    position: relative;
+    z-index: 0;
+    background: var(--colore-secondario);
+  }
+
+  .valuta-loco-foto {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: calc(100% + 2px);
+    top: -1px;
+    object-fit: cover;
+    object-position: 90% center;
+    display: block;
+  }
+}
+
+/* Mobile: CTA sotto il banner, misura normale */
 @media (max-width: 767px) {
   .valuta-loco {
     display: flex;
