@@ -285,6 +285,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     trackEl.addEventListener("scroll", aggiornaDots, { passive: true });
 
+    // Drag disattivato se c’è una sola card (evita oscillio touch su mobile)
+    if (singolo) return;
+
     // Drag con pointer events (snap off durante il drag)
     let dragging = false;
     let startX = 0;
