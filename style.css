@@ -872,6 +872,13 @@ h2 {
   display: none;
 }
 
+/* Una sola card: niente scroll/drag orizzontale (niente oscillio al tocco) */
+.carousel.is-singolo .carousel-track {
+  overflow-x: hidden;
+  cursor: default;
+  touch-action: pan-y;
+}
+
 .carousel-viewport {
   overflow: hidden;
 }
@@ -1302,19 +1309,73 @@ h2 {
   }
 }
 
-/* Tablet / iPad portrait: sempre 2 colonne */
-@media (min-width: 768px) and (max-width: 1366px) and (orientation: portrait) {
+/* Tablet / iPad portrait: 2 colonne
+   (incl. Lenovo Tab M10, OnePlus Pad, Tab A7/A9/S10 FE/S4, Surface Duo) */
+@media (min-width: 520px) and (max-width: 1366px) and (orientation: portrait) {
   .vendi-cards {
     grid-template-columns: repeat(2, 1fr);
     gap: var(--spazio-4);
   }
 }
 
-/* Tablet / iPad landscape: sempre 4 colonne */
-@media (min-width: 768px) and (max-width: 1366px) and (orientation: landscape) and (min-height: 521px) {
+/* Tablet / iPad landscape (+ ribelli es. Surface Duo 720×540): sempre 4 colonne */
+@media (min-width: 520px) and (max-width: 1366px) and (orientation: landscape) and (min-height: 521px) {
   .vendi-cards {
     grid-template-columns: repeat(4, 1fr);
-    gap: var(--spazio-4) var(--spazio-3);
+    column-gap: var(--spazio-3);
+    /* Spazio titolo→box uniforme (subgrid) */
+    row-gap: calc(var(--spazio-3) - 3mm);
+  }
+
+  /* Subgrid: titoli su più righe non disallineano le card (es. OnePlus Pad) */
+  .vendi-card {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 2;
+  }
+}
+
+/* Surface Duo e viewport 520–767: niente scroll orizzontale */
+@media (min-width: 520px) and (max-width: 767px) {
+  html,
+  body {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+
+  .container,
+  .vendi-cards,
+  .servizi-grid,
+  .valuta-loco,
+  .sezione-vendi,
+  .sezione-servizi,
+  .sezione-valuta {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  /* Grid items: evita min-width:auto che spinge oltre il viewport */
+  .vendi-card,
+  .servizi-col {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .servizi-col-head,
+  .servizi-col-titolo,
+  .servizi-voce-titolo,
+  .servizi-voce-testo,
+  .vendi-card-titolo,
+  .vendi-card-body p {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    min-width: 0;
+  }
+
+  .valuta-loco-cta {
+    max-width: calc(100% - 16px);
+    box-sizing: border-box;
+    overflow: hidden;
   }
 }
 
@@ -1603,7 +1664,7 @@ h2 {
   letter-spacing: 0.04em;
   text-transform: uppercase;
   text-align: center;
-  color: var(--colore-primario);
+  color: #E4E4DE;
 }
 
 .valuta-loco {
@@ -1733,6 +1794,76 @@ h2 {
     padding: 12px 18px;
     font-size: 0.88rem;
     line-height: 1.3;
+  }
+}
+
+/* Ribelli landscape (es. Surface Duo 720×540): CTA sull’immagine, un solo rigo */
+@media (max-width: 767px) and (orientation: landscape) and (min-height: 521px) {
+  .valuta-loco {
+    display: block;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .valuta-loco-cta {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    left: auto;
+    align-self: auto;
+    max-width: calc(100% - 16px);
+    width: fit-content;
+    min-height: 32px;
+    padding: 6px 10px;
+    font-size: 0.62rem;
+    line-height: 1.15;
+    gap: 4px;
+    white-space: nowrap;
+  }
+}
+
+/* Telefono landscape: CTA sull’immagine, ~1cm più piccolo, lato foto */
+@media (max-width: 1023px) and (orientation: landscape) and (max-height: 520px) {
+  .valuta-loco-cta {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    left: auto;
+    max-width: min(42%, 260px);
+    width: fit-content;
+    min-height: 36px;
+    padding: 8px 12px;
+    font-size: 0.72rem;
+    line-height: 1.2;
+    gap: 6px;
+    white-space: normal;
+  }
+}
+
+/* Tablet / iPad portrait e landscape: CTA nella zona foto, senza sovrapporre «Come funziona» */
+@media (min-width: 768px) and (max-width: 1366px) and (min-height: 521px) {
+  .valuta-loco-cta {
+    position: absolute;
+    right: clamp(10px, 1.8vw, 18px);
+    bottom: clamp(10px, 1.8vw, 18px);
+    left: auto;
+    /* Resta nella metà foto a destra (~1cm più piccolo del btn base) */
+    max-width: min(36%, 220px);
+    width: fit-content;
+    min-height: 34px;
+    padding: 7px 11px;
+    font-size: clamp(0.62rem, 1vw, 0.75rem);
+    line-height: 1.15;
+    gap: 5px;
+    white-space: normal;
+  }
+}
+
+/* Tablet / iPad landscape (+ ribelli): testo CTA sempre su un solo rigo */
+@media (min-width: 520px) and (max-width: 1366px) and (orientation: landscape) and (min-height: 521px) {
+  .valuta-loco-cta {
+    white-space: nowrap;
+    max-width: min(100%, 420px);
   }
 }
 
@@ -1875,10 +2006,62 @@ h2 {
   text-align: center;
 }
 
-@media (min-width: 768px) {
+/* Da 520px: 2 colonne (tablet + ribelli Tab M10, OnePlus Pad, Tab A7/A9/S10 FE/S4, Surface Duo) */
+@media (min-width: 520px) {
   .servizi-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: var(--spazio-4);
+  }
+}
+
+/* Portrait 2 col: subgrid allinea i titoletti/descrizioni tra schede affiancate */
+@media (min-width: 520px) and (max-width: 1366px) and (orientation: portrait) {
+  .servizi-col {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 5;
+    align-items: start;
+    gap: 0;
+    row-gap: var(--spazio-4);
+  }
+
+  .servizi-voce--vuota {
+    display: block;
+  }
+}
+
+/* Landscape tablet + ribelli (es. Surface Duo): 4 colonne allineate */
+@media (min-width: 520px) and (max-width: 1366px) and (orientation: landscape) and (min-height: 521px) {
+  .servizi-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spazio-3);
+  }
+
+  .servizi-col {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 5;
+    align-items: start;
+    padding: var(--spazio-3);
+    gap: 0;
+    row-gap: var(--spazio-3);
+  }
+
+  .servizi-voce--vuota {
+    display: block;
+  }
+
+  .servizi-col-titolo {
+    font-size: 0.78rem;
+  }
+
+  .servizi-voce-titolo {
+    font-size: 0.75rem;
+    min-height: calc(1.3em * 2);
+  }
+
+  .servizi-voce-testo {
+    font-size: 0.68rem;
   }
 }
 
@@ -1909,6 +2092,32 @@ h2 {
 
   .servizi-voce-testo {
     font-size: 0.78rem;
+  }
+}
+
+/* Tablet / iPad portrait (anche ≥1024): sempre 2 colonne, con subgrid (non le 4 del desktop) */
+@media (min-width: 1024px) and (max-width: 1366px) and (orientation: portrait) {
+  .servizi-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spazio-4);
+  }
+
+  .servizi-col {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 5;
+    align-items: start;
+    padding: var(--spazio-4);
+    gap: 0;
+    row-gap: var(--spazio-4);
+  }
+
+  .servizi-voce--vuota {
+    display: block;
+  }
+
+  .servizi-voce-testo {
+    font-size: 0.82rem;
   }
 }
 
@@ -2711,12 +2920,19 @@ h2 {
   position: fixed;
   inset: 0;
   z-index: 2000;
-  display: flex;
+  box-sizing: border-box;
+  display: grid;
+  /* Frecce ai lati + area foto che può restringersi (minmax 0) */
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: center;
-  gap: 16px;
-  padding: 20px 56px;
+  justify-items: center;
+  column-gap: 12px;
+  padding: max(12px, env(safe-area-inset-top, 0px))
+    max(12px, env(safe-area-inset-right, 0px))
+    max(12px, env(safe-area-inset-bottom, 0px))
+    max(12px, env(safe-area-inset-left, 0px));
   background: rgba(0, 0, 0, 0.78);
+  overflow: hidden;
 }
 
 .immobile-lightbox[hidden] {
@@ -2725,17 +2941,26 @@ h2 {
 
 .immobile-lightbox-frame {
   position: relative;
+  grid-column: 2;
+  min-width: 0;
+  min-height: 0;
+  max-width: 100%;
+  max-height: min(90vh, 100%);
   line-height: 0;
   border: 3px solid #fff;
-  max-width: min(92vw, 1100px);
-  max-height: 90vh;
+  box-sizing: border-box;
   background: #000;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .immobile-lightbox-frame img {
   display: block;
-  max-width: min(92vw, 1100px);
-  max-height: 90vh;
+  /* Contiene sempre nel frame: niente spill fuori viewport */
+  max-width: 100%;
+  max-height: min(90vh, calc(100dvh - 24px));
   width: auto;
   height: auto;
   object-fit: contain;
@@ -2775,6 +3000,14 @@ h2 {
   background: rgba(0, 0, 0, 0.35);
   color: #fff;
   cursor: pointer;
+}
+
+.immobile-lightbox-nav--prev {
+  grid-column: 1;
+}
+
+.immobile-lightbox-nav--next {
+  grid-column: 3;
 }
 
 .immobile-lightbox-nav:hover {
@@ -2854,32 +3087,40 @@ body.immobile-lightbox-open {
     min-height: 44px;
   }
 
-  /* Lightbox mobile: frecce sopra la foto, meno padding laterale */
+  /* Lightbox mobile portrait: foto sopra, frecce sotto — sempre dentro lo schermo */
   .immobile-lightbox {
-    flex-wrap: wrap;
-    gap: 12px;
-    padding: 48px 12px 16px;
-    align-content: center;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: minmax(0, 1fr) auto;
+    row-gap: 12px;
+    column-gap: 12px;
+    padding: max(44px, env(safe-area-inset-top, 0px))
+      max(12px, env(safe-area-inset-right, 0px))
+      max(12px, env(safe-area-inset-bottom, 0px))
+      max(12px, env(safe-area-inset-left, 0px));
   }
 
   .immobile-lightbox-frame {
-    order: 1;
-    max-width: 94vw;
-    max-height: 70vh;
-    width: fit-content;
+    grid-column: 1 / -1;
+    grid-row: 1;
+    max-width: 100%;
+    max-height: 100%;
   }
 
   .immobile-lightbox-frame img {
-    max-width: 94vw;
-    max-height: 70vh;
+    max-width: 100%;
+    max-height: calc(100dvh - 120px);
   }
 
   .immobile-lightbox-nav--prev {
-    order: 2;
+    grid-column: 1;
+    grid-row: 2;
+    justify-self: end;
   }
 
   .immobile-lightbox-nav--next {
-    order: 3;
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: start;
   }
 
   .immobile-lightbox-chiudi {
@@ -2905,12 +3146,39 @@ body.immobile-lightbox-open {
   }
 
   .immobile-lightbox {
-    padding: 12px 40px;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-rows: minmax(0, 1fr);
+    padding: 8px max(8px, env(safe-area-inset-right, 0px))
+      8px max(8px, env(safe-area-inset-left, 0px));
+    column-gap: 8px;
   }
 
-  .immobile-lightbox-frame,
+  .immobile-lightbox-frame {
+    grid-column: 2;
+    grid-row: 1;
+    max-height: 100%;
+  }
+
   .immobile-lightbox-frame img {
-    max-height: 85vh;
+    max-height: calc(100dvh - 16px);
+    max-width: 100%;
+  }
+
+  .immobile-lightbox-nav--prev {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: center;
+  }
+
+  .immobile-lightbox-nav--next {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: center;
+  }
+
+  .immobile-lightbox-nav {
+    width: 40px;
+    height: 40px;
   }
 }
 
@@ -3066,8 +3334,19 @@ body.immobile-lightbox-open {
 
 @supports not (height: 100dvh) {
 
-  .immobile-lightbox-frame,
   .immobile-lightbox-frame img {
-    max-height: 90vh;
+    max-height: calc(100vh - 24px);
+  }
+
+  @media (max-width: 767px) {
+    .immobile-lightbox-frame img {
+      max-height: calc(100vh - 120px);
+    }
+  }
+
+  @media (max-width: 1023px) and (orientation: landscape) and (max-height: 520px) {
+    .immobile-lightbox-frame img {
+      max-height: calc(100vh - 16px);
+    }
   }
 }
