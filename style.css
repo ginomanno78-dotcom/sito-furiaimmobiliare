@@ -443,6 +443,18 @@ h2 {
   z-index: 0;
 }
 
+/* Overlay scuro #0E2B2C al 35%: da sinistra, sfuma fino a 3/4 */
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(to right,
+      rgba(14, 43, 44, 0.35) 0%,
+      rgba(14, 43, 44, 0) 75%);
+}
+
 .hero-inner {
   position: relative;
   z-index: 2;
@@ -579,6 +591,7 @@ h2 {
 
 .hero-title {
   margin: 0 0 var(--spazio-4);
+  color: #E4E4DE;
   text-shadow: 2px 2px 1px #000;
 }
 
@@ -592,18 +605,18 @@ h2 {
   color: var(--colore-primario);
   font-size: calc(1.05rem + 7px);
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   text-shadow: 1px 1px 1px #000;
 }
 
 .hero-sub {
   margin: 0 0 var(--spazio-5);
-  color: rgba(255, 255, 255, 0.88);
+  color: #ffffff;
   font-size: 1.2rem;
   line-height: 1.65;
   max-width: 540px;
-  text-shadow: 1px 1px 1px #000;
+  text-shadow: 1px 2px 1px #000;
 }
 
 .hero-cta {
@@ -1133,6 +1146,23 @@ h2 {
 
 /* Card mobile: icone a tutta riga, Scopri sotto (niente sovrapposizione) */
 @media (max-width: 767px) {
+
+  /* 90vw sforava il .container (padding): bordo dx tagliato */
+  .carousel-track {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .card-annuncio {
+    flex: 0 0 100%;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .carousel.is-singolo .carousel-track {
+    justify-content: center;
+  }
+
   .card-annuncio-body {
     grid-template-areas:
       "tipo tipo"
@@ -1337,6 +1367,7 @@ h2 {
 
 /* Surface Duo e viewport 520–767: niente scroll orizzontale */
 @media (min-width: 520px) and (max-width: 767px) {
+
   html,
   body {
     overflow-x: hidden;
@@ -1794,6 +1825,66 @@ h2 {
     padding: 12px 18px;
     font-size: 0.88rem;
     line-height: 1.3;
+  }
+}
+
+/* Mobile portrait: ritocchi spazi, titoli e CTA */
+@media (max-width: 767px) and (orientation: portrait) {
+  /* Titolo Immobili in Vendita sempre su un rigo */
+  #titolo-vendita {
+    font-size: clamp(1.35rem, 6.2vw, 2.2rem);
+    max-width: 100%;
+  }
+
+  #titolo-vendita .sezione-titolo-testo {
+    white-space: nowrap;
+  }
+
+  /* Spazio card → Vendi allineato alle altre sezioni (niente footer vuoto) */
+  .carousel.is-singolo {
+    row-gap: 0;
+  }
+
+  .carousel.is-singolo .carousel-footer {
+    display: none;
+  }
+
+  .carousel.is-singolo .carousel-track {
+    padding-bottom: 0;
+  }
+
+  .sezione-annunci {
+    padding-bottom: var(--spazio-7);
+  }
+
+  /* Meno spazio tra form dati e «Valutazione in loco» */
+  .valuta-form {
+    margin-bottom: var(--spazio-4);
+  }
+
+  .valuta-loco-titolo {
+    margin-top: 0;
+  }
+
+  /* CTA Prenota: sempre un solo rigo */
+  .valuta-loco-cta {
+    white-space: nowrap;
+    font-size: 0.78rem;
+    padding: 12px 14px;
+  }
+
+  /* FAQ: spazio reale tra titolo e «Domande Frequenti» (padding evita collasso margini) */
+  #titolo-faq {
+    margin-bottom: 0;
+  }
+
+  .faq-occhiello {
+    margin: 0 0 var(--spazio-2);
+    padding-top: var(--spazio-6);
+  }
+
+  .faq-lista .faq-item:first-child .faq-domanda {
+    padding-top: 8px;
   }
 }
 
@@ -2927,10 +3018,7 @@ h2 {
   align-items: center;
   justify-items: center;
   column-gap: 12px;
-  padding: max(12px, env(safe-area-inset-top, 0px))
-    max(12px, env(safe-area-inset-right, 0px))
-    max(12px, env(safe-area-inset-bottom, 0px))
-    max(12px, env(safe-area-inset-left, 0px));
+  padding: max(12px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) max(12px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px));
   background: rgba(0, 0, 0, 0.78);
   overflow: hidden;
 }
@@ -3093,10 +3181,7 @@ body.immobile-lightbox-open {
     grid-template-rows: minmax(0, 1fr) auto;
     row-gap: 12px;
     column-gap: 12px;
-    padding: max(44px, env(safe-area-inset-top, 0px))
-      max(12px, env(safe-area-inset-right, 0px))
-      max(12px, env(safe-area-inset-bottom, 0px))
-      max(12px, env(safe-area-inset-left, 0px));
+    padding: max(44px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) max(12px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px));
   }
 
   .immobile-lightbox-frame {
@@ -3148,8 +3233,7 @@ body.immobile-lightbox-open {
   .immobile-lightbox {
     grid-template-columns: auto minmax(0, 1fr) auto;
     grid-template-rows: minmax(0, 1fr);
-    padding: 8px max(8px, env(safe-area-inset-right, 0px))
-      8px max(8px, env(safe-area-inset-left, 0px));
+    padding: 8px max(8px, env(safe-area-inset-right, 0px)) 8px max(8px, env(safe-area-inset-left, 0px));
     column-gap: 8px;
   }
 
