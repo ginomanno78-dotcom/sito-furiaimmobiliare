@@ -157,7 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         return;
       }
-      window.location.href = "vendita.html";
+      window.location.href = "immobile.html?id=sparanise-cinquegrana-via-kennedy";
     });
   }
 
