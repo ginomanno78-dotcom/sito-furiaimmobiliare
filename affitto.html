@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Affitto — Furia Immobiliare Srls</title>
+    <meta name="description"
+        content="Immobili in affitto — Furia Immobiliare Srls, Sparanise (CE). Al momento non ci sono proprietà disponibili.">
+    <meta property="og:title" content="Affitto — Furia Immobiliare Srls">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="it_IT">
+    <link rel="icon" type="image/svg+xml" href="assets/logo-furia-favicon.svg">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <header class="navbar" id="navbar">
+        <div class="container navbar-inner">
+            <a href="index.html" class="navbar-brand" aria-label="Furia Immobiliare Srls — Home">
+                <img src="assets/logo-furia.svg" alt="" class="navbar-logo" width="40" height="40">
+                <span class="navbar-wordmark">FURIA IMMOBILIARE SRLS</span>
+            </a>
+
+            <nav class="navbar-links" aria-label="Menu principale">
+                <a href="index.html">Home</a>
+                <a href="immobile.html?id=sparanise-cinquegrana-via-kennedy">Compra</a>
+                <a href="affitto.html" class="is-active">Affitta</a>
+
+                <div class="nav-dropdown">
+                    <button type="button" class="nav-dropdown-toggle" id="navVendiToggle" aria-expanded="false"
+                        aria-haspopup="true" aria-controls="navVendiMenu">
+                        Vendi
+                        <img src="assets/images/icons/icon-chevron-down.svg" alt="" class="icon icon--sm" width="16"
+                            height="16">
+                    </button>
+                    <ul class="nav-dropdown-menu" id="navVendiMenu" hidden>
+                        <li><a href="index.html#vendi">Vendi casa</a></li>
+                        <li><a href="index.html#valuta">Valuta</a></li>
+                    </ul>
+                </div>
+
+                <a href="index.html#servizi">Servizi</a>
+                <a href="index.html#contatti">Contatti</a>
+            </nav>
+
+            <button type="button" class="hamburger" id="hamburger" aria-label="Apri menu" aria-expanded="false"
+                aria-controls="mobileDrawer">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="drawer-overlay" id="drawerOverlay" hidden></div>
+    <nav class="mobile-drawer" id="mobileDrawer" aria-label="Menu mobile" hidden>
+        <a href="index.html">Home</a>
+        <a href="immobile.html?id=sparanise-cinquegrana-via-kennedy">Compra</a>
+        <a href="affitto.html">Affitta</a>
+        <a href="index.html#vendi">Vendi casa</a>
+        <a href="index.html#valuta">Valuta</a>
+        <a href="index.html#servizi">Servizi</a>
+        <a href="index.html#contatti">Contatti</a>
+    </nav>
+
+    <main id="main">
+        <section class="pagina-listing pagina-listing--vuota" aria-labelledby="titolo-affitto">
+            <div class="container pagina-listing-inner">
+                <h1 class="pagina-listing-titolo" id="titolo-affitto">Affitto</h1>
+                <p class="pagina-listing-messaggio">
+                    Al momento non ci sono immobili o proprietà in affitto.
+                    Torna a trovarci presto oppure contattaci: ti aiutiamo a trovare la soluzione giusta.
+                </p>
+                <div class="pagina-listing-azioni">
+                    <a href="immobile.html?id=sparanise-cinquegrana-via-kennedy" class="btn btn--oro">Vedi immobili in
+                        vendita</a>
+                    <a href="index.html#contatti" class="btn btn--oro">Contattaci</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="site-footer" id="footer">
+        <div class="site-footer-bg" aria-hidden="true">
+            <img src="assets/images/footer-skyline-sparanise.webp" alt="" width="1920" height="600" loading="lazy">
+        </div>
+        <div class="container site-footer-inner">
+            <div class="footer-col footer-col--info">
+                <p class="footer-ragione">Furia Immobiliare Srls</p>
+                <ul class="footer-info">
+                    <li>P.tta Pasquale Graziadei, 40<br>81056 Sparanise (CE)</li>
+                    <li>P. IVA 04967300619</li>
+                    <li><a href="mailto:info@furiaimmobiliare.com">info@furiaimmobiliare.com</a></li>
+                    <li><a href="mailto:furia.immobiliare@pec.it">furia.immobiliare@pec.it</a></li>
+                </ul>
+            </div>
+            <div class="footer-col footer-col--link">
+                <p class="footer-titolo">Link rapidi</p>
+                <ul class="footer-link">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="immobile.html?id=sparanise-cinquegrana-via-kennedy">Immobile</a></li>
+                    <li><a href="affitto.html">Affitto</a></li>
+                    <li><a href="index.html#immobili-vendita">Vendita</a></li>
+                    <li><a href="index.html#valuta">Valuta</a></li>
+                    <li><a href="index.html#contatti">Contatti</a></li>
+                </ul>
+            </div>
+            <div class="footer-col footer-col--contatti">
+                <p class="footer-titolo">Contatti</p>
+                <p><a href="tel:+393392167130">+39 339 216 7130</a></p>
+                <p><a href="mailto:info@furiaimmobiliare.com">info@furiaimmobiliare.com</a></p>
+            </div>
+        </div>
+        <p class="footer-copy">© 2026 Furia Immobiliare Srls - Tutti i diritti riservati</p>
+    </footer>
+
+    <script src="main.js" defer></script>
+</body>
+
+</html>

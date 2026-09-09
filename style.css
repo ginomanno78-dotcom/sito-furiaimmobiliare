@@ -3098,6 +3098,38 @@ h2 {
   color: var(--colore-testo-muto);
 }
 
+/* ===== LISTING VUOTO (es. affitto senza annunci) ===== */
+.pagina-listing {
+  /* Spazio sotto navbar fixed a pillola */
+  padding: calc(8px + var(--nav-height) + var(--spazio-6)) 0 var(--spazio-8);
+  min-height: 60vh;
+}
+
+.pagina-listing-inner {
+  max-width: 640px;
+  text-align: center;
+}
+
+.pagina-listing-titolo {
+  margin: 0 0 var(--spazio-4);
+  font-family: var(--font-titoli);
+  color: var(--colore-primario);
+}
+
+.pagina-listing-messaggio {
+  margin: 0 0 var(--spazio-5);
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--colore-testo);
+}
+
+.pagina-listing-azioni {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spazio-3);
+}
+
 /* ===== LIGHTBOX GALLERIA (overlay stile Tempocasa) ===== */
 .immobile-lightbox {
   position: fixed;
