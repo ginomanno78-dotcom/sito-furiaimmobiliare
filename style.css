@@ -191,7 +191,9 @@ h2 {
   width: 100%;
   max-width: var(--container-max);
   margin: 0 auto;
-  padding: 0 20px;
+  /* Solo orizzontale: non azzerare padding-top di .hero-inner */
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 .icon {
@@ -246,11 +248,16 @@ h2 {
 
 /* ===== NAVBAR ===== */
 .navbar {
-  position: sticky;
-  top: 0;
+  position: fixed;
+  top: 8px;
+  left: 12px;
+  right: 12px;
   z-index: 1600;
-  background: var(--colore-navbar);
-  border-bottom: 1px solid transparent;
+  width: auto;
+  box-sizing: border-box;
+  border-radius: 999px;
+  background: #E4E4DE;
+  border-bottom: none;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
   transition: box-shadow 0.25s ease;
   /* niente overflow:hidden — altrimenti clippa i dropdown */
@@ -274,20 +281,26 @@ h2 {
 }
 
 .navbar-logo {
-  width: 40px;
-  height: 40px;
+  /* Quasi a tutta altezza navbar, allineato al wordmark */
+  height: calc(var(--nav-height) - 12px);
+  width: auto;
+  max-height: calc(var(--nav-height) - 12px);
   object-fit: contain;
   flex-shrink: 0;
+  display: block;
 }
 
 .navbar-wordmark {
   font-family: var(--font-titoli);
   font-weight: 700;
-  font-size: 1.05rem;
+  /* Altezza lettere allineata a FURIA nel logo */
+  font-size: 1.28rem;
   color: var(--colore-primario);
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  line-height: 1.15;
+  line-height: 1;
+  /* REGOLA FISSA: stessa baseline di FURIA nel logo — non modificare senza conferma */
+  transform: translateY(calc((var(--nav-height) - 12px) * 0.085 + 0.9mm));
 }
 
 .navbar-links {
@@ -398,15 +411,17 @@ h2 {
 
 .mobile-drawer {
   position: fixed;
-  top: 0;
+  /* Sotto la navbar a pillola: non finisce dietro */
+  top: calc(8px + var(--nav-height));
   right: 0;
-  height: 100%;
+  height: calc(100% - 8px - var(--nav-height));
+  height: calc(100dvh - 8px - var(--nav-height));
   width: min(82%, 320px);
   background: #fff;
   z-index: 1500;
   display: flex;
   flex-direction: column;
-  padding: var(--spazio-7) var(--spazio-4) var(--spazio-4);
+  padding: var(--spazio-4);
   box-shadow: var(--ombra-media);
   overflow-y: auto;
   transform: translateX(0);
@@ -426,11 +441,14 @@ h2 {
 /* ===== HERO ===== */
 .hero {
   position: relative;
-  min-height: calc(100vh - var(--nav-height));
+  /* A tutta altezza viewport: l’immagine passa dietro la navbar a pillola */
+  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: stretch;
   color: #fff;
   overflow: hidden;
+  z-index: 0;
 }
 
 .hero-bg {
@@ -463,10 +481,17 @@ h2 {
   justify-content: flex-start;
   gap: clamp(48px, 10vh, 120px);
   width: 100%;
-  /* Stacco chiaro dalla navbar sticky */
-  padding-top: 2cm;
+  /* 8px offset + altezza pillola + stacco search */
+  padding-top: calc(8px + var(--nav-height));
   padding-bottom: var(--spazio-6);
-  min-height: calc(100vh - var(--nav-height));
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Più specifico di .container: il padding alto non deve essere azzerato */
+.container.hero-inner {
+  padding-top: calc(8px + var(--nav-height));
+  padding-bottom: var(--spazio-6);
 }
 
 /* Search bar — centrata, staccata dalla navbar */
@@ -658,9 +683,10 @@ h2 {
 /* ===== RESPONSIVE ===== */
 @media (max-width: 767px) {
 
-  /* Sale il blocco search verso la navbar */
-  .hero-inner {
-    padding-top: var(--spazio-3);
+  /* Search sotto la navbar fixed + un po’ di luce */
+  .hero-inner,
+  .container.hero-inner {
+    padding-top: calc(8px + var(--nav-height) + var(--spazio-3));
   }
 
   /* Hero search mobile: Compra 3/4 + Tipologia 1/4 sulla stessa riga */
@@ -688,26 +714,44 @@ h2 {
     gap: 4px;
   }
 
-  .hero-search-input,
-  .hero-search-btn {
+  /* Menu tipologia ancorato a destra: non esce dal viewport */
+  .search-dropdown--tipo .search-dropdown-menu--tipo {
+    left: auto;
+    right: 0;
+    width: max-content;
+    min-width: 200px;
+    max-width: calc(100vw - 40px);
+  }
+
+  .hero-search-input {
     grid-column: 1 / -1;
   }
 }
 
 @media (max-width: 479px) {
   .navbar-wordmark {
-    font-size: 0.88rem;
+    font-size: 1.05rem;
+    transform: translateY(calc((var(--nav-height) - 16px) * 0.085 + 0.9mm));
   }
 
   .navbar-logo {
-    width: 36px;
-    height: 36px;
+    height: calc(var(--nav-height) - 16px);
+    width: auto;
+    max-height: calc(var(--nav-height) - 16px);
+  }
+}
+
+/* Mobile portrait: wordmark nascosto — resta in landscape / tablet / iPad */
+@media (max-width: 767px) and (orientation: portrait) {
+  .navbar-wordmark {
+    display: none;
   }
 }
 
 @media (min-width: 768px) {
   .container {
-    padding: 0 32px;
+    padding-left: 32px;
+    padding-right: 32px;
   }
 
   .hero-search {
@@ -741,8 +785,9 @@ h2 {
     height: 52px;
   }
 
-  .hero-inner {
-    padding-top: 2.5cm;
+  .hero-inner,
+  .container.hero-inner {
+    padding-top: calc(8px + var(--nav-height) + 0.5cm);
     padding-bottom: var(--spazio-7);
     gap: clamp(56px, 12vh, 140px);
   }
@@ -756,9 +801,43 @@ h2 {
   }
 }
 
+/* Mobile / tablet / iPad: cerca dentro il campo indirizzo, a destra */
+@media (max-width: 1023px) {
+  .hero-search {
+    position: relative;
+  }
+
+  .hero-search-input {
+    padding-right: 48px;
+  }
+
+  .hero-search-btn {
+    position: absolute;
+    right: 4px;
+    width: 40px;
+    height: 40px;
+    flex: none;
+    box-shadow: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .hero-search-btn {
+    bottom: 4px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hero-search-btn {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
 @media (min-width: 1024px) {
   .container {
-    padding: 0 40px;
+    padding-left: 40px;
+    padding-right: 40px;
   }
 
   .hamburger {
@@ -1830,6 +1909,7 @@ h2 {
 
 /* Mobile portrait: ritocchi spazi, titoli e CTA */
 @media (max-width: 767px) and (orientation: portrait) {
+
   /* Titolo Immobili in Vendita sempre su un rigo */
   #titolo-vendita {
     font-size: clamp(1.35rem, 6.2vw, 2.2rem);
@@ -2693,7 +2773,8 @@ h2 {
 
 /* ===== PAGINA IMMODILE (dettaglio) ===== */
 .pagina-immobile {
-  padding: var(--spazio-5) 0 var(--spazio-7);
+  /* Spazio sotto navbar fixed a pillola */
+  padding: calc(8px + var(--nav-height) + var(--spazio-4)) 0 var(--spazio-7);
 }
 
 .pagina-immobile-inner {
@@ -3119,7 +3200,7 @@ body.immobile-lightbox-open {
 /* Famiglia A — Mobile portrait (base già stacked; raffinamenti) */
 @media (max-width: 767px) {
   .pagina-immobile {
-    padding: var(--spazio-4) 0 var(--spazio-6);
+    padding: calc(8px + var(--nav-height) + var(--spazio-3)) 0 var(--spazio-6);
   }
 
   .pagina-immobile-inner {
@@ -3219,7 +3300,7 @@ body.immobile-lightbox-open {
 /* Famiglia B — Mobile landscape: foto allineata alla larghezza delle miniature (no frecce) */
 @media (max-width: 1023px) and (orientation: landscape) and (max-height: 520px) {
   .pagina-immobile {
-    padding: var(--spazio-3) 0 var(--spazio-5);
+    padding: calc(8px + var(--nav-height) + var(--spazio-2)) 0 var(--spazio-5);
   }
 
   .immobile-galleria-principale {
@@ -3269,7 +3350,7 @@ body.immobile-lightbox-open {
 /* Famiglia C — Tablet portrait (iPad incluso, 768–1023) */
 @media (min-width: 768px) and (max-width: 1023px) and (orientation: portrait) {
   .pagina-immobile {
-    padding: var(--spazio-5) 0 var(--spazio-7);
+    padding: calc(8px + var(--nav-height) + var(--spazio-4)) 0 var(--spazio-7);
   }
 
   /* Stack verticale: più stabile su iPad portrait */
@@ -3344,7 +3425,7 @@ body.immobile-lightbox-open {
 /* Famiglia E — Desktop (≥1024px): layout a 2 colonne */
 @media (min-width: 1024px) {
   .pagina-immobile {
-    padding: var(--spazio-6) 0 var(--spazio-8);
+    padding: calc(8px + var(--nav-height) + var(--spazio-5)) 0 var(--spazio-8);
   }
 
   .immobile-titolo {
