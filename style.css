@@ -1473,7 +1473,8 @@ h2 {
 
   .container,
   .vendi-cards,
-  .servizi-grid,
+  .servizi-intro,
+  .servizi-accordion,
   .valuta-loco,
   .sezione-vendi,
   .sezione-servizi,
@@ -1484,15 +1485,17 @@ h2 {
 
   /* Grid items: evita min-width:auto che spinge oltre il viewport */
   .vendi-card,
-  .servizi-col {
+  .servizi-foto,
+  .servizi-bio,
+  .servizi-item {
     min-width: 0;
     max-width: 100%;
   }
 
-  .servizi-col-head,
-  .servizi-col-titolo,
+  .servizi-toggle-titolo,
   .servizi-voce-titolo,
   .servizi-voce-testo,
+  .servizi-bio-testo,
   .vendi-card-titolo,
   .vendi-card-body p {
     overflow-wrap: anywhere;
@@ -2119,137 +2122,152 @@ h2 {
   background: var(--colore-sfondo);
 }
 
-.servizi-grid {
+.servizi-intro {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--spazio-4);
+  gap: var(--spazio-5);
+  margin-bottom: var(--spazio-6);
+  align-items: start;
 }
 
-.servizi-col {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: var(--spazio-4);
-  border: 1px solid var(--colore-primario);
-  border-radius: var(--raggio-md);
-  background: var(--colore-secondario);
-  gap: var(--spazio-4);
-}
-
-.servizi-col-head {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  width: 100%;
-  min-height: 56px;
-}
-
-.servizi-icona {
-  width: 48px;
-  height: 48px;
-  flex-shrink: 0;
-  object-fit: contain;
-}
-
-.servizi-col-titolo {
+.servizi-foto {
   margin: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  font-family: var(--font-corpo);
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--raggio-md);
+}
+
+.servizi-foto img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  object-position: center;
+}
+
+.servizi-bio-nome {
+  margin: 0 0 var(--spazio-2);
+  font-family: var(--font-titoli);
+  font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+  font-weight: 400;
+  color: #aa9333;
+}
+
+.servizi-bio-ruolo {
+  margin: 0 0 var(--spazio-4);
   font-size: 0.95rem;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--colore-primario);
+  color: var(--colore-testo);
+}
+
+.servizi-bio-testo {
+  margin: 0 0 var(--spazio-3);
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--colore-testo);
+}
+
+.servizi-bio-testo:last-child {
+  margin-bottom: 0;
+}
+
+.servizi-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-width: 920px;
+}
+
+.servizi-item {
+  border-bottom: 1px solid rgba(228, 228, 222, 0.22);
+}
+
+.servizi-toggle {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 16px 0;
+  border: none;
+  background: transparent;
+  color: #aa9333;
+  font-family: var(--font-corpo);
+  text-align: left;
+  cursor: pointer;
+}
+
+.servizi-icona {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.servizi-toggle-titolo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   line-height: 1.25;
+  color: #aa9333;
+}
+
+.servizi-toggle-segno {
+  flex-shrink: 0;
+  width: 1.25em;
+  color: #aa9333;
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1;
+  text-align: center;
+}
+
+.servizi-panel {
+  padding: 0 0 var(--spazio-4);
 }
 
 .servizi-voce {
   width: 100%;
+  margin-bottom: var(--spazio-3);
 }
 
-.servizi-voce--vuota {
-  display: none;
+.servizi-voce:last-child {
+  margin-bottom: 0;
 }
 
 .servizi-voce-titolo {
   margin: 0 0 var(--spazio-2);
-  font-size: 0.88rem;
+  font-size: 0.95rem;
   font-weight: 700;
   line-height: 1.3;
   color: #fff;
-  text-align: center;
-  min-height: calc(1.3em * 2);
+  text-align: left;
 }
 
 .servizi-voce-testo {
   margin: 0;
-  font-size: 0.82rem;
-  line-height: 1.5;
-  color: #fff;
-  text-align: center;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--colore-testo);
+  text-align: left;
 }
 
-/* Da 520px: 2 colonne (tablet + ribelli Tab M10, OnePlus Pad, Tab A7/A9/S10 FE/S4, Surface Duo) */
-@media (min-width: 520px) {
-  .servizi-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--spazio-4);
-  }
+.servizi-item.is-open .servizi-toggle {
+  padding-bottom: 10px;
 }
 
-/* Portrait 2 col: subgrid allinea i titoletti/descrizioni tra schede affiancate */
-@media (min-width: 520px) and (max-width: 1366px) and (orientation: portrait) {
-  .servizi-col {
-    display: grid;
-    grid-template-rows: subgrid;
-    grid-row: span 5;
-    align-items: start;
-    gap: 0;
-    row-gap: var(--spazio-4);
-  }
-
-  .servizi-voce--vuota {
-    display: block;
-  }
-}
-
-/* Landscape tablet + ribelli (es. Surface Duo): 4 colonne allineate */
-@media (min-width: 520px) and (max-width: 1366px) and (orientation: landscape) and (min-height: 521px) {
-  .servizi-grid {
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--spazio-3);
-  }
-
-  .servizi-col {
-    display: grid;
-    grid-template-rows: subgrid;
-    grid-row: span 5;
-    align-items: start;
-    padding: var(--spazio-3);
-    gap: 0;
-    row-gap: var(--spazio-3);
-  }
-
-  .servizi-voce--vuota {
-    display: block;
-  }
-
-  .servizi-col-titolo {
-    font-size: 0.78rem;
-  }
-
-  .servizi-voce-titolo {
-    font-size: 0.75rem;
-    min-height: calc(1.3em * 2);
-  }
-
-  .servizi-voce-testo {
-    font-size: 0.68rem;
+@media (min-width: 768px) {
+  .servizi-intro {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: var(--spazio-5);
+    align-items: center;
   }
 }
 
@@ -2258,54 +2276,13 @@ h2 {
     padding: var(--spazio-8) 0;
   }
 
-  /* Subgrid: allinea in orizzontale head e ogni blocco voce tra le 4 schede */
-  .servizi-grid {
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--spazio-4) var(--spazio-3);
+  .servizi-intro {
+    gap: var(--spazio-6);
   }
 
-  .servizi-col {
-    display: grid;
-    grid-template-rows: subgrid;
-    grid-row: span 5;
-    align-items: start;
-    padding: var(--spazio-4) var(--spazio-3) var(--spazio-5);
-    gap: 0;
-    row-gap: var(--spazio-4);
-  }
-
-  .servizi-voce--vuota {
-    display: block;
-  }
-
-  .servizi-voce-testo {
-    font-size: 0.78rem;
-  }
-}
-
-/* Tablet / iPad portrait (anche ≥1024): sempre 2 colonne, con subgrid (non le 4 del desktop) */
-@media (min-width: 1024px) and (max-width: 1366px) and (orientation: portrait) {
-  .servizi-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--spazio-4);
-  }
-
-  .servizi-col {
-    display: grid;
-    grid-template-rows: subgrid;
-    grid-row: span 5;
-    align-items: start;
-    padding: var(--spazio-4);
-    gap: 0;
-    row-gap: var(--spazio-4);
-  }
-
-  .servizi-voce--vuota {
-    display: block;
-  }
-
-  .servizi-voce-testo {
-    font-size: 0.82rem;
+  .servizi-icona {
+    width: 48px;
+    height: 48px;
   }
 }
 
