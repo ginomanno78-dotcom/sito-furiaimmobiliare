@@ -6,14 +6,14 @@
 
 :root {
   --colore-sfondo: #1B1B1B;
-  --colore-primario: #CFB53B;
-  --colore-accento: #CFB53B;
+  --colore-primario: #aa9333;
+  --colore-accento: #aa9333;
   --colore-secondario: #0E2B2C;
   --colore-testo: #E4E4DE;
   --colore-testo-muto: #9A9A92;
   --colore-bordo: #3A3A3A;
   --colore-successo: #2ecc71;
-  --colore-errore: #e74c3c;
+  --colore-errore: #ff2200;
   --colore-navbar: #F4F1EA;
   --colore-testo-scuro: #1A1A1A;
 
@@ -258,13 +258,13 @@ h2 {
   border-radius: 999px;
   background: #E4E4DE;
   border-bottom: none;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
   transition: box-shadow 0.25s ease;
   /* niente overflow:hidden — altrimenti clippa i dropdown */
 }
 
 .navbar.is-scrolled {
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
 }
 
 .navbar-inner {
@@ -549,6 +549,11 @@ h2 {
   font-weight: 600;
 }
 
+/* Tipologia: stesso fondo della navbar */
+.search-dropdown--tipo .search-dropdown-toggle {
+  background: #E4E4DE;
+}
+
 .search-dropdown-menu {
   position: absolute;
   top: calc(100% + 6px);
@@ -612,11 +617,15 @@ h2 {
   background: #aa9333;
   color: var(--colore-testo-scuro);
   cursor: pointer;
-  transition: filter 0.2s ease;
+  overflow: hidden;
 }
 
-.hero-search-btn:hover {
-  filter: brightness(1.05);
+.hero-search-btn .icon {
+  transition: transform 0.2s ease;
+}
+
+.hero-search-btn:hover .icon {
+  transform: scale(1.35);
 }
 
 .hero-content {
@@ -702,6 +711,17 @@ h2 {
 
 .hero-cta::first-letter {
   text-transform: lowercase;
+}
+
+/* Mobile portrait stretti: CTA hero su un solo rigo */
+@media (max-width: 349px) and (orientation: portrait) {
+  .hero a.btn.btn--oro.hero-cta {
+    white-space: nowrap;
+    font-size: 0.78rem;
+    padding-left: 12px;
+    padding-right: 12px;
+    gap: 6px;
+  }
 }
 
 /* ===== RESPONSIVE ===== */
@@ -1015,13 +1035,13 @@ h2 {
   scroll-snap-type: none;
 }
 
-/* Card annuncio — foto e info staccate (filo d'aria 2mm) */
+/* Card annuncio — foto e info staccate (filo d'aria 1mm) */
 .card-annuncio {
   flex: 0 0 min(440px, 90vw);
   max-width: 440px;
   display: flex;
   flex-direction: column;
-  gap: 2mm;
+  gap: 1mm;
   background: transparent;
   scroll-snap-align: start;
 }
@@ -1284,6 +1304,27 @@ h2 {
   .card-annuncio-cta {
     justify-self: end;
     margin-top: 2px;
+  }
+}
+
+/* Mobile portrait stretti: Sparanise (CE) + prezzo su un solo rigo */
+@media (max-width: 349px) and (orientation: portrait) {
+  .card-annuncio-body {
+    column-gap: 8px;
+  }
+
+  .card-annuncio-comune,
+  .card-annuncio-prezzo {
+    white-space: nowrap;
+  }
+
+  .card-annuncio-comune {
+    font-size: 0.82rem;
+    letter-spacing: 0.02em;
+  }
+
+  .card-annuncio-prezzo {
+    font-size: 1.15rem;
   }
 }
 
@@ -1553,7 +1594,7 @@ h2 {
   letter-spacing: 0.04em;
   text-transform: uppercase;
   text-align: center;
-  color: var(--colore-primario);
+  color: #E4E4DE;
 }
 
 .valuta-subhead {
@@ -2135,6 +2176,8 @@ h2 {
   width: 100%;
   overflow: hidden;
   border-radius: var(--raggio-md);
+  border: 3px solid #aa9333;
+  box-sizing: border-box;
 }
 
 .servizi-foto img {
