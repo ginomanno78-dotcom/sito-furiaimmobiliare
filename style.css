@@ -295,7 +295,7 @@ h2 {
   font-weight: 700;
   /* Altezza lettere allineata a FURIA nel logo */
   font-size: 1.28rem;
-  color: var(--colore-primario);
+  color: #aa9333;
   letter-spacing: 0.02em;
   text-transform: uppercase;
   line-height: 1;
@@ -321,17 +321,16 @@ h2 {
   font-weight: 400;
   line-height: 1;
   text-transform: uppercase;
-  color: var(--colore-testo-scuro);
+  color: #0E2B2C;
   background: none;
   border: none;
   cursor: pointer;
-  transition: color 0.2s ease;
 }
 
 .navbar-links>a:hover,
 .navbar-links>a.is-active,
 .nav-dropdown-toggle:hover {
-  color: var(--colore-primario);
+  color: #0E2B2C;
 }
 
 .nav-dropdown {
@@ -364,12 +363,12 @@ h2 {
   font-weight: 400;
   line-height: 1;
   text-transform: uppercase;
-  color: var(--colore-testo-scuro);
+  color: #0E2B2C;
 }
 
 .nav-dropdown-menu a:hover {
-  background: rgba(207, 181, 59, 0.12);
-  color: var(--colore-primario);
+  background: none;
+  color: #0E2B2C;
 }
 
 /* Hamburger */
@@ -545,7 +544,7 @@ h2 {
 }
 
 .search-dropdown-toggle--oro {
-  background: var(--colore-primario);
+  background: #aa9333;
   color: var(--colore-testo-scuro);
   font-weight: 600;
 }
@@ -610,7 +609,7 @@ h2 {
   height: 48px;
   border: none;
   border-radius: var(--raggio-md);
-  background: var(--colore-primario);
+  background: #aa9333;
   color: var(--colore-testo-scuro);
   cursor: pointer;
   transition: filter 0.2s ease;
@@ -638,12 +637,18 @@ h2 {
 
 .hero-payoff {
   margin: 0 0 var(--spazio-3);
-  color: var(--colore-primario);
+  color: #aa9333;
+  font-family: var(--font-corpo);
   font-size: calc(1.05rem + 7px);
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  word-spacing: -0.05em;
   text-transform: uppercase;
   text-shadow: 1px 1px 1px #000;
+}
+
+.hero-payoff-chiavi {
+  word-spacing: 0.12em;
 }
 
 .hero-sub {
@@ -659,32 +664,40 @@ h2 {
   text-transform: lowercase;
   border: 1px solid #000;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.33);
-  transition: background 0.2s ease, box-shadow 0.2s ease;
+  transition: background 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 
-/* Riposo e hover: scritta sempre nera */
+/* Riposo: fondo #aa9333, testo nero */
 .hero a.btn.btn--oro.hero-cta,
-.hero a.btn.btn--oro.hero-cta:visited,
-.hero a.btn.btn--oro.hero-cta:hover,
-.hero a.btn.btn--oro.hero-cta:focus-visible {
+.hero a.btn.btn--oro.hero-cta:visited {
+  color: #1a1a1a;
+  -webkit-text-fill-color: #1a1a1a;
+  background: #aa9333;
+  background-color: #aa9333;
+  filter: none;
+}
+
+.hero a.btn.btn--oro.hero-cta *,
+.hero a.btn.btn--oro.hero-cta:visited * {
   color: #1a1a1a;
   -webkit-text-fill-color: #1a1a1a;
 }
 
-.hero a.btn.btn--oro.hero-cta *,
-.hero a.btn.btn--oro.hero-cta:visited *,
+/* Hover: arancione carico */
+.hero a.btn.btn--oro.hero-cta:hover,
+.hero a.btn.btn--oro.hero-cta:focus-visible {
+  color: #1a1a1a;
+  -webkit-text-fill-color: #1a1a1a;
+  background: #e87a1e;
+  background-color: #e87a1e;
+  filter: none;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.33);
+}
+
 .hero a.btn.btn--oro.hero-cta:hover *,
 .hero a.btn.btn--oro.hero-cta:focus-visible * {
   color: #1a1a1a;
   -webkit-text-fill-color: #1a1a1a;
-}
-
-/* Hover: solo il fondo diventa arancione */
-.hero a.btn.btn--oro.hero-cta:hover,
-.hero a.btn.btn--oro.hero-cta:focus-visible {
-  filter: none;
-  background: #e87a1e;
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.33);
 }
 
 .hero-cta::first-letter {
@@ -884,35 +897,29 @@ h2 {
   ===== MODELLO TITOLO SEZIONE (riutilizzare ovunque) =====
   HTML:
   <h2 class="sezione-titolo" id="...">
-    <img src="assets/images/icons/elenco-puntato.svg" alt="" class="sezione-titolo-bullet" width="33" height="35" aria-hidden="true">
     <span class="sezione-titolo-testo">Testo <span>ENFASI</span></span>
   </h2>
-  Non modificare l’icona SVG né le distanze millimetriche senza motivo.
 */
 .sezione-titolo {
-  display: inline-flex;
-  align-items: flex-end;
-  gap: 0;
+  display: block;
+  text-align: left;
   margin: 0 0 var(--spazio-5);
   font-family: var(--font-titoli);
   font-weight: 400;
   font-size: clamp(1.85rem, 3.5vw, 2.4rem);
   line-height: 1;
-  color: #fff;
+  color: #aa9333;
 }
 
 .sezione-titolo-bullet {
-  height: calc(1em * 48 / 33);
-  width: auto;
-  flex-shrink: 0;
-  display: block;
+  display: none;
 }
 
 .sezione-titolo-testo {
-  display: inline-block;
+  display: inline;
   line-height: 1;
-  margin-left: calc(-1em * 43 / 33 * 25.3754 / 43 + 3mm - 1.5mm);
-  transform: translateY(1.9mm);
+  margin-left: 0;
+  transform: none;
 }
 
 .sezione-titolo-testo span {
@@ -1921,9 +1928,8 @@ h2 {
 /* Mobile portrait: ritocchi spazi, titoli e CTA */
 @media (max-width: 767px) and (orientation: portrait) {
 
-  /* Titolo Immobili in Vendita sempre su un rigo */
+  /* Titolo Immobili in Vendita: stessa misura degli altri titoli di sezione */
   #titolo-vendita {
-    font-size: clamp(1.35rem, 6.2vw, 2.2rem);
     max-width: 100%;
   }
 
