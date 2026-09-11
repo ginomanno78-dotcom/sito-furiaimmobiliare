@@ -479,113 +479,153 @@
                     <span class="sezione-titolo-testo"><span>Servizi</span></span>
                 </h2>
 
-                <div class="servizi-grid">
-                    <article class="servizi-col">
-                        <div class="servizi-col-head">
+                <div class="servizi-intro">
+                    <figure class="servizi-foto">
+                        <img src="assets/images/servizi-maria-grazia-ufficio.webp"
+                            alt="Maria Grazia Sorvillo nel suo ufficio — Furia Immobiliare Srls"
+                            width="1200" height="900" loading="lazy">
+                    </figure>
+                    <div class="servizi-bio">
+                        <h3 class="servizi-bio-nome">Maria Grazia Sorvillo</h3>
+                        <p class="servizi-bio-ruolo">Titolare — Furia Immobiliare Srls</p>
+                        <p class="servizi-bio-testo">
+                            Nel cuore dell'Agro Caleno, a Sparanise, accompagno privati e imprese in ogni fase
+                            dell'acquisto, della vendita o dell'affitto: dalla valutazione al rogito, con un
+                            approccio diretto, trasparente e su misura.
+                        </p>
+                        <p class="servizi-bio-testo">
+                            Il mio obiettivo è semplice: far sì che la casa giusta e le pratiche necessarie
+                            arrivino insieme, senza sorprese, con assistenza dedicata dal primo contatto fino
+                            alle chiavi in mano.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="servizi-accordion" data-servizi-accordion>
+                    <div class="servizi-item">
+                        <button type="button" class="servizi-toggle" aria-expanded="false"
+                            aria-controls="servizi-panel-valutazione" id="servizi-btn-valutazione">
                             <img class="servizi-icona" src="assets/images/icons/icon-chart-no-axes-combined.svg" alt=""
                                 width="48" height="48">
-                            <h3 class="servizi-col-titolo"><span>Valutazione &amp;</span><span>Perizie</span></h3>
+                            <span class="servizi-toggle-titolo"><span>Valutazione &amp;</span><span>Perizie</span></span>
+                            <span class="servizi-toggle-segno" aria-hidden="true">+</span>
+                        </button>
+                        <div class="servizi-panel" id="servizi-panel-valutazione" role="region"
+                            aria-labelledby="servizi-btn-valutazione" hidden>
+                            <div class="servizi-voce">
+                                <p class="servizi-voce-titolo">Valutazione commerciale</p>
+                                <p class="servizi-voce-testo">Analizziamo il tuo immobile e il mercato di riferimento per
+                                    indicarti un prezzo di vendita o affitto realistico, basato su dati concreti e non su
+                                    stime a caso.</p>
+                            </div>
+                            <div class="servizi-voce">
+                                <p class="servizi-voce-titolo">Perizie estimative scritte</p>
+                                <p class="servizi-voce-testo">Un documento tecnico formale con la stima dettagliata del
+                                    valore dell'immobile, utile per successioni, divisioni patrimoniali o pratiche
+                                    bancarie.</p>
+                            </div>
+                            <div class="servizi-voce">
+                                <p class="servizi-voce-titolo">Studi di fattibilità per operazioni</p>
+                                <p class="servizi-voce-testo">Valutiamo la fattibilità tecnica ed economica di un progetto
+                                    immobiliare prima che tu investa tempo e risorse, per capire se l'operazione ha
+                                    davvero senso.</p>
+                            </div>
                         </div>
-                        <div class="servizi-voce">
-                            <p class="servizi-voce-titolo">Valutazione<br>commerciale:</p>
-                            <p class="servizi-voce-testo">Analizziamo il tuo immobile e il mercato di riferimento per
-                                indicarti un prezzo di vendita o affitto realistico, basato su dati concreti e non su
-                                stime a caso.</p>
-                        </div>
-                        <div class="servizi-voce">
-                            <p class="servizi-voce-titolo">Perizie estimative<br>scritte:</p>
-                            <p class="servizi-voce-testo">Un documento tecnico formale con la stima dettagliata del
-                                valore dell'immobile, utile per successioni, divisioni patrimoniali o pratiche
-                                bancarie.</p>
-                        </div>
-                        <div class="servizi-voce">
-                            <p class="servizi-voce-titolo">Studi di fattibilità<br>per operazioni:</p>
-                            <p class="servizi-voce-testo">Valutiamo la fattibilità tecnica ed economica di un progetto
-                                immobiliare prima che tu investa tempo e risorse, per capire se l'operazione ha
-                                davvero senso.</p>
-                        </div>
-                        <div class="servizi-voce servizi-voce--vuota" aria-hidden="true"></div>
-                    </article>
+                    </div>
 
-                    <article class="servizi-col">
-                        <div class="servizi-col-head">
+                    <div class="servizi-item">
+                        <button type="button" class="servizi-toggle" aria-expanded="false"
+                            aria-controls="servizi-panel-marketing" id="servizi-btn-marketing">
                             <img class="servizi-icona" src="assets/images/icons/icon-image-play.svg" alt="" width="48"
                                 height="48">
-                            <h3 class="servizi-col-titolo"><span>Marketing &amp;</span><span>Presentazione</span></h3>
+                            <span class="servizi-toggle-titolo"><span>Marketing &amp;</span><span>Presentazione</span></span>
+                            <span class="servizi-toggle-segno" aria-hidden="true">+</span>
+                        </button>
+                        <div class="servizi-panel" id="servizi-panel-marketing" role="region"
+                            aria-labelledby="servizi-btn-marketing" hidden>
+                            <div class="servizi-voce">
+                                <p class="servizi-voce-titolo">Servizio fotografico</p>
+                                <p class="servizi-voce-testo">Fotografie professionali che mettono in luce ogni ambiente,
+                                    perché un annuncio si nota prima di tutto con lo sguardo.</p>
+                            </div>
+                            <div class="servizi-voce">
+                                <p class="servizi-voce-titolo">Promozione pubblicitaria online</p>
+                                <p class="servizi-voce-testo">Il tuo immobile visibile sul nostro sito immobiliare e sui
+                                    nostri canali social, con un annuncio curato in ogni dettaglio.</p>
+                            </div>
+                            <div class="servizi-voce">
+                                <p class="servizi-voce-titolo">Visite clientela selezionata</p>
+                                <p class="servizi-voce-testo">Organizziamo le visite solo con persone realmente
+                                    interessate e in target, per non farti perdere tempo con semplici curiosi.</p>
+                            </div>
                         </div>
-                        <div class="servizi-voce">
-                            <p class="servizi-voce-titolo">Servizio<br>fotografico:</p>
-                            <p class="servizi-voce-testo">Fotografie professionali che mettono in luce ogni ambiente,
-                                perché un annuncio si nota prima di tutto con lo sguardo.</p>
-                        </div>
-                        <div class="servizi-voce">
-                            <p class="servizi-voce-titolo">Promozione pubblicitaria<br>online:</p>
-                            <p class="servizi-voce-testo">Il tuo immobile visibile sul nostro sito immobiliare e sui
-                                nostri canali social, con un annuncio curato in ogni dettaglio.</p>
-                        </div>
-                        <div class="servizi-voce">
-                            <p class="servizi-voce-titolo">Visite clientela<br>selezionata:</p>
-                            <p class="servizi-voce-testo">Organizziamo le visite solo con persone realmente
-                                interessate e in target, per non farti perdere tempo con semplici curiosi.</p>
-                        </div>
-                        <div class="servizi-voce servizi-voce--vuota" aria-hidden="true"></div>
-                    </article>
+                    </div>
 
-                    <article class="servizi-col">
-                        <div class="servizi-col-head">
+                    <div class="servizi-item">
+                        <button type="button" class="servizi-toggle" aria-expanded="false"
+                            aria-controls="servizi-panel-pratiche" id="servizi-btn-pratiche">
                             <img class="servizi-icona" src="assets/images/icons/icon-file-text.svg" alt="" width="48"
                                 height="48">
-                            <h3 class="servizi-col-titolo"><span>Pratiche &amp;</span><span>Contratti</span></h3>
+                            <span class="servizi-toggle-titolo"><span>Pratiche &amp;</span><span>Contratti</span></span>
+                            <span class="servizi-toggle-segno" aria-hidden="true">+</span>
+                        </button>
+                        <div class="servizi-panel" id="servizi-panel-pratiche" role="region"
+                            aria-labelledby="servizi-btn-pratiche" hidden>
+                            <div class="servizi-voce">
+                                <p class="servizi-voce-titolo">Registrazione contratti di locazione</p>
+                                <p class="servizi-voce-testo">Registriamo il contratto di affitto nei tempi previsti dalla
+                                    legge, senza che tu debba destreggiarti tra scadenze e moduli.</p>
+                            </div>
+                            <div class="servizi-voce">
+                                <p class="servizi-voce-titolo">Redazione preliminari</p>
+                                <p class="servizi-voce-testo">Prepariamo il contratto preliminare di compravendita con
+                                    tutte le clausole necessarie a tutelare entrambe le parti.</p>
+                            </div>
+                            <div class="servizi-voce">
+                                <p class="servizi-voce-titolo">Redazione contratti di locazione</p>
+                                <p class="servizi-voce-testo">Contratti di affitto redatti secondo la normativa vigente,
+                                    con le clausole più adatte alla tua situazione specifica.</p>
+                            </div>
+                            <div class="servizi-voce">
+                                <p class="servizi-voce-titolo">Registrazione preliminari</p>
+                                <p class="servizi-voce-testo">Ci occupiamo della registrazione del preliminare presso
+                                    l'Agenzia delle Entrate, con tutti gli adempimenti fiscali del caso.</p>
+                            </div>
                         </div>
-                        <div class="servizi-voce">
-                            <p class="servizi-voce-titolo">Registrazione contratti<br>di locazione:</p>
-                            <p class="servizi-voce-testo">Registriamo il contratto di affitto nei tempi previsti dalla
-                                legge, senza che tu debba destreggiarti tra scadenze e moduli.</p>
-                        </div>
-                        <div class="servizi-voce">
-                            <p class="servizi-voce-titolo">Redazione<br>preliminari:</p>
-                            <p class="servizi-voce-testo">Prepariamo il contratto preliminare di compravendita con
-                                tutte le clausole necessarie a tutelare entrambe le parti.</p>
-                        </div>
-                        <div class="servizi-voce">
-                            <p class="servizi-voce-titolo">Redazione contratti<br>di locazione:</p>
-                            <p class="servizi-voce-testo">Contratti di affitto redatti secondo la normativa vigente,
-                                con le clausole più adatte alla tua situazione specifica.</p>
-                        </div>
-                        <div class="servizi-voce">
-                            <p class="servizi-voce-titolo">Registrazione<br>preliminari:</p>
-                            <p class="servizi-voce-testo">Ci occupiamo della registrazione del preliminare presso
-                                l'Agenzia delle Entrate, con tutti gli adempimenti fiscali del caso.</p>
-                        </div>
-                    </article>
+                    </div>
 
-                    <article class="servizi-col">
-                        <div class="servizi-col-head">
+                    <div class="servizi-item">
+                        <button type="button" class="servizi-toggle" aria-expanded="false"
+                            aria-controls="servizi-panel-consulenza" id="servizi-btn-consulenza">
                             <img class="servizi-icona" src="assets/images/icons/icon-loco.svg" alt="" width="48"
                                 height="48">
-                            <h3 class="servizi-col-titolo"><span>Consulenza &amp;</span><span>Assistenza</span></h3>
+                            <span class="servizi-toggle-titolo"><span>Consulenza &amp;</span><span>Assistenza</span></span>
+                            <span class="servizi-toggle-segno" aria-hidden="true">+</span>
+                        </button>
+                        <div class="servizi-panel" id="servizi-panel-consulenza" role="region"
+                            aria-labelledby="servizi-btn-consulenza" hidden>
+                            <div class="servizi-voce">
+                                <p class="servizi-voce-titolo">Assistenza notarile</p>
+                                <p class="servizi-voce-testo">Ti accompagniamo fino al rogito, coordinandoci con il notaio
+                                    per verificare che tutto sia in ordine prima della firma.</p>
+                            </div>
+                            <div class="servizi-voce">
+                                <p class="servizi-voce-titolo">Assistenza tecnica architettonica</p>
+                                <p class="servizi-voce-testo">Un tecnico di fiducia a tua disposizione per verifiche,
+                                    pratiche edilizie o consulenze su ristrutturazioni e progetti.</p>
+                            </div>
+                            <div class="servizi-voce">
+                                <p class="servizi-voce-titolo">Verifiche energetiche</p>
+                                <p class="servizi-voce-testo">Controlliamo la classe energetica dell'immobile e ti
+                                    supportiamo nell'ottenere l'APE quando manca o va aggiornato.</p>
+                            </div>
+                            <div class="servizi-voce">
+                                <p class="servizi-voce-titolo">Assistenza creditizia</p>
+                                <p class="servizi-voce-testo">Ti mettiamo in contatto con i partner giusti per orientarti
+                                    tra mutui e finanziamenti, senza perderti in mille preventivi.</p>
+                            </div>
                         </div>
-                        <div class="servizi-voce">
-                            <p class="servizi-voce-titolo">Assistenza<br>notarile:</p>
-                            <p class="servizi-voce-testo">Ti accompagniamo fino al rogito, coordinandoci con il notaio
-                                per verificare che tutto sia in ordine prima della firma.</p>
-                        </div>
-                        <div class="servizi-voce">
-                            <p class="servizi-voce-titolo">Assistenza tecnica<br>architettonica:</p>
-                            <p class="servizi-voce-testo">Un tecnico di fiducia a tua disposizione per verifiche,
-                                pratiche edilizie o consulenze su ristrutturazioni e progetti.</p>
-                        </div>
-                        <div class="servizi-voce">
-                            <p class="servizi-voce-titolo">Verifiche<br>energetiche:</p>
-                            <p class="servizi-voce-testo">Controlliamo la classe energetica dell'immobile e ti
-                                supportiamo nell'ottenere l'APE quando manca o va aggiornato.</p>
-                        </div>
-                        <div class="servizi-voce">
-                            <p class="servizi-voce-titolo">Assistenza<br>creditizia:</p>
-                            <p class="servizi-voce-testo">Ti mettiamo in contatto con i partner giusti per orientarti
-                                tra mutui e finanziamenti, senza perderti in mille preventivi.</p>
-                        </div>
-                    </article>
+                    </div>
                 </div>
             </div>
         </section>

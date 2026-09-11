@@ -429,6 +429,44 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  /* ===== Servizi accordion (uno aperto alla volta) ===== */
+  const serviziAccordion = document.querySelector("[data-servizi-accordion]");
+  if (serviziAccordion) {
+    serviziAccordion.querySelectorAll(".servizi-item").forEach((item) => {
+      const btn = item.querySelector(".servizi-toggle");
+      const panel = item.querySelector(".servizi-panel");
+      const segno = item.querySelector(".servizi-toggle-segno");
+      if (!btn || !panel || !segno) return;
+
+      btn.addEventListener("click", () => {
+        const aperto = item.classList.contains("is-open");
+
+        serviziAccordion.querySelectorAll(".servizi-item.is-open").forEach((altro) => {
+          if (altro === item) return;
+          altro.classList.remove("is-open");
+          const aBtn = altro.querySelector(".servizi-toggle");
+          const aPanel = altro.querySelector(".servizi-panel");
+          const aSegno = altro.querySelector(".servizi-toggle-segno");
+          if (aBtn) aBtn.setAttribute("aria-expanded", "false");
+          if (aPanel) aPanel.hidden = true;
+          if (aSegno) aSegno.textContent = "+";
+        });
+
+        if (aperto) {
+          item.classList.remove("is-open");
+          btn.setAttribute("aria-expanded", "false");
+          panel.hidden = true;
+          segno.textContent = "+";
+        } else {
+          item.classList.add("is-open");
+          btn.setAttribute("aria-expanded", "true");
+          panel.hidden = false;
+          segno.textContent = "−";
+        }
+      });
+    });
+  }
+
   /* ===== FORM CONTATTI (secondo Seleziona vincolato al primo) ===== */
   const dettagliPerIntento = {
     compra: [{ value: "acquistare-immobile", label: "Acquistare un immobile" }],
