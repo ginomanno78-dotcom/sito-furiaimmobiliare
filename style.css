@@ -845,6 +845,20 @@ h2 {
   }
 }
 
+/* Tablet / iPad portrait da 768px (iPad Mini / 1ª gen inclusi): niente offset negativo */
+@media (min-width: 768px) and (orientation: portrait) {
+  .hero-content {
+    margin-left: 0;
+  }
+}
+
+/* Tablet / iPad landscape oltre 769px (iPad Pro 1366 + Surface Pro 7 1368 inclusi) */
+@media (min-width: 770px) and (max-width: 1368px) and (orientation: landscape) {
+  .hero-content {
+    margin-left: 0;
+  }
+}
+
 /* Mobile / tablet / iPad: cerca dentro il campo indirizzo, a destra */
 @media (max-width: 1023px) {
   .hero-search {
@@ -1483,6 +1497,79 @@ h2 {
   .vendi-cards {
     grid-template-columns: repeat(2, 1fr);
     gap: var(--spazio-4);
+  }
+
+  /* Immobili in Vendita: card a metà (mai piena); più card = carosello sx↔dx, mai stack */
+  #immobili-vendita .carousel-track {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+
+  #immobili-vendita .card-annuncio {
+    flex: 0 0 calc(50% - 10px);
+    width: calc(50% - 10px);
+    max-width: calc(50% - 10px);
+  }
+
+  #immobili-vendita .carousel.is-singolo .carousel-track {
+    justify-content: flex-start;
+  }
+
+  /* Sparanise (CE) + prezzo su un rigo, senza far uscire specs/CTA dal bordo */
+  #immobili-vendita .card-annuncio-body {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "tipo tipo"
+      "comune prezzo"
+      "specs specs"
+      "cta cta";
+    column-gap: 8px;
+    align-items: start;
+  }
+
+  #immobili-vendita .card-annuncio-tipo {
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    font-size: 1.05rem;
+  }
+
+  #immobili-vendita .card-annuncio-comune,
+  #immobili-vendita .card-annuncio-prezzo {
+    white-space: nowrap;
+    min-width: 0;
+  }
+
+  #immobili-vendita .card-annuncio-comune {
+    font-size: 0.78rem;
+    letter-spacing: 0.02em;
+  }
+
+  #immobili-vendita .card-annuncio-prezzo {
+    font-size: 1.1rem;
+  }
+
+  #immobili-vendita .card-annuncio-specs {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    justify-content: space-between;
+    gap: 6px;
+  }
+
+  #immobili-vendita .card-spec {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 6px 4px;
+  }
+
+  #immobili-vendita .card-annuncio-cta {
+    justify-self: end;
   }
 }
 
@@ -2306,26 +2393,76 @@ h2 {
   padding-bottom: 10px;
 }
 
-@media (min-width: 768px) {
-  .servizi-intro {
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-    gap: var(--spazio-5);
-    align-items: center;
-  }
-}
-
 @media (min-width: 1024px) {
   .sezione-servizi {
     padding: var(--spazio-8) 0;
   }
 
+  /* Desktop: foto e bio affiancate, allineate in alto */
   .servizi-intro {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
     gap: var(--spazio-6);
+    align-items: start;
   }
 
   .servizi-icona {
     width: 48px;
     height: 48px;
+  }
+}
+
+/* Tablet / iPad landscape sotto 1150px: bio sempre sotto la foto */
+@media (max-width: 1149px) and (orientation: landscape) {
+  .servizi-intro {
+    grid-template-columns: 1fr;
+    align-items: start;
+    justify-items: start;
+    gap: var(--spazio-4);
+  }
+
+  .servizi-foto {
+    width: min(518px, 60.5vw);
+    max-width: 100%;
+    justify-self: start;
+  }
+
+  .servizi-foto img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .servizi-bio {
+    width: 100%;
+  }
+}
+
+/* Tablet / iPad / ribelli portrait (Tab S4, Duo, M10, OnePlus Pad, A7/A9, S10 FE):
+   foto mai a tutta pagina — ridotta di 1/4 (75%), alto a sx, bio sotto */
+@media (min-width: 520px) and (max-width: 1366px) and (orientation: portrait) {
+  .servizi-intro {
+    grid-template-columns: 1fr;
+    align-items: start;
+    justify-items: start;
+    gap: var(--spazio-4);
+  }
+
+  .servizi-foto {
+    width: 75%;
+    max-width: 75%;
+    justify-self: start;
+  }
+
+  .servizi-foto img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .servizi-bio {
+    width: 100%;
   }
 }
 
@@ -2546,7 +2683,7 @@ h2 {
   object-fit: cover;
   /* Crop sulla chiesa: +~1cm a sinistra rispetto al centro */
   object-position: 60% 32%;
-  opacity: 0.15;
+  opacity: 0.1;
 }
 
 .site-footer-inner {
@@ -3583,4 +3720,34 @@ body.immobile-lightbox-open {
       max-height: calc(100vh - 16px);
     }
   }
+}
+/* ===== PULSANTE WHATSAPP FISSO ===== */
+.whatsapp-float {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 1700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #25d366;
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.whatsapp-float:hover {
+  filter: brightness(1.06);
+  transform: scale(1.06);
+}
+
+.whatsapp-float img {
+  width: 28px;
+  height: 28px;
+  display: block;
+  /* Icona bianca sul verde WhatsApp */
+  filter: brightness(0) invert(1);
 }
