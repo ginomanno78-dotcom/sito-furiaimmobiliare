@@ -77,12 +77,15 @@
                     <h1 class="immobile-titolo" id="immobileTitolo"></h1>
                     <p class="immobile-comune" id="immobileComune"></p>
                     <p class="immobile-prezzo" id="immobilePrezzo"></p>
+                    <!-- Specs come card home: mq, locali, bagni, piano -->
+                    <div class="immobile-specs" id="immobileSpecs" aria-label="Dati principali"></div>
                 </header>
 
-                <!-- Griglia: foto | scheda ; thumbs sotto foto (stessa base della scheda) -->
+                <!-- Griglia: foto | scheda ; azioni sotto foto -->
                 <div class="immobile-media">
                     <div class="immobile-galleria-principale">
                         <img src="" alt="" id="immobileFotoPrincipale">
+                        <div class="immobile-foto-dots" id="immobileFotoDots" aria-label="Navigazione foto"></div>
                     </div>
 
                     <section class="immobile-scheda" aria-labelledby="titolo-scheda">
@@ -90,16 +93,21 @@
                         <dl class="immobile-scheda-lista" id="immobileSchedaLista"></dl>
                     </section>
 
-                    <div class="immobile-thumbs-carousel">
-                        <button type="button" class="immobile-thumbs-btn" id="immobileThumbsPrev"
-                            aria-label="Miniature precedenti">
-                            <img src="assets/images/icons/icon-arrow-left.svg" alt="" width="20" height="20">
+                    <div class="immobile-media-azioni" role="group" aria-label="Planimetria, fotografie e video">
+                        <button type="button" class="immobile-azione" id="immobileBtnPlanimetria"
+                            aria-label="Apri planimetria">
+                            <img src="assets/images/icons/icon-planimetria.svg" alt="" width="30" height="30">
+                            <span class="immobile-azione-label">planimetria</span>
                         </button>
-                        <div class="immobile-galleria-thumbs" id="immobileThumbs" role="list"
-                            aria-label="Miniature galleria"></div>
-                        <button type="button" class="immobile-thumbs-btn" id="immobileThumbsNext"
-                            aria-label="Miniature successive">
-                            <img src="assets/images/icons/icon-arrow-right.svg" alt="" width="20" height="20">
+                        <button type="button" class="immobile-azione immobile-azione--foto" id="immobileBtnFoto"
+                            aria-label="Apri fotografie">
+                            <img src="assets/images/icons/icona-Photo-Camera.svg" alt="" width="40" height="50">
+                            <span class="immobile-azione-label" id="immobileFotoCount">0 foto</span>
+                        </button>
+                        <button type="button" class="immobile-azione" id="immobileBtnVideo" aria-label="Apri video"
+                            disabled>
+                            <img src="assets/images/icons/icon-video.svg" alt="" width="40" height="40">
+                            <span class="immobile-azione-label">video</span>
                         </button>
                     </div>
                 </div>
