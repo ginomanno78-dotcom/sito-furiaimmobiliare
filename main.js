@@ -202,11 +202,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const cta = href
       ? `<a href="${href}" class="card-annuncio-cta">Scopri &gt;</a>`
       : `<span class="card-annuncio-cta">Scopri &gt;</span>`;
+    const altCover = `${titolo} a ${annuncio.comune}`;
+    const media = href
+      ? `<div class="card-annuncio-media"><a href="${href}" class="card-annuncio-cover-link" aria-label="${altCover}"><img src="${annuncio.cover}" alt="${altCover}" width="600" height="400" loading="lazy"></a></div>`
+      : `<div class="card-annuncio-media"><img src="${annuncio.cover}" alt="${altCover}" width="600" height="400" loading="lazy"></div>`;
 
     article.innerHTML = `
-      <div class="card-annuncio-media">
-        <img src="${annuncio.cover}" alt="${titolo} a ${annuncio.comune}" width="600" height="400" loading="lazy">
-      </div>
+      ${media}
       <div class="card-annuncio-body">
         <p class="card-annuncio-tipo">${titolo}</p>
         <div class="card-annuncio-riga">
@@ -876,9 +878,9 @@ document.addEventListener("DOMContentLoaded", () => {
           ["Camere da letto", annuncio.camere],
           ["Bagni", annuncio.bagni],
           ["Cucina", annuncio.cucina],
-          ["Stato conservazione", annuncio.statoConservazione],
           ["Piano", typeof formatPiano === "function" ? formatPiano(annuncio.piano) : annuncio.piano],
           ["Piani edificio", annuncio.pianiEdificio],
+          ["Stato conservazione", annuncio.statoConservazione],
           ["Anno di costruzione", annuncio.annoCostruzione],
           ["Ascensore", annuncio.ascensore == null ? null : siNo(annuncio.ascensore)],
           ["Balconi", annuncio.balconi],
@@ -888,12 +890,43 @@ document.addEventListener("DOMContentLoaded", () => {
           ["Classe energetica", annuncio.classeEnergetica]
         ].filter(([, val]) => val != null && val !== "");
 
+        // Mobile: chiudi dopo Piano; desktop (≥1367): chiudi dopo Balconi
+        const idxPiano = righe.findIndex(([label]) => label === "Piano");
+        const idxBalconi = righe.findIndex(([label]) => label === "Balconi");
         elScheda.innerHTML = righe
-          .map(
-            ([label, val]) =>
-              `<div><dt>${label}</dt><dd>${val}</dd></div>`
-          )
+          .map(([label, val], i) => {
+            const classi = [];
+            if (label === "Piano") classi.push("immobile-scheda-fino");
+            if (idxPiano >= 0 && i > idxPiano) classi.push("immobile-scheda-extra");
+            if (label === "Balconi") classi.push("immobile-scheda-fino-desktop");
+            if (idxBalconi >= 0 && i > idxBalconi) classi.push("immobile-scheda-extra-desktop");
+            const cls = classi.length ? ` class="${classi.join(" ")}"` : "";
+            return `<div${cls}><dt>${label}</dt><dd>${val}</dd></div>`;
+          })
           .join("");
+
+        const elSchedaToggle = document.getElementById("immobileSchedaToggle");
+        const elSchedaBox = elScheda.closest(".immobile-scheda");
+        const haExtra =
+          (idxPiano >= 0 && idxPiano < righe.length - 1) ||
+          (idxBalconi >= 0 && idxBalconi < righe.length - 1);
+        if (elSchedaToggle && elSchedaBox) {
+          const elToggleLabel = elSchedaToggle.querySelector(".immobile-scheda-toggle-label");
+          elSchedaBox.classList.remove("is-scheda-aperta");
+          if (haExtra) {
+            elSchedaToggle.hidden = false;
+            elSchedaToggle.setAttribute("aria-expanded", "false");
+            if (elToggleLabel) elToggleLabel.textContent = "Mostra di più";
+            elSchedaToggle.onclick = () => {
+              const aperta = elSchedaBox.classList.toggle("is-scheda-aperta");
+              elSchedaToggle.setAttribute("aria-expanded", aperta ? "true" : "false");
+              if (elToggleLabel) elToggleLabel.textContent = aperta ? "Mostra di meno" : "Mostra di più";
+            };
+          } else {
+            elSchedaToggle.hidden = true;
+            elSchedaToggle.onclick = null;
+          }
+        }
       }
     }
   }
