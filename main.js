@@ -612,9 +612,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const elPrezzo = document.getElementById("immobilePrezzo");
       const elDescrizione = document.getElementById("immobileDescrizione");
       const elFoto = document.getElementById("immobileFotoPrincipale");
-      const elThumbs = document.getElementById("immobileThumbs");
-      const elThumbsPrev = document.getElementById("immobileThumbsPrev");
-      const elThumbsNext = document.getElementById("immobileThumbsNext");
+      const elFotoDots = document.getElementById("immobileFotoDots");
+      const elFotoCount = document.getElementById("immobileFotoCount");
+      const elBtnPlanimetria = document.getElementById("immobileBtnPlanimetria");
+      const elBtnFoto = document.getElementById("immobileBtnFoto");
+      const elBtnVideo = document.getElementById("immobileBtnVideo");
       const elScheda = document.getElementById("immobileSchedaLista");
       const elFotoBox = elFoto ? elFoto.closest(".immobile-galleria-principale") : null;
       const elMappa = document.getElementById("immobileMappa");
@@ -640,6 +642,42 @@ document.addEventListener("DOMContentLoaded", () => {
       if (elPrezzo) elPrezzo.textContent = prezzo;
       if (elDescrizione) elDescrizione.textContent = annuncio.descrizione || "";
 
+      /* Specs sotto prezzo: mq, locali, bagni, piano (come card home) */
+      const elSpecs = document.getElementById("immobileSpecs");
+      if (elSpecs) {
+        const bagnoLabel =
+          annuncio.bagni == null
+            ? ""
+            : `${annuncio.bagni} bagno${annuncio.bagni === 1 ? "" : "i"}`;
+        const pianoLabel =
+          typeof formatPiano === "function" ? formatPiano(annuncio.piano) : annuncio.piano;
+        const voci = [
+          {
+            icona: "assets/images/icons/icon-planimetria.svg",
+            testo: annuncio.mq != null ? `${annuncio.mq} mq.` : null
+          },
+          {
+            icona: "assets/images/icons/icon-camera-letto.svg",
+            testo: annuncio.locali != null ? `${annuncio.locali} locali` : null
+          },
+          {
+            icona: "assets/images/icons/icon-bagno.svg",
+            testo: bagnoLabel || null
+          },
+          {
+            icona: "assets/images/icons/icon-scale.svg",
+            testo: pianoLabel || null
+          }
+        ].filter((v) => v.testo);
+
+        elSpecs.innerHTML = voci
+          .map(
+            (v) =>
+              `<div class="card-spec"><span class="card-spec-icon"><img src="${v.icona}" alt="" width="26" height="26"></span><span>${v.testo}</span></div>`
+          )
+          .join("");
+      }
+
       /* Mappa ubicazione (via + comune), larghezza container */
       if (elMappa) {
         const queryMappa = [annuncio.via, annuncio.comune].filter(Boolean).join(", ");
@@ -659,19 +697,19 @@ document.addEventListener("DOMContentLoaded", () => {
           elFoto.naturalWidth >= elFoto.naturalHeight ? "landscape" : "portrait";
       };
 
-      /* Galleria: cover + foto (senza duplicati) */
+      /* Galleria lightbox: solo foto annuncio (cover resta solo per la card in home) */
       const fotoLista = [];
-      if (annuncio.cover) fotoLista.push(annuncio.cover);
       (annuncio.galleria || []).forEach((src) => {
         if (src && !fotoLista.includes(src)) fotoLista.push(src);
       });
 
       let indiceFoto = 0;
+      let lightboxMode = "foto"; /* foto | planimetria */
 
-      const aggiornaThumbsAttive = () => {
-        if (!elThumbs) return;
-        elThumbs.querySelectorAll(".immobile-thumb").forEach((t, i) => {
-          t.classList.toggle("is-active", i === indiceFoto);
+      const aggiornaDotsAttivi = () => {
+        if (!elFotoDots) return;
+        elFotoDots.querySelectorAll(".immobile-foto-dot").forEach((d, i) => {
+          d.classList.toggle("is-active", i === indiceFoto);
         });
       };
 
@@ -680,6 +718,7 @@ document.addEventListener("DOMContentLoaded", () => {
         elFoto.src = src;
         elFoto.alt = alt || titoloRiga;
         if (elFoto.complete && elFoto.naturalWidth) adattaOrientamentoFoto();
+        aggiornaDotsAttivi();
       };
 
       if (elFoto) {
@@ -695,11 +734,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const aggiornaLightboxFoto = () => {
         if (!lightboxFoto || !fotoLista.length) return;
+        lightboxMode = "foto";
         const src = fotoLista[indiceFoto];
         lightboxFoto.src = src;
         lightboxFoto.alt = `${titoloRiga} — foto ${indiceFoto + 1}`;
         mostraFoto(src, lightboxFoto.alt);
-        aggiornaThumbsAttive();
+        if (lightboxPrev) lightboxPrev.hidden = fotoLista.length <= 1;
+        if (lightboxNext) lightboxNext.hidden = fotoLista.length <= 1;
       };
 
       const apriLightbox = (indice) => {
@@ -711,20 +752,38 @@ document.addEventListener("DOMContentLoaded", () => {
         if (lightboxChiudi) lightboxChiudi.focus();
       };
 
+      const apriPlanimetria = () => {
+        if (!lightbox || !lightboxFoto || !annuncio.planimetria) return;
+        lightboxMode = "planimetria";
+        lightboxFoto.src = annuncio.planimetria;
+        lightboxFoto.alt = `${titoloRiga} — planimetria`;
+        if (lightboxPrev) lightboxPrev.hidden = true;
+        if (lightboxNext) lightboxNext.hidden = true;
+        lightbox.hidden = false;
+        document.body.classList.add("immobile-lightbox-open");
+        if (lightboxChiudi) lightboxChiudi.focus();
+      };
+
       const chiudiLightbox = () => {
         if (!lightbox) return;
         lightbox.hidden = true;
         document.body.classList.remove("immobile-lightbox-open");
+        lightboxMode = "foto";
+        if (lightboxPrev) lightboxPrev.hidden = false;
+        if (lightboxNext) lightboxNext.hidden = false;
       };
 
       const lightboxVai = (dir) => {
-        if (!fotoLista.length) return;
+        if (lightboxMode !== "foto" || !fotoLista.length) return;
         indiceFoto = (indiceFoto + dir + fotoLista.length) % fotoLista.length;
         aggiornaLightboxFoto();
       };
 
       if (elFotoBox) {
-        elFotoBox.addEventListener("click", () => apriLightbox(indiceFoto));
+        elFotoBox.addEventListener("click", (e) => {
+          if (e.target.closest(".immobile-foto-dot")) return;
+          apriLightbox(indiceFoto);
+        });
       }
 
       if (lightboxChiudi) lightboxChiudi.addEventListener("click", (e) => {
@@ -755,52 +814,72 @@ document.addEventListener("DOMContentLoaded", () => {
         if (e.key === "ArrowRight") lightboxVai(1);
       });
 
-      if (fotoLista.length) {
-        mostraFoto(fotoLista[0], `${titoloRiga} — foto 1`);
-      }
-
-      if (elThumbs) {
-        elThumbs.innerHTML = "";
-        fotoLista.forEach((src, i) => {
-          const btn = document.createElement("button");
-          btn.type = "button";
-          btn.className = "immobile-thumb" + (i === 0 ? " is-active" : "");
-          btn.setAttribute("aria-label", `Foto ${i + 1}`);
-          btn.innerHTML = `<img src="${src}" alt="" width="100" height="72" loading="lazy">`;
-          btn.addEventListener("click", () => {
+      /* Dot navigation sulla foto */
+      if (elFotoDots) {
+        elFotoDots.innerHTML = "";
+        fotoLista.forEach((_, i) => {
+          const dot = document.createElement("button");
+          dot.type = "button";
+          dot.className = "immobile-foto-dot" + (i === 0 ? " is-active" : "");
+          dot.setAttribute("aria-label", `Vai alla foto ${i + 1}`);
+          dot.addEventListener("click", (e) => {
+            e.stopPropagation();
             indiceFoto = i;
-            mostraFoto(src, `${titoloRiga} — foto ${i + 1}`);
-            aggiornaThumbsAttive();
-            apriLightbox(i);
+            mostraFoto(fotoLista[i], `${titoloRiga} — foto ${i + 1}`);
           });
-          elThumbs.appendChild(btn);
+          elFotoDots.appendChild(dot);
         });
       }
 
-      /* Frecce carosello miniature (niente scrollbar visibile) */
-      const scorreThumbs = (dir) => {
-        if (!elThumbs) return;
-        const passo = Math.max(160, Math.floor(elThumbs.clientWidth * 0.7));
-        elThumbs.scrollBy({ left: dir * passo, behavior: "smooth" });
-      };
-      if (elThumbsPrev) elThumbsPrev.addEventListener("click", () => scorreThumbs(-1));
-      if (elThumbsNext) elThumbsNext.addEventListener("click", () => scorreThumbs(1));
+      if (elFotoCount) {
+        const n = fotoLista.length;
+        elFotoCount.textContent = `${n} foto`;
+      }
+
+      if (elBtnPlanimetria) {
+        if (!annuncio.planimetria) {
+          elBtnPlanimetria.disabled = true;
+        } else {
+          elBtnPlanimetria.addEventListener("click", apriPlanimetria);
+        }
+      }
+
+      if (elBtnFoto) {
+        elBtnFoto.addEventListener("click", () => apriLightbox(indiceFoto));
+        elBtnFoto.setAttribute(
+          "aria-label",
+          `Apri fotografie (${fotoLista.length})`
+        );
+      }
+
+      if (elBtnVideo) {
+        if (annuncio.video) {
+          elBtnVideo.disabled = false;
+          elBtnVideo.addEventListener("click", () => {
+            window.open(annuncio.video, "_blank", "noopener,noreferrer");
+          });
+        } else {
+          elBtnVideo.disabled = true;
+        }
+      }
+
+      if (fotoLista.length) {
+        mostraFoto(fotoLista[0], `${titoloRiga} — foto 1`);
+      }
 
       /* Scheda tecnica */
       if (elScheda) {
         const siNo = (v) => (v ? "Sì" : "No");
         const righe = [
-          ["Tipologia", annuncio.tipologia],
-          ["Contratto", annuncio.contratto],
-          ["Indirizzo", annuncio.via],
-          ["Comune", annuncio.comune],
           ["Superficie", annuncio.mq != null ? `${annuncio.mq} mq` : null],
           ["Locali", annuncio.locali],
           ["Camere da letto", annuncio.camere],
           ["Bagni", annuncio.bagni],
           ["Cucina", annuncio.cucina],
+          ["Stato conservazione", annuncio.statoConservazione],
           ["Piano", typeof formatPiano === "function" ? formatPiano(annuncio.piano) : annuncio.piano],
           ["Piani edificio", annuncio.pianiEdificio],
+          ["Anno di costruzione", annuncio.annoCostruzione],
           ["Ascensore", annuncio.ascensore == null ? null : siNo(annuncio.ascensore)],
           ["Balconi", annuncio.balconi],
           ["Arredato", annuncio.arredato == null ? null : siNo(annuncio.arredato)],

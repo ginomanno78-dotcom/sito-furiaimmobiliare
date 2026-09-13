@@ -20,6 +20,9 @@ const annunci = {
       angoloCon: "Via Kennedy",
       categoriaAnnuncio: "",
       comune: "Sparanise (CE)",
+      /* Scheda tecnica: sostituiscono Tipologia / Contratto */
+      statoConservazione: "Abitabile",
+      annoCostruzione: 1980,
       prezzo: 75000,
       mq: 105,
       locali: 4,
@@ -38,7 +41,7 @@ const annunci = {
         "Vendesi in Sparanise alla via Kennedy appartamento con doppia esposizione, sita al piano primo di 105 mq calpestabili. Composto da ampio ingresso, salone doppio, cucina, due camere da letto, bagno con antibagno, balcone e cantina. Infissi sostituiti recentemente. Ingresso su Via A.B. Nobel n.1; immobile d’angolo anche con Via Kennedy.",
       cover: "assets/images/annunci/vendita/sparanise-cinquegrana-via-kennedy/cover-cinquegrana-sparanise.webp",
       planimetria:
-        "assets/images/annunci/vendita/sparanise-cinquegrana-via-kennedy/TAVOLE-CILAS-assia2-Modelpage-0001.jpg",
+        "assets/images/annunci/vendita/sparanise-cinquegrana-via-kennedy/TAVOLE-CILAS-assia2-Modelpage-0001.webp",
       galleria: [
         "assets/images/annunci/vendita/sparanise-cinquegrana-via-kennedy/foto-01.webp",
         "assets/images/annunci/vendita/sparanise-cinquegrana-via-kennedy/foto-02.webp",
