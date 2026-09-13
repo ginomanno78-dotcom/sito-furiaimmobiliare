@@ -1069,6 +1069,13 @@ h2 {
   overflow: hidden;
 }
 
+.card-annuncio-cover-link {
+  display: block;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
 .card-annuncio-media img {
   width: 100%;
   height: 100%;
@@ -1356,7 +1363,7 @@ h2 {
 
 .vendi-occhiello {
   margin: 0 0 var(--spazio-3);
-  font-size: 0.95rem;
+  font-size: clamp(1.05rem, 2.2vw, 1.35rem);
   font-weight: 500;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -1440,7 +1447,7 @@ h2 {
 .vendi-card-titolo {
   margin: 0;
   font-family: var(--font-corpo);
-  font-size: calc(0.95rem + 3px);
+  font-size: calc(0.95rem + 8px);
   font-weight: 400;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -2301,6 +2308,13 @@ h2 {
   text-align: justify;
 }
 
+/* Mobile portrait: bio allineata a sinistra (non giustificata) */
+@media (max-width: 767px) and (orientation: portrait) {
+  .servizi-bio-testo {
+    text-align: left;
+  }
+}
+
 .servizi-bio-testo:last-child {
   margin-bottom: 0;
 }
@@ -2406,6 +2420,18 @@ h2 {
     align-items: start;
   }
 
+  /* Solo foto: −5%; bio invariata nella sua colonna */
+  .servizi-foto {
+    width: 95%;
+    max-width: 95%;
+    justify-self: start;
+  }
+
+  /* Bio 3mm più in alto */
+  .servizi-bio {
+    margin-top: -3mm;
+  }
+
   .servizi-icona {
     width: 48px;
     height: 48px;
@@ -2464,6 +2490,22 @@ h2 {
 
   .servizi-bio {
     width: 100%;
+  }
+}
+
+/* Desktop only (≥1367px): 4 toggle su 2 righi, colonne a metà uguale */
+@media (min-width: 1367px) {
+  .servizi-accordion {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--spazio-5);
+    row-gap: 0;
+    max-width: none;
+    width: 100%;
+  }
+
+  .servizi-item {
+    min-width: 0;
   }
 }
 
@@ -3079,7 +3121,7 @@ h2 {
   border-radius: 50%;
   border: none;
   padding: 0;
-  background: #fff;
+  background: var(--colore-primario);
   opacity: 0.4;
   cursor: pointer;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
@@ -3206,7 +3248,7 @@ h2 {
   width: 100%;
   margin: 0;
   padding: 12px 0 0;
-  border: 3px solid var(--colore-primario);
+  border: 1px solid var(--colore-primario);
   border-radius: var(--raggio-md);
   background: var(--colore-secondario);
   overflow: hidden;
@@ -3309,6 +3351,41 @@ h2 {
   font-weight: 500;
   color: var(--colore-testo);
   text-align: right;
+}
+
+/* Toggle scheda: nascosto di default (solo mobile portrait) */
+.immobile-scheda-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: calc(100% - 24px);
+  margin: 4px 12px 12px;
+  padding: 10px 12px;
+  border: none;
+  border-top: 1px solid var(--colore-bordo);
+  border-radius: 0;
+  background: transparent;
+  font-family: var(--font-corpo);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--colore-primario);
+  cursor: pointer;
+  text-align: center;
+}
+
+.immobile-scheda-toggle-freccia {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--colore-primario);
+  transition: transform 0.2s ease;
+}
+
+.immobile-scheda.is-scheda-aperta .immobile-scheda-toggle-freccia {
+  transform: rotate(180deg);
 }
 
 /* CTA */
@@ -3488,6 +3565,32 @@ body.immobile-lightbox-open {
   overflow: hidden;
 }
 
+/* Desktop: frecce next/prev sempre vicino ai bordi della foto (portrait e landscape) */
+@media (min-width: 1024px) {
+  .immobile-lightbox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .immobile-lightbox-frame {
+    grid-column: auto;
+    flex: 0 1 auto;
+    width: fit-content;
+    max-width: calc(100% - 120px);
+  }
+
+  .immobile-lightbox-nav,
+  .immobile-lightbox-nav--prev,
+  .immobile-lightbox-nav--next {
+    grid-column: auto;
+    position: static;
+    flex: 0 0 48px;
+  }
+}
+
 /* ===== RESPONSIVE IMMODILE — famiglie viewport (responsive-viewport-foundation) ===== */
 
 /* Famiglia A — Mobile portrait (base già stacked; raffinamenti) */
@@ -3542,26 +3645,54 @@ body.immobile-lightbox-open {
     justify-content: center;
     min-height: 44px;
   }
+}
 
-  /* Lightbox mobile portrait: foto sopra, frecce sotto — sempre dentro lo schermo */
+/* Mobile portrait + landscape: scheda chiusa fino a Piano, toggle mostra di più/meno
+   In landscape molti telefoni hanno width >767 (es. 844): si usa anche max-height come Famiglia B */
+@media (max-width: 767px),
+(max-width: 1023px) and (orientation: landscape) and (max-height: 520px) {
+  .immobile-scheda:not(.is-scheda-aperta) .immobile-scheda-extra {
+    display: none;
+  }
+
+  .immobile-scheda:not(.is-scheda-aperta) .immobile-scheda-fino {
+    border-bottom: none;
+  }
+
+  .immobile-scheda-toggle:not([hidden]) {
+    display: inline-flex;
+  }
+}
+
+/* Mobile/tablet portrait: frecce sotto la foto, fuori, attaccate al bordo inferiore */
+@media (max-width: 1023px) and (orientation: portrait) {
   .immobile-lightbox {
+    display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: minmax(0, 1fr) auto;
-    row-gap: 12px;
-    column-gap: 12px;
+    grid-template-rows: auto auto;
+    align-content: center;
+    justify-items: center;
+    row-gap: 8px;
+    column-gap: 20px;
     padding: max(44px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) max(12px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px));
   }
 
   .immobile-lightbox-frame {
     grid-column: 1 / -1;
     grid-row: 1;
+    width: fit-content;
     max-width: 100%;
-    max-height: 100%;
+    max-height: calc(100dvh - 140px);
   }
 
   .immobile-lightbox-frame img {
     max-width: 100%;
-    max-height: calc(100dvh - 120px);
+    max-height: calc(100dvh - 140px);
+  }
+
+  .immobile-lightbox-nav {
+    width: 44px;
+    height: 44px;
   }
 
   .immobile-lightbox-nav--prev {
@@ -3597,18 +3728,24 @@ body.immobile-lightbox-open {
     max-width: 100%;
     margin-inline: auto;
   }
+}
 
+/* Mobile/tablet landscape: frecce ai lati esterni della foto, attaccate (mai dentro) */
+@media (max-width: 1023px) and (orientation: landscape) {
   .immobile-lightbox {
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    grid-template-rows: minmax(0, 1fr);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     padding: 8px max(8px, env(safe-area-inset-right, 0px)) 8px max(8px, env(safe-area-inset-left, 0px));
-    column-gap: 8px;
   }
 
   .immobile-lightbox-frame {
-    grid-column: 2;
-    grid-row: 1;
-    max-height: 100%;
+    flex: 0 1 auto;
+    width: fit-content;
+    max-width: calc(100% - 100px);
+    max-height: calc(100dvh - 16px);
   }
 
   .immobile-lightbox-frame img {
@@ -3616,19 +3753,18 @@ body.immobile-lightbox-open {
     max-width: 100%;
   }
 
-  .immobile-lightbox-nav--prev {
-    grid-column: 1;
-    grid-row: 1;
-    justify-self: center;
-  }
-
+  .immobile-lightbox-nav,
+  .immobile-lightbox-nav--prev,
   .immobile-lightbox-nav--next {
-    grid-column: 3;
-    grid-row: 1;
-    justify-self: center;
+    grid-column: auto;
+    grid-row: auto;
+    flex: 0 0 40px;
+    width: 40px;
+    height: 40px;
+    justify-self: auto;
   }
 
-  .immobile-lightbox-nav {
+  .immobile-lightbox-chiudi {
     width: 40px;
     height: 40px;
   }
@@ -3750,6 +3886,84 @@ body.immobile-lightbox-open {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+  }
+}
+
+/* Solo desktop (≥1367): toggle dopo Balconi; foto a altezza fissa (non segue la scheda) */
+@media (min-width: 1367px) {
+  .immobile-media {
+    grid-template-rows: auto auto;
+    align-items: start;
+  }
+
+  .immobile-galleria-principale {
+    aspect-ratio: 16 / 10;
+    height: auto;
+    min-height: 0;
+    align-self: start;
+  }
+
+  .immobile-scheda {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    align-self: start;
+  }
+
+  .immobile-scheda-lista {
+    flex: none;
+  }
+
+  .immobile-scheda:not(.is-scheda-aperta) .immobile-scheda-extra-desktop {
+    display: none;
+  }
+
+  .immobile-scheda:not(.is-scheda-aperta) .immobile-scheda-fino-desktop {
+    border-bottom: none;
+  }
+
+  .immobile-scheda-toggle:not([hidden]) {
+    display: inline-flex;
+  }
+}
+
+/* Tablet / iPad portrait 520–1366 (Tab M10, OnePlus Pad, Tab A7/A9/S10 FE/S4,
+   Surface Duo, iPad Pro): dopo desktop — foto sopra, scheda sotto, lista a 2 colonne */
+@media (min-width: 520px) and (max-width: 1366px) and (orientation: portrait) {
+  .immobile-media {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    grid-template-areas:
+      "foto"
+      "azioni"
+      "scheda";
+    gap: 14px;
+    align-items: stretch;
+  }
+
+  .immobile-galleria-principale {
+    aspect-ratio: 16 / 10;
+    height: auto;
+    min-height: 0;
+    align-self: auto;
+  }
+
+  .immobile-scheda {
+    display: block;
+    height: auto;
+    align-self: auto;
+    width: 100%;
+  }
+
+  .immobile-scheda h2 {
+    text-align: center;
+  }
+
+  .immobile-scheda-lista {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 2.5rem;
+    flex: none;
   }
 }
 
