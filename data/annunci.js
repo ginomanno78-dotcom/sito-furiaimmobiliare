@@ -15,7 +15,7 @@ const annunci = {
       nome: "Cinquegrana",
       tipologia: "Appartamento",
       contratto: "Vendita",
-      via: "Via A.B. Nobel n.1",
+      via: "Via A. B. Nobel n.1",
       /* Ingresso su Via Nobel; immobile d’angolo anche con Via Kennedy */
       angoloCon: "Via Kennedy",
       categoriaAnnuncio: "",
@@ -38,7 +38,7 @@ const annunci = {
       riscaldamento: "Autonomo",
       classeEnergetica: "C",
       descrizione:
-        "Vendesi in Sparanise alla via Kennedy appartamento con doppia esposizione, sita al piano primo di 105 mq calpestabili. Composto da ampio ingresso, salone doppio, cucina, due camere da letto, bagno con antibagno, balcone e cantina. Infissi sostituiti recentemente. Ingresso su Via A.B. Nobel n.1; immobile d’angolo anche con Via Kennedy.",
+        "Vendesi in Sparanise alla via Kennedy appartamento con doppia esposizione, sita al piano primo di 105 mq calpestabili. Composto da ampio ingresso, salone doppio, cucina, due camere da letto, bagno con antibagno, balcone e cantina. Infissi sostituiti recentemente. Ingresso su Via A. B. Nobel n.1; immobile d’angolo anche con Via Kennedy.",
       cover: "assets/images/annunci/vendita/sparanise-cinquegrana-via-kennedy/cover-cinquegrana-sparanise.webp",
       planimetria:
         "assets/images/annunci/vendita/sparanise-cinquegrana-via-kennedy/TAVOLE-CILAS-assia2-Modelpage-0001.webp",
