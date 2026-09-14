@@ -14,7 +14,7 @@
   --colore-bordo: #3A3A3A;
   --colore-successo: #2ecc71;
   --colore-errore: #ff2200;
-  --colore-navbar: #F4F1EA;
+  --colore-navbar: #E4E4DE;
   --colore-testo-scuro: #1A1A1A;
 
   --ombra-base: 0 2px 8px rgba(0, 0, 0, 0.25);
@@ -256,7 +256,7 @@ h2 {
   width: auto;
   box-sizing: border-box;
   border-radius: 999px;
-  background: #E4E4DE;
+  background: var(--colore-navbar);
   border-bottom: none;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
   transition: box-shadow 0.25s ease;
@@ -1060,6 +1060,132 @@ h2 {
   scroll-snap-align: start;
 }
 
+/* Link trasparente su tutta la card collegabile */
+.card-annuncio--cliccabile {
+  position: relative;
+}
+
+.card-annuncio-hit {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: var(--raggio-md);
+  text-indent: -9999px;
+  overflow: hidden;
+  color: transparent;
+}
+
+/* Condividi annuncio (card collegabili) */
+.card-annuncio-share {
+  position: relative;
+  z-index: 4;
+  flex-shrink: 0;
+}
+
+.card-annuncio-share-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--colore-accento);
+  cursor: pointer;
+}
+
+.card-annuncio-share-btn svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.card-annuncio-share-tooltip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translateX(-50%);
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: #fff;
+  font-family: var(--font-corpo);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease, visibility 0.15s ease;
+  z-index: 5;
+}
+
+.card-annuncio-share-btn:hover .card-annuncio-share-tooltip,
+.card-annuncio-share-btn:focus-visible .card-annuncio-share-tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Touch / niente hover: il tooltip non esiste */
+@media (hover: none) {
+  .card-annuncio-share-tooltip {
+    display: none !important;
+  }
+}
+
+.card-annuncio-share-menu {
+  /* fixed: esce dal carousel (overflow) e resta sopra tutto */
+  position: fixed;
+  top: 0;
+  right: auto;
+  left: 0;
+  min-width: 180px;
+  margin: 0;
+  padding: 6px 0;
+  list-style: none;
+  background: #E4E4DE;
+  border: none;
+  border-radius: var(--raggio-sm);
+  box-shadow: none;
+  z-index: 2500;
+}
+
+.card-annuncio-share-menu[hidden] {
+  display: none;
+}
+
+.card-annuncio-share-menu button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  border: none;
+  background: transparent;
+  color: #0E2B2C;
+  font-family: var(--font-corpo);
+  font-size: 0.85rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.card-annuncio-share-menu button svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: #0E2B2C;
+}
+
+.card-annuncio-share-menu button:hover {
+  background: rgba(14, 43, 44, 0.08);
+  color: #0E2B2C;
+}
+
 .card-annuncio-media {
   aspect-ratio: 440 / 250;
   background: #0a1f20;
@@ -1109,6 +1235,65 @@ h2 {
   border: 1px solid var(--colore-primario);
   /* Solo angoli superiori retti; inferiori arrotondati */
   border-radius: 0 0 var(--raggio-md) var(--raggio-md);
+}
+
+/* Card Sparanise: 3 righi testo — prezzo / tipologia+via / comune */
+.card-annuncio[data-id="sparanise-cinquegrana-via-kennedy"] .card-annuncio-body {
+  background: var(--colore-sfondo);
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "prezzo"
+    "tipo"
+    "comune"
+    "specs";
+  align-items: start;
+}
+
+.card-annuncio[data-id="sparanise-cinquegrana-via-kennedy"] .card-annuncio-prezzo {
+  grid-area: unset;
+  justify-self: start;
+  text-align: left;
+  font-family: var(--font-corpo);
+  font-size: calc(0.98rem + 17px);
+  font-weight: 600;
+  color: var(--colore-accento);
+}
+
+.card-annuncio[data-id="sparanise-cinquegrana-via-kennedy"] .card-annuncio-prezzo-riga {
+  grid-area: prezzo;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+
+.card-annuncio[data-id="sparanise-cinquegrana-via-kennedy"] .card-annuncio-tipo {
+  grid-area: tipo;
+  font-family: var(--font-corpo);
+  font-weight: 400;
+  color: var(--colore-testo);
+}
+
+.card-annuncio[data-id="sparanise-cinquegrana-via-kennedy"] .card-annuncio-comune {
+  grid-area: comune;
+  font-family: var(--font-corpo);
+  font-weight: 400;
+  text-transform: uppercase;
+  color: var(--colore-testo);
+}
+
+.card-annuncio[data-id="sparanise-cinquegrana-via-kennedy"] .card-annuncio-specs {
+  grid-area: specs;
+}
+
+.card-annuncio[data-id="sparanise-cinquegrana-via-kennedy"] .card-spec {
+  background: var(--colore-secondario);
+}
+
+.card-annuncio[data-id="sparanise-cinquegrana-via-kennedy"] .card-annuncio-cta {
+  display: none;
 }
 
 .card-annuncio-tipo {
@@ -1363,8 +1548,9 @@ h2 {
 
 .vendi-occhiello {
   margin: 0 0 var(--spazio-3);
+  font-family: var(--font-titoli);
   font-size: clamp(1.05rem, 2.2vw, 1.35rem);
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: #fff;
@@ -1539,6 +1725,16 @@ h2 {
     align-items: start;
   }
 
+  /* Sparanise: mantiene i 3 righi anche in tablet portrait */
+  #immobili-vendita .card-annuncio[data-id="sparanise-cinquegrana-via-kennedy"] .card-annuncio-body {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "prezzo"
+      "tipo"
+      "comune"
+      "specs";
+  }
+
   #immobili-vendita .card-annuncio-tipo {
     min-width: 0;
     white-space: normal;
@@ -1559,6 +1755,10 @@ h2 {
 
   #immobili-vendita .card-annuncio-prezzo {
     font-size: 1.1rem;
+  }
+
+  #immobili-vendita .card-annuncio[data-id="sparanise-cinquegrana-via-kennedy"] .card-annuncio-prezzo {
+    font-size: calc(1.1rem + 7px);
   }
 
   #immobili-vendita .card-annuncio-specs {
@@ -1684,11 +1884,11 @@ h2 {
   margin: 0 0 var(--spazio-2);
   font-family: var(--font-titoli);
   font-size: clamp(1.05rem, 2.2vw, 1.35rem);
-  font-weight: 400;
+  font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   text-align: center;
-  color: #E4E4DE;
+  color: var(--colore-testo);
 }
 
 .valuta-subhead {
@@ -1866,8 +2066,9 @@ h2 {
 .valuta-dati-titolo {
   margin: 0;
   text-align: center;
+  font-family: var(--font-titoli);
   font-size: clamp(0.95rem, 1.8vw, 1.1rem);
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: #fff;
@@ -1924,9 +2125,9 @@ h2 {
 /* Banner valutazione in loco (testi già nel file grafico) */
 .valuta-loco-titolo {
   margin: 0 0 var(--spazio-4);
-  font-family: var(--font-corpo);
+  font-family: var(--font-titoli);
   font-size: clamp(1.05rem, 2vw, 1.25rem);
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   text-align: center;
@@ -2654,17 +2855,25 @@ h2 {
 
 .contatti-aiuto {
   margin: 0 0 var(--spazio-4);
+  text-align: center;
   font-family: var(--font-titoli);
-  font-size: clamp(1.15rem, 2vw, 1.4rem);
-  font-weight: 400;
-  color: var(--colore-primario);
+  font-size: clamp(0.95rem, 1.8vw, 1.1rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--colore-testo);
+}
+
+/* Box campi “Ciao come possiamo aiutarti” (stesso stile di .valuta-box) */
+.contatti-aiuto-box {
+  margin-bottom: var(--spazio-5);
 }
 
 .contatti-aiuto-riga {
   display: grid;
   grid-template-columns: 1fr;
   gap: 12px;
-  margin-bottom: var(--spazio-5);
+  margin-bottom: 0;
   align-items: start;
 }
 
@@ -2699,7 +2908,7 @@ h2 {
 
 .contatti-dati-titolo {
   margin-bottom: var(--spazio-4);
-  color: var(--colore-primario);
+  color: var(--colore-testo);
 }
 
 .valuta-dropdown-toggle:disabled {
@@ -3073,6 +3282,24 @@ h2 {
     "scheda";
   gap: 10px;
   align-items: stretch;
+  position: relative;
+}
+
+/* Condividi: fuori dalla foto, angolo alto destro; top/left impostati da JS */
+.immobile-condividi {
+  position: absolute;
+  z-index: 6;
+  width: max-content;
+  pointer-events: none;
+}
+
+.immobile-condividi .card-annuncio-share {
+  pointer-events: auto;
+}
+
+/* Mobile/tablet: i figli restano celle della griglia; desktop attiva la colonna flex */
+.immobile-media-sx {
+  display: contents;
 }
 
 .immobile-galleria-principale {
@@ -3121,15 +3348,14 @@ h2 {
   border-radius: 50%;
   border: none;
   padding: 0;
-  background: var(--colore-primario);
-  opacity: 0.4;
+  background: #1B1B1B;
+  opacity: 1;
   cursor: pointer;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+  box-shadow: none;
 }
 
 .immobile-foto-dot.is-active {
-  opacity: 1;
-  background: var(--colore-primario);
+  background: var(--colore-accento);
 }
 
 /* Azioni sotto foto: planimetria, foto+conteggio, video — allineate a sx */
@@ -3647,10 +3873,10 @@ body.immobile-lightbox-open {
   }
 }
 
-/* Mobile portrait + landscape: scheda chiusa fino a Piano, toggle mostra di più/meno
-   In landscape molti telefoni hanno width >767 (es. 844): si usa anche max-height come Famiglia B */
-@media (max-width: 767px),
-(max-width: 1023px) and (orientation: landscape) and (max-height: 520px) {
+/* Mobile portrait + landscape telefoni: scheda chiusa fino a Piano
+   Esclude Surface Duo landscape (~720×540): lì vale il toggle dopo Balconi */
+@media (max-width: 767px) and (orientation: portrait),
+(max-width: 1023px) and (orientation: landscape) and (max-height: 499px) {
   .immobile-scheda:not(.is-scheda-aperta) .immobile-scheda-extra {
     display: none;
   }
@@ -3806,30 +4032,41 @@ body.immobile-lightbox-open {
 @media (min-width: 768px) and (max-width: 1023px) and (orientation: landscape) and (min-height: 521px) {
   .immobile-media {
     grid-template-columns: minmax(0, 1.4fr) minmax(220px, 0.85fr);
-    grid-template-rows: minmax(220px, 1fr) auto;
-    grid-template-areas:
-      "foto scheda"
-      "azioni scheda";
+    grid-template-rows: auto;
+    grid-template-areas: "sx scheda";
     gap: 10px 16px;
     align-items: start;
   }
 
+  /* Foto+azioni unite: il toggle scheda non sposta i pulsanti */
+  .immobile-media-sx {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    grid-area: sx;
+    min-width: 0;
+  }
+
   .immobile-galleria-principale {
-    aspect-ratio: auto;
-    height: 100%;
+    aspect-ratio: 16 / 10;
+    height: auto;
     min-height: 0;
     align-self: stretch;
+  }
+
+  .immobile-media-azioni {
+    grid-area: auto;
   }
 
   .immobile-scheda {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    align-self: stretch;
+    height: auto;
+    align-self: start;
   }
 
   .immobile-scheda-lista {
-    flex: 1;
+    flex: none;
   }
 
   .immobile-cta {
@@ -3852,55 +4089,30 @@ body.immobile-lightbox-open {
 
   .immobile-media {
     grid-template-columns: minmax(0, 1fr) minmax(260px, 320px);
-    grid-template-rows: minmax(280px, 1fr) auto;
-    grid-template-areas:
-      "foto scheda"
-      "azioni scheda";
+    grid-template-rows: auto;
+    grid-template-areas: "sx scheda";
     gap: 10px var(--spazio-4);
     align-items: start;
   }
 
-  .immobile-galleria-principale {
-    aspect-ratio: auto;
-    height: 100%;
-    min-height: 0;
-    align-self: stretch;
-  }
-
-  .immobile-scheda {
+  /* Foto+azioni unite: il toggle scheda non sposta più i pulsanti */
+  .immobile-media-sx {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    align-self: stretch;
-  }
-
-  .immobile-scheda-lista {
-    flex: 1;
-  }
-
-  .immobile-corpo {
-    display: block;
-  }
-
-  .immobile-cta {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
-}
-
-/* Solo desktop (≥1367): toggle dopo Balconi; foto a altezza fissa (non segue la scheda) */
-@media (min-width: 1367px) {
-  .immobile-media {
-    grid-template-rows: auto auto;
-    align-items: start;
+    gap: 10px;
+    grid-area: sx;
+    min-width: 0;
   }
 
   .immobile-galleria-principale {
     aspect-ratio: 16 / 10;
     height: auto;
     min-height: 0;
-    align-self: start;
+    align-self: stretch;
+  }
+
+  .immobile-media-azioni {
+    grid-area: auto;
   }
 
   .immobile-scheda {
@@ -3914,6 +4126,21 @@ body.immobile-lightbox-open {
     flex: none;
   }
 
+  .immobile-corpo {
+    display: block;
+  }
+
+  .immobile-cta {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+/* Desktop (≥1367) + tablet/iPad landscape (+ Surface Duo ~720×540): toggle dopo Balconi */
+@media (min-width: 1367px),
+(min-width: 768px) and (max-width: 1366px) and (orientation: landscape) and (min-height: 521px),
+(min-width: 700px) and (max-width: 780px) and (min-height: 500px) and (max-height: 560px) and (orientation: landscape) {
   .immobile-scheda:not(.is-scheda-aperta) .immobile-scheda-extra-desktop {
     display: none;
   }
@@ -3925,6 +4152,51 @@ body.immobile-lightbox-open {
   .immobile-scheda-toggle:not([hidden]) {
     display: inline-flex;
   }
+}
+
+/* Override taglio SOLO per i modelli elencati (il default Balconi resta invariato) */
+.immobile-scheda[data-scheda-taglio] .immobile-scheda-toggle:not([hidden]) {
+  display: inline-flex;
+}
+
+.immobile-scheda[data-scheda-taglio="piano"]:not(.is-scheda-aperta) .immobile-scheda-extra {
+  display: none;
+}
+
+.immobile-scheda[data-scheda-taglio="piano"]:not(.is-scheda-aperta) .immobile-scheda-fino {
+  border-bottom: none;
+}
+
+.immobile-scheda[data-scheda-taglio="piani"]:not(.is-scheda-aperta) .immobile-scheda-extra-piani {
+  display: none;
+}
+
+.immobile-scheda[data-scheda-taglio="piani"]:not(.is-scheda-aperta) .immobile-scheda-fino-piani {
+  border-bottom: none;
+}
+
+.immobile-scheda[data-scheda-taglio="anno"]:not(.is-scheda-aperta) .immobile-scheda-extra-anno {
+  display: none;
+}
+
+.immobile-scheda[data-scheda-taglio="anno"]:not(.is-scheda-aperta) .immobile-scheda-fino-anno {
+  border-bottom: none;
+}
+
+.immobile-scheda[data-scheda-taglio="ascensore"]:not(.is-scheda-aperta) .immobile-scheda-extra-ascensore {
+  display: none;
+}
+
+.immobile-scheda[data-scheda-taglio="ascensore"]:not(.is-scheda-aperta) .immobile-scheda-fino-ascensore {
+  border-bottom: none;
+}
+
+.immobile-scheda[data-scheda-taglio="balconi"]:not(.is-scheda-aperta) .immobile-scheda-extra-desktop {
+  display: none;
+}
+
+.immobile-scheda[data-scheda-taglio="balconi"]:not(.is-scheda-aperta) .immobile-scheda-fino-desktop {
+  border-bottom: none;
 }
 
 /* Tablet / iPad portrait 520–1366 (Tab M10, OnePlus Pad, Tab A7/A9/S10 FE/S4,
@@ -3939,6 +4211,11 @@ body.immobile-lightbox-open {
       "scheda";
     gap: 14px;
     align-items: stretch;
+  }
+
+  /* Torna alla griglia stacked: foto e azioni come celle separate */
+  .immobile-media-sx {
+    display: contents;
   }
 
   .immobile-galleria-principale {
@@ -3964,6 +4241,14 @@ body.immobile-lightbox-open {
     grid-template-columns: 1fr 1fr;
     column-gap: 2.5rem;
     flex: none;
+  }
+}
+
+/* Surface Duo landscape (~720×540): scheda tecnica a 2 colonne */
+@media (min-width: 700px) and (max-width: 780px) and (min-height: 500px) and (max-height: 560px) and (orientation: landscape) {
+  .immobile-scheda-lista {
+    grid-template-columns: 1fr 1fr;
+    column-gap: 2.5rem;
   }
 }
 

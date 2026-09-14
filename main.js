@@ -199,22 +199,68 @@ document.addEventListener("DOMContentLoaded", () => {
     const titolo = formatTipologia(annuncio);
     const prezzo = formatPrezzo(annuncio.prezzo);
     const href = annuncio.collegabile ? `immobile.html?id=${encodeURIComponent(annuncio.id)}` : "";
-    const cta = href
-      ? `<a href="${href}" class="card-annuncio-cta">Scopri &gt;</a>`
-      : `<span class="card-annuncio-cta">Scopri &gt;</span>`;
+    /* Con link a tutta card, Scopri resta solo testo (niente <a> annidati) */
+    const cta = `<span class="card-annuncio-cta">Scopri &gt;</span>`;
     const altCover = `${titolo} a ${annuncio.comune}`;
-    const media = href
-      ? `<div class="card-annuncio-media"><a href="${href}" class="card-annuncio-cover-link" aria-label="${altCover}"><img src="${annuncio.cover}" alt="${altCover}" width="600" height="400" loading="lazy"></a></div>`
-      : `<div class="card-annuncio-media"><img src="${annuncio.cover}" alt="${altCover}" width="600" height="400" loading="lazy"></div>`;
+    const media = `<div class="card-annuncio-media"><img src="${annuncio.cover}" alt="${altCover}" width="600" height="400" loading="lazy"></div>`;
 
-    article.innerHTML = `
+    /* Icona condividi (riusabile su tutte le card collegabili) */
+    const shareHtml = href
+      ? `<div class="card-annuncio-share">
+          <button type="button" class="card-annuncio-share-btn" aria-label="Condividi annuncio" aria-expanded="false" aria-haspopup="true">
+            <span class="card-annuncio-share-tooltip" aria-hidden="true">Condividi annuncio</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="18" cy="5" r="3" stroke="currentColor" stroke-width="1.6"/>
+              <circle cx="6" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/>
+              <circle cx="18" cy="19" r="3" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <ul class="card-annuncio-share-menu" hidden role="menu">
+            <li role="none"><button type="button" role="menuitem" data-share="whatsapp"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.15 6.4 2.15 11.83c0 1.99.59 3.85 1.6 5.42L2 22l4.92-1.7a9.86 9.86 0 0 0 5.12 1.4h.01c5.46 0 9.89-4.4 9.89-9.83C21.94 6.4 17.5 2 12.04 2zm5.77 13.99c-.24.67-1.38 1.23-1.91 1.31-.49.07-1.11.1-1.79-.11-.41-.13-.94-.3-1.62-.59-2.85-1.23-4.7-4.1-4.84-4.29-.14-.19-1.15-1.53-1.15-2.92 0-1.39.73-2.07.99-2.36.26-.29.57-.36.76-.36h.55c.17 0 .4-.07.62.47.24.58.81 2 .88 2.14.07.14.12.31.02.5-.1.19-.14.31-.28.48-.14.17-.29.37-.42.5-.14.14-.28.29-.12.56.16.28.71 1.17 1.53 1.9 1.05.93 1.94 1.22 2.21 1.36.28.14.44.12.6-.07.17-.19.7-.81.89-1.09.19-.28.38-.23.64-.14.26.1 1.64.77 1.92.91.28.14.47.21.54.33.07.12.07.69-.17 1.36z"/></svg><span>WhatsApp</span></button></li>
+            <li role="none"><button type="button" role="menuitem" data-share="email"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 6.75A1.75 1.75 0 0 1 4.75 5h14.5A1.75 1.75 0 0 1 21 6.75v10.5A1.75 1.75 0 0 1 19.25 19H4.75A1.75 1.75 0 0 1 3 17.25V6.75z" stroke="currentColor" stroke-width="1.6"/><path d="M4 7l8 6 8-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Email</span></button></li>
+            <li role="none"><button type="button" role="menuitem" data-share="facebook"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 9h3V6h-3c-2.2 0-4 1.8-4 4v2H8v3h2v7h3v-7h2.6l.4-3H13v-1.5c0-.3.2-.5.5-.5H14z"/></svg><span>Facebook</span></button></li>
+            <li role="none"><button type="button" role="menuitem" data-share="linkedin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.5 9.5H3.7V20h2.8V9.5zM5.1 4A1.6 1.6 0 1 0 5.1 7.2 1.6 1.6 0 0 0 5.1 4zM20.3 20h-2.8v-5.6c0-1.8-.7-3-2.3-3-1.2 0-1.9.8-2.2 1.6-.1.3-.1.7-.1 1.1V20h-2.8s.04-9.3 0-10.5h2.8v1.5c.4-.6 1.4-1.8 3.4-1.8 2.5 0 4.3 1.6 4.3 5.1V20z"/></svg><span>LinkedIn</span></button></li>
+            <li role="none"><button type="button" role="menuitem" data-share="copia"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="1.5" stroke="currentColor" stroke-width="1.6"/><path d="M6 15H5a1.5 1.5 0 0 1-1.5-1.5V5A1.5 1.5 0 0 1 5 3.5h8.5A1.5 1.5 0 0 1 15 5v1" stroke="currentColor" stroke-width="1.6"/></svg><span>Copia link</span></button></li>
+          </ul>
+        </div>`
+      : "";
+
+    const prezzoRiga = href
+      ? `<div class="card-annuncio-prezzo-riga">
+          <p class="card-annuncio-prezzo">${prezzo}</p>
+          ${shareHtml}
+        </div>`
+      : `<div class="card-annuncio-riga">
+          <p class="card-annuncio-comune">${annuncio.comune}</p>
+          <p class="card-annuncio-prezzo">${prezzo}</p>
+        </div>`;
+
+    if (href) article.classList.add("card-annuncio--cliccabile");
+
+    article.innerHTML = href
+      ? `
+      ${media}
+      <div class="card-annuncio-body">
+        ${prezzoRiga}
+        <p class="card-annuncio-tipo">${titolo}</p>
+        <p class="card-annuncio-comune">${annuncio.comune}</p>
+        <div class="card-annuncio-meta">
+          <div class="card-annuncio-specs">
+            <div class="card-spec"><span class="card-spec-icon"><img src="assets/images/icons/icon-planimetria.svg" alt="" width="26" height="26"></span><span>${annuncio.mq} mq.</span></div>
+            <div class="card-spec"><span class="card-spec-icon"><img src="assets/images/icons/icon-camera-letto.svg" alt="" width="26" height="26"></span><span>${annuncio.locali} locali</span></div>
+            <div class="card-spec"><span class="card-spec-icon"><img src="assets/images/icons/icon-bagno.svg" alt="" width="26" height="26"></span><span>${annuncio.bagni} bagno${annuncio.bagni === 1 ? "" : "i"}</span></div>
+            <div class="card-spec"><span class="card-spec-icon"><img src="assets/images/icons/icon-scale.svg" alt="" width="26" height="26"></span><span>${formatPiano(annuncio.piano)}</span></div>
+          </div>
+          ${cta}
+        </div>
+      </div>
+    `
+      : `
       ${media}
       <div class="card-annuncio-body">
         <p class="card-annuncio-tipo">${titolo}</p>
-        <div class="card-annuncio-riga">
-          <p class="card-annuncio-comune">${annuncio.comune}</p>
-          <p class="card-annuncio-prezzo">${prezzo}</p>
-        </div>
+        ${prezzoRiga}
         <div class="card-annuncio-meta">
           <div class="card-annuncio-specs">
             <div class="card-spec"><span class="card-spec-icon"><img src="assets/images/icons/icon-planimetria.svg" alt="" width="26" height="26"></span><span>${annuncio.mq} mq.</span></div>
@@ -226,6 +272,105 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       </div>
     `;
+
+    /* Link a tutta la card (qualsiasi punto) */
+    if (href) {
+      const hit = document.createElement("a");
+      hit.href = href;
+      hit.className = "card-annuncio-hit";
+      hit.setAttribute("aria-label", altCover);
+      article.appendChild(hit);
+
+      const shareBtn = article.querySelector(".card-annuncio-share-btn");
+      const shareMenu = article.querySelector(".card-annuncio-share-menu");
+      if (shareBtn && shareMenu) {
+        const urlAssoluto = new URL(href, window.location.href).href;
+        const testoShare = `${titolo} — ${annuncio.comune}\n${urlAssoluto}`;
+
+        const chiudiShare = () => {
+          shareMenu.hidden = true;
+          shareBtn.setAttribute("aria-expanded", "false");
+        };
+
+        /* Posiziona il menu in fixed sotto (o sopra) l’icona, fuori dallo scroll del carousel */
+        const posizionaShareMenu = () => {
+          const r = shareBtn.getBoundingClientRect();
+          shareMenu.style.left = "auto";
+          shareMenu.style.right = `${Math.max(8, window.innerWidth - r.right)}px`;
+          shareMenu.hidden = false;
+          const h = shareMenu.offsetHeight || 220;
+          const spazioSotto = window.innerHeight - r.bottom;
+          if (spazioSotto < h + 12) {
+            shareMenu.style.top = `${Math.max(8, r.top - h - 6)}px`;
+          } else {
+            shareMenu.style.top = `${r.bottom + 6}px`;
+          }
+        };
+
+        shareBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const eraChiuso = shareMenu.hidden;
+          document.querySelectorAll(".card-annuncio-share-menu").forEach((m) => {
+            m.hidden = true;
+          });
+          document.querySelectorAll(".card-annuncio-share-btn").forEach((b) => {
+            b.setAttribute("aria-expanded", "false");
+          });
+          if (eraChiuso) {
+            posizionaShareMenu();
+            shareBtn.setAttribute("aria-expanded", "true");
+          }
+        });
+
+        shareMenu.addEventListener("click", (e) => e.stopPropagation());
+
+        shareMenu.querySelectorAll("[data-share]").forEach((btn) => {
+          btn.addEventListener("click", async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const canale = btn.getAttribute("data-share");
+            if (canale === "whatsapp") {
+              window.open(`https://wa.me/?text=${encodeURIComponent(testoShare)}`, "_blank", "noopener");
+            } else if (canale === "email") {
+              window.location.href = `mailto:?subject=${encodeURIComponent(titolo)}&body=${encodeURIComponent(testoShare)}`;
+            } else if (canale === "facebook") {
+              window.open(
+                `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(urlAssoluto)}`,
+                "_blank",
+                "noopener"
+              );
+            } else if (canale === "linkedin") {
+              window.open(
+                `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(urlAssoluto)}`,
+                "_blank",
+                "noopener"
+              );
+            } else if (canale === "copia") {
+              const label = btn.querySelector("span");
+              try {
+                await navigator.clipboard.writeText(urlAssoluto);
+                if (label) label.textContent = "Link copiato";
+                setTimeout(() => {
+                  if (label) label.textContent = "Copia link";
+                }, 1600);
+              } catch (err) {
+                window.prompt("Copia il link:", urlAssoluto);
+              }
+            }
+            if (canale !== "copia") chiudiShare();
+          });
+        });
+
+        document.addEventListener("click", (e) => {
+          if (!article.contains(e.target) && !shareMenu.contains(e.target)) chiudiShare();
+        });
+
+        window.addEventListener("scroll", chiudiShare, true);
+        window.addEventListener("resize", chiudiShare);
+      }
+    }
+
     return article;
   };
 
@@ -680,6 +825,155 @@ document.addEventListener("DOMContentLoaded", () => {
           .join("");
       }
 
+      /* Condividi: angolo alto destro foto, base = base inferiore specs */
+      const elCondividi = document.getElementById("immobileCondividi");
+      const elMedia = document.querySelector(".immobile-media");
+      if (elCondividi && elMedia && elFotoBox && elSpecs) {
+        const urlShare = window.location.href;
+        const titoloShare = titoloRiga;
+        const testoShare = `${titoloShare} — ${annuncio.comune || ""}\n${urlShare}`;
+        elCondividi.innerHTML = `<div class="card-annuncio-share">
+          <button type="button" class="card-annuncio-share-btn" aria-label="Condividi annuncio" aria-expanded="false" aria-haspopup="true">
+            <span class="card-annuncio-share-tooltip" aria-hidden="true">Condividi annuncio</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="18" cy="5" r="3" stroke="currentColor" stroke-width="1.6"/>
+              <circle cx="6" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/>
+              <circle cx="18" cy="19" r="3" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <ul class="card-annuncio-share-menu" hidden role="menu">
+            <li role="none"><button type="button" role="menuitem" data-share="whatsapp"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.15 6.4 2.15 11.83c0 1.99.59 3.85 1.6 5.42L2 22l4.92-1.7a9.86 9.86 0 0 0 5.12 1.4h.01c5.46 0 9.89-4.4 9.89-9.83C21.94 6.4 17.5 2 12.04 2zm5.77 13.99c-.24.67-1.38 1.23-1.91 1.31-.49.07-1.11.1-1.79-.11-.41-.13-.94-.3-1.62-.59-2.85-1.23-4.7-4.1-4.84-4.29-.14-.19-1.15-1.53-1.15-2.92 0-1.39.73-2.07.99-2.36.26-.29.57-.36.76-.36h.55c.17 0 .4-.07.62.47.24.58.81 2 .88 2.14.07.14.12.31.02.5-.1.19-.14.31-.28.48-.14.17-.29.37-.42.5-.14.14-.28.29-.12.56.16.28.71 1.17 1.53 1.9 1.05.93 1.94 1.22 2.21 1.36.28.14.44.12.6-.07.17-.19.7-.81.89-1.09.19-.28.38-.23.64-.14.26.1 1.64.77 1.92.91.28.14.47.21.54.33.07.12.07.69-.17 1.36z"/></svg><span>WhatsApp</span></button></li>
+            <li role="none"><button type="button" role="menuitem" data-share="email"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 6.75A1.75 1.75 0 0 1 4.75 5h14.5A1.75 1.75 0 0 1 21 6.75v10.5A1.75 1.75 0 0 1 19.25 19H4.75A1.75 1.75 0 0 1 3 17.25V6.75z" stroke="currentColor" stroke-width="1.6"/><path d="M4 7l8 6 8-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Email</span></button></li>
+            <li role="none"><button type="button" role="menuitem" data-share="facebook"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 9h3V6h-3c-2.2 0-4 1.8-4 4v2H8v3h2v7h3v-7h2.6l.4-3H13v-1.5c0-.3.2-.5.5-.5H14z"/></svg><span>Facebook</span></button></li>
+            <li role="none"><button type="button" role="menuitem" data-share="linkedin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.5 9.5H3.7V20h2.8V9.5zM5.1 4A1.6 1.6 0 1 0 5.1 7.2 1.6 1.6 0 0 0 5.1 4zM20.3 20h-2.8v-5.6c0-1.8-.7-3-2.3-3-1.2 0-1.9.8-2.2 1.6-.1.3-.1.7-.1 1.1V20h-2.8s.04-9.3 0-10.5h2.8v1.5c.4-.6 1.4-1.8 3.4-1.8 2.5 0 4.3 1.6 4.3 5.1V20z"/></svg><span>LinkedIn</span></button></li>
+            <li role="none"><button type="button" role="menuitem" data-share="copia"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="1.5" stroke="currentColor" stroke-width="1.6"/><path d="M6 15H5a1.5 1.5 0 0 1-1.5-1.5V5A1.5 1.5 0 0 1 5 3.5h8.5A1.5 1.5 0 0 1 15 5v1" stroke="currentColor" stroke-width="1.6"/></svg><span>Copia link</span></button></li>
+          </ul>
+        </div>`;
+
+        const shareBtn = elCondividi.querySelector(".card-annuncio-share-btn");
+        const shareMenu = elCondividi.querySelector(".card-annuncio-share-menu");
+
+        /* Allinea: base specs + bordo destro foto.
+           Solo telefoni portrait (<520px): riga prezzo.
+           Tablet ribelli (≥520: Tab S4/A7/A9/S10 FE, OnePlus Pad, M10) restano angolo foto. */
+        const mqMobilePortrait = window.matchMedia(
+          "(max-width: 519px) and (orientation: portrait)"
+        );
+        const posizionaCondividi = () => {
+          const fr = elFotoBox.getBoundingClientRect();
+          const mr = elMedia.getBoundingClientRect();
+          const h = elCondividi.offsetHeight || 28;
+          const w = elCondividi.offsetWidth || 28;
+          elCondividi.style.left = `${fr.right - mr.left - w}px`;
+
+          if (mqMobilePortrait.matches && elPrezzo) {
+            const pr = elPrezzo.getBoundingClientRect();
+            elCondividi.style.top = `${pr.top + (pr.height - h) / 2 - mr.top}px`;
+          } else {
+            const sr = elSpecs.getBoundingClientRect();
+            elCondividi.style.top = `${sr.bottom - mr.top - h}px`;
+          }
+        };
+
+        requestAnimationFrame(() => requestAnimationFrame(posizionaCondividi));
+        window.addEventListener("resize", posizionaCondividi);
+        if (typeof mqMobilePortrait.addEventListener === "function") {
+          mqMobilePortrait.addEventListener("change", posizionaCondividi);
+        } else if (typeof mqMobilePortrait.addListener === "function") {
+          mqMobilePortrait.addListener(posizionaCondividi);
+        }
+        if (typeof ResizeObserver !== "undefined") {
+          const ro = new ResizeObserver(posizionaCondividi);
+          ro.observe(elFotoBox);
+          ro.observe(elSpecs);
+          if (elPrezzo) ro.observe(elPrezzo);
+        }
+
+        if (shareBtn && shareMenu) {
+          const chiudiShare = () => {
+            shareMenu.hidden = true;
+            shareBtn.setAttribute("aria-expanded", "false");
+          };
+
+          const posizionaShareMenu = () => {
+            const r = shareBtn.getBoundingClientRect();
+            shareMenu.style.left = "auto";
+            shareMenu.style.right = `${Math.max(8, window.innerWidth - r.right)}px`;
+            shareMenu.hidden = false;
+            const h = shareMenu.offsetHeight || 220;
+            const spazioSotto = window.innerHeight - r.bottom;
+            if (spazioSotto < h + 12) {
+              shareMenu.style.top = `${Math.max(8, r.top - h - 6)}px`;
+            } else {
+              shareMenu.style.top = `${r.bottom + 6}px`;
+            }
+          };
+
+          shareBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const eraChiuso = shareMenu.hidden;
+            document.querySelectorAll(".card-annuncio-share-menu").forEach((m) => {
+              m.hidden = true;
+            });
+            document.querySelectorAll(".card-annuncio-share-btn").forEach((b) => {
+              b.setAttribute("aria-expanded", "false");
+            });
+            if (eraChiuso) {
+              posizionaShareMenu();
+              shareBtn.setAttribute("aria-expanded", "true");
+            }
+          });
+
+          shareMenu.addEventListener("click", (e) => e.stopPropagation());
+
+          shareMenu.querySelectorAll("[data-share]").forEach((btn) => {
+            btn.addEventListener("click", async (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              const canale = btn.getAttribute("data-share");
+              if (canale === "whatsapp") {
+                window.open(`https://wa.me/?text=${encodeURIComponent(testoShare)}`, "_blank", "noopener");
+              } else if (canale === "email") {
+                window.location.href = `mailto:?subject=${encodeURIComponent(titoloShare)}&body=${encodeURIComponent(testoShare)}`;
+              } else if (canale === "facebook") {
+                window.open(
+                  `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(urlShare)}`,
+                  "_blank",
+                  "noopener"
+                );
+              } else if (canale === "linkedin") {
+                window.open(
+                  `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(urlShare)}`,
+                  "_blank",
+                  "noopener"
+                );
+              } else if (canale === "copia") {
+                const label = btn.querySelector("span");
+                try {
+                  await navigator.clipboard.writeText(urlShare);
+                  if (label) label.textContent = "Link copiato";
+                  setTimeout(() => {
+                    if (label) label.textContent = "Copia link";
+                  }, 1600);
+                } catch (err) {
+                  window.prompt("Copia il link:", urlShare);
+                }
+              }
+              if (canale !== "copia") chiudiShare();
+            });
+          });
+
+          document.addEventListener("click", (e) => {
+            if (!elCondividi.contains(e.target) && !shareMenu.contains(e.target)) chiudiShare();
+          });
+
+          window.addEventListener("scroll", chiudiShare, true);
+          window.addEventListener("resize", chiudiShare);
+        }
+      }
+
       /* Mappa ubicazione (via + comune), larghezza container */
       if (elMappa) {
         const queryMappa = [annuncio.via, annuncio.comune].filter(Boolean).join(", ");
@@ -890,16 +1184,26 @@ document.addEventListener("DOMContentLoaded", () => {
           ["Classe energetica", annuncio.classeEnergetica]
         ].filter(([, val]) => val != null && val !== "");
 
-        // Mobile: chiudi dopo Piano; desktop (≥1367): chiudi dopo Balconi
-        const idxPiano = righe.findIndex(([label]) => label === "Piano");
-        const idxBalconi = righe.findIndex(([label]) => label === "Balconi");
+        // Tagli toggle: Piano (mobile), Piani/Anno/Ascensore (tablet mirati), Balconi (desktop/default)
+        const tagliScheda = [
+          { label: "Piano", fino: "immobile-scheda-fino", extra: "immobile-scheda-extra" },
+          { label: "Piani edificio", fino: "immobile-scheda-fino-piani", extra: "immobile-scheda-extra-piani" },
+          { label: "Anno di costruzione", fino: "immobile-scheda-fino-anno", extra: "immobile-scheda-extra-anno" },
+          { label: "Ascensore", fino: "immobile-scheda-fino-ascensore", extra: "immobile-scheda-extra-ascensore" },
+          { label: "Balconi", fino: "immobile-scheda-fino-desktop", extra: "immobile-scheda-extra-desktop" }
+        ];
+        const indiciTaglio = tagliScheda.map((t) => ({
+          ...t,
+          idx: righe.findIndex(([label]) => label === t.label)
+        }));
+
         elScheda.innerHTML = righe
           .map(([label, val], i) => {
             const classi = [];
-            if (label === "Piano") classi.push("immobile-scheda-fino");
-            if (idxPiano >= 0 && i > idxPiano) classi.push("immobile-scheda-extra");
-            if (label === "Balconi") classi.push("immobile-scheda-fino-desktop");
-            if (idxBalconi >= 0 && i > idxBalconi) classi.push("immobile-scheda-extra-desktop");
+            indiciTaglio.forEach((t) => {
+              if (label === t.label) classi.push(t.fino);
+              if (t.idx >= 0 && i > t.idx) classi.push(t.extra);
+            });
             const cls = classi.length ? ` class="${classi.join(" ")}"` : "";
             return `<div${cls}><dt>${label}</dt><dd>${val}</dd></div>`;
           })
@@ -907,9 +1211,146 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const elSchedaToggle = document.getElementById("immobileSchedaToggle");
         const elSchedaBox = elScheda.closest(".immobile-scheda");
-        const haExtra =
-          (idxPiano >= 0 && idxPiano < righe.length - 1) ||
-          (idxBalconi >= 0 && idxBalconi < righe.length - 1);
+        const haExtra = indiciTaglio.some((t) => t.idx >= 0 && t.idx < righe.length - 1);
+
+        /* Solo i modelli elencati: imposta data-scheda-taglio (override del default) */
+        const applicaTaglioSchedaDevice = () => {
+          if (!elSchedaBox) return;
+          const w = window.innerWidth;
+          const h = window.innerHeight;
+          const sw = window.screen.width || w;
+          const sh = window.screen.height || h;
+          const ua = navigator.userAgent || "";
+          const near = (a, b, tol = 12) => Math.abs(a - b) <= tol;
+          const pairMatch = (a, b, x, y) =>
+            (near(a, x) && near(b, y)) || (near(a, y) && near(b, x));
+
+          let taglio = null;
+          const landscape = w > h;
+
+          if (landscape) {
+            /* Misure reali landscape segnalate — solo questi 4, tol. stretta */
+            if (near(w, 1000, 8)) taglio = "piani"; /* Tab A7 */
+            else if (near(w, 1116, 8)) taglio = "anno"; /* Tab A9 */
+            else if (near(w, 933, 8)) taglio = "piano"; /* OnePlus Pad */
+            else if (near(w, 960, 8)) taglio = "piano"; /* Lenovo Tab M10 */
+
+            /* Prova inner e screen (Chrome DevTools a volte diverge) */
+            const pairs = [
+              [w, h],
+              [sw, sh]
+            ];
+
+            for (const [pw, ph] of pairs) {
+              if (taglio) break;
+              const shortS = Math.min(pw, ph);
+              const longS = Math.max(pw, ph);
+
+              /* Nest Hub 1024×600 */
+              if (pairMatch(pw, ph, 1024, 600)) {
+                taglio = "piani";
+                break;
+              }
+              /* iPad mini 1133×744 o 1024×768 */
+              if (pairMatch(pw, ph, 1133, 744) || pairMatch(pw, ph, 1024, 768)) {
+                taglio = "piani";
+                break;
+              }
+              /* Tab S4 1138×712 */
+              if (pairMatch(pw, ph, 1138, 712)) {
+                taglio = "anno";
+                break;
+              }
+              /* Tab S10 FE ~1152×720 */
+              if (pairMatch(pw, ph, 1152, 720)) {
+                taglio = "anno";
+                break;
+              }
+              /* iPad Air 11" 1180×820 */
+              if (pairMatch(pw, ph, 1180, 820)) {
+                taglio = "ascensore";
+                break;
+              }
+              /* iPad Pro 11" 1194×834 / 1210×834 */
+              if (pairMatch(pw, ph, 1194, 834) || pairMatch(pw, ph, 1210, 834)) {
+                taglio = "balconi";
+                break;
+              }
+              /* Tab A9 1340×800 (anche 1332 / 1340) */
+              if (
+                pairMatch(pw, ph, 1340, 800) ||
+                pairMatch(pw, ph, 1332, 800) ||
+                pairMatch(pw, ph, 1340, 800)
+              ) {
+                taglio = "anno";
+                break;
+              }
+              /* OnePlus Pad: CSS tipico 1120×800 (800×1120 portrait) */
+              if (
+                pairMatch(pw, ph, 1120, 800) ||
+                pairMatch(pw, ph, 1067, 762) ||
+                pairMatch(pw, ph, 1112, 800) ||
+                (/OnePlus|OPD\d/i.test(ua) && shortS >= 750 && shortS <= 850 && longS >= 1050 && longS <= 1200)
+              ) {
+                taglio = "piano";
+                break;
+              }
+              /* Tablet landscape larghezza 1280px: dopo Balconi */
+              if (near(pw, 1280) || (near(longS, 1280) && near(shortS, 800))) {
+                taglio = "balconi";
+                break;
+              }
+              /* iPad Pro 12.9" / 13" 1366×1024 o 1376×1032 */
+              if (
+                pairMatch(pw, ph, 1366, 1024) ||
+                pairMatch(pw, ph, 1376, 1032) ||
+                pairMatch(pw, ph, 1366, 1024)
+              ) {
+                taglio = /iPad Air|Air\//i.test(ua) ? "ascensore" : "balconi";
+                break;
+              }
+            }
+
+            /* Fallback UA-only per OnePlus / iPad Pro se le misure non matchano */
+            if (!taglio) {
+              if (/OnePlus|OPD\d/i.test(ua)) taglio = "piano";
+              else if (/iPad Pro/i.test(ua)) taglio = "balconi";
+            }
+          }
+
+          if (taglio) {
+            elSchedaBox.setAttribute("data-scheda-taglio", taglio);
+          } else {
+            elSchedaBox.removeAttribute("data-scheda-taglio");
+          }
+        };
+
+        applicaTaglioSchedaDevice();
+        window.addEventListener("resize", applicaTaglioSchedaDevice);
+        if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+          navigator.userAgentData
+            .getHighEntropyValues(["model"])
+            .then((info) => {
+              const model = (info && info.model) || "";
+              if (!elSchedaBox || !model) return;
+              const iw = window.innerWidth;
+              /* Non sovrascrivere le 4 larghezze mirate né i 1280px */
+              if (
+                Math.abs(iw - 1280) <= 12 ||
+                Math.abs(iw - 1000) <= 8 ||
+                Math.abs(iw - 1116) <= 8 ||
+                Math.abs(iw - 933) <= 8 ||
+                Math.abs(iw - 960) <= 8
+              ) {
+                return;
+              }
+              const m = model.toLowerCase();
+              if (/oneplus|opd/.test(m)) elSchedaBox.setAttribute("data-scheda-taglio", "piano");
+              else if (/tab a9|sm-x11/.test(m)) elSchedaBox.setAttribute("data-scheda-taglio", "anno");
+              else if (/ipad pro/.test(m)) elSchedaBox.setAttribute("data-scheda-taglio", "balconi");
+            })
+            .catch(() => {});
+        }
         if (elSchedaToggle && elSchedaBox) {
           const elToggleLabel = elSchedaToggle.querySelector(".immobile-scheda-toggle-label");
           elSchedaBox.classList.remove("is-scheda-aperta");

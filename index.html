@@ -162,7 +162,7 @@
                         <span class="hero-title-riga">Soluzioni su misura per ogni</span>
                         <span class="hero-title-riga">esigenza immobiliare</span>
                     </h1>
-                    <p class="hero-sub">Un'agenzia che segue ogni fase dell'acquisto, della vendita o dell'affitto
+                    <p class="hero-sub">Un'agenzia che segue ogni fase dell'acquisto, della vendita e dell'affitto
                         con un'assistenza dedicata e su misura, nel cuore dell'Agro Caleno.</p>
                     <a href="#immobili-vendita" class="btn btn--oro hero-cta">
                         Scopri le nostre migliori offerte
@@ -825,43 +825,48 @@
                     </div>
                 </div>
 
-                <p class="contatti-aiuto">Ciao come possiamo aiutarti</p>
+                <p class="contatti-aiuto">Ciao, come possiamo aiutarti</p>
 
                 <form class="contatti-form" id="formContatti" novalidate>
-                    <div class="contatti-aiuto-riga">
-                        <div class="contatti-aiuto-seleziona">
-                            <div class="valuta-field valuta-dropdown contatti-dropdown">
-                                <span class="sr-only">Tipo richiesta</span>
-                                <input type="hidden" name="intento" id="contattiIntento" value="" required>
-                                <button type="button" class="valuta-dropdown-toggle" id="contattiIntentoToggle"
-                                    aria-expanded="false" aria-haspopup="listbox">
-                                    <span id="contattiIntentoLabel">Seleziona</span>
-                                    <img src="assets/images/icons/icon-chevron-down.svg" alt="" width="16" height="16">
-                                </button>
-                                <ul class="valuta-dropdown-menu" id="contattiIntentoMenu" role="listbox" hidden>
-                                    <li role="option" data-value="compra">Compra</li>
-                                    <li role="option" data-value="affitta">Affitta</li>
-                                    <li role="option" data-value="vendi">Vendi</li>
-                                </ul>
+                    <div class="valuta-box contatti-aiuto-box">
+                        <div class="contatti-aiuto-riga">
+                            <div class="contatti-aiuto-seleziona">
+                                <div class="valuta-field valuta-dropdown contatti-dropdown">
+                                    <span class="sr-only">Tipo richiesta</span>
+                                    <input type="hidden" name="intento" id="contattiIntento" value="" required>
+                                    <button type="button" class="valuta-dropdown-toggle" id="contattiIntentoToggle"
+                                        aria-expanded="false" aria-haspopup="listbox">
+                                        <span id="contattiIntentoLabel">Seleziona</span>
+                                        <img src="assets/images/icons/icon-chevron-down.svg" alt="" width="16"
+                                            height="16">
+                                    </button>
+                                    <ul class="valuta-dropdown-menu" id="contattiIntentoMenu" role="listbox" hidden>
+                                        <li role="option" data-value="compra">Compra</li>
+                                        <li role="option" data-value="affitta">Affitta</li>
+                                        <li role="option" data-value="vendi">Vendi</li>
+                                    </ul>
+                                </div>
+
+                                <div class="valuta-field valuta-dropdown contatti-dropdown">
+                                    <span class="sr-only">Dettaglio richiesta</span>
+                                    <input type="hidden" name="dettaglio" id="contattiDettaglio" value="" required>
+                                    <button type="button" class="valuta-dropdown-toggle" id="contattiDettaglioToggle"
+                                        aria-expanded="false" aria-haspopup="listbox">
+                                        <span id="contattiDettaglioLabel">Seleziona</span>
+                                        <img src="assets/images/icons/icon-chevron-down.svg" alt="" width="16"
+                                            height="16">
+                                    </button>
+                                    <ul class="valuta-dropdown-menu" id="contattiDettaglioMenu" role="listbox" hidden>
+                                    </ul>
+                                </div>
                             </div>
 
-                            <div class="valuta-field valuta-dropdown contatti-dropdown">
-                                <span class="sr-only">Dettaglio richiesta</span>
-                                <input type="hidden" name="dettaglio" id="contattiDettaglio" value="" required>
-                                <button type="button" class="valuta-dropdown-toggle" id="contattiDettaglioToggle"
-                                    aria-expanded="false" aria-haspopup="listbox">
-                                    <span id="contattiDettaglioLabel">Seleziona</span>
-                                    <img src="assets/images/icons/icon-chevron-down.svg" alt="" width="16" height="16">
-                                </button>
-                                <ul class="valuta-dropdown-menu" id="contattiDettaglioMenu" role="listbox" hidden></ul>
-                            </div>
+                            <label class="valuta-field contatti-descrizione">
+                                <span class="sr-only">Descrizione (obbligatorio)</span>
+                                <textarea name="descrizione" id="contattiDescrizione" required
+                                    placeholder="*Descrizione" rows="4"></textarea>
+                            </label>
                         </div>
-
-                        <label class="valuta-field contatti-descrizione">
-                            <span class="sr-only">Descrizione (obbligatorio)</span>
-                            <textarea name="descrizione" id="contattiDescrizione" required placeholder="*Descrizione"
-                                rows="4"></textarea>
-                        </label>
                     </div>
 
                     <p class="valuta-dati-titolo contatti-dati-titolo">Lascia i tuoi contatti</p>

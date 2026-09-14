@@ -83,9 +83,32 @@
 
                 <!-- Griglia: foto | scheda ; azioni sotto foto -->
                 <div class="immobile-media">
-                    <div class="immobile-galleria-principale">
-                        <img src="" alt="" id="immobileFotoPrincipale">
-                        <div class="immobile-foto-dots" id="immobileFotoDots" aria-label="Navigazione foto"></div>
+                    <!-- Condividi: angolo alto destro foto, base allineata alle specs (popolato da JS) -->
+                    <div class="immobile-condividi" id="immobileCondividi"></div>
+                    <!-- Colonna sx: foto+azioni unite (desktop: la scheda non le sposta più) -->
+                    <div class="immobile-media-sx">
+                        <div class="immobile-galleria-principale">
+                            <img src="" alt="" id="immobileFotoPrincipale">
+                            <div class="immobile-foto-dots" id="immobileFotoDots" aria-label="Navigazione foto"></div>
+                        </div>
+
+                        <div class="immobile-media-azioni" role="group" aria-label="Planimetria, fotografie e video">
+                            <button type="button" class="immobile-azione" id="immobileBtnPlanimetria"
+                                aria-label="Apri planimetria">
+                                <img src="assets/images/icons/icon-planimetria.svg" alt="" width="30" height="30">
+                                <span class="immobile-azione-label">planimetria</span>
+                            </button>
+                            <button type="button" class="immobile-azione immobile-azione--foto" id="immobileBtnFoto"
+                                aria-label="Apri fotografie">
+                                <img src="assets/images/icons/icona-Photo-Camera.svg" alt="" width="40" height="50">
+                                <span class="immobile-azione-label" id="immobileFotoCount">0 foto</span>
+                            </button>
+                            <button type="button" class="immobile-azione" id="immobileBtnVideo" aria-label="Apri video"
+                                disabled>
+                                <img src="assets/images/icons/icon-video.svg" alt="" width="40" height="40">
+                                <span class="immobile-azione-label">video</span>
+                            </button>
+                        </div>
                     </div>
 
                     <section class="immobile-scheda" aria-labelledby="titolo-scheda">
@@ -101,24 +124,6 @@
                             </svg>
                         </button>
                     </section>
-
-                    <div class="immobile-media-azioni" role="group" aria-label="Planimetria, fotografie e video">
-                        <button type="button" class="immobile-azione" id="immobileBtnPlanimetria"
-                            aria-label="Apri planimetria">
-                            <img src="assets/images/icons/icon-planimetria.svg" alt="" width="30" height="30">
-                            <span class="immobile-azione-label">planimetria</span>
-                        </button>
-                        <button type="button" class="immobile-azione immobile-azione--foto" id="immobileBtnFoto"
-                            aria-label="Apri fotografie">
-                            <img src="assets/images/icons/icona-Photo-Camera.svg" alt="" width="40" height="50">
-                            <span class="immobile-azione-label" id="immobileFotoCount">0 foto</span>
-                        </button>
-                        <button type="button" class="immobile-azione" id="immobileBtnVideo" aria-label="Apri video"
-                            disabled>
-                            <img src="assets/images/icons/icon-video.svg" alt="" width="40" height="40">
-                            <span class="immobile-azione-label">video</span>
-                        </button>
-                    </div>
                 </div>
 
                 <div class="immobile-corpo">
@@ -138,7 +143,7 @@
                 </section>
 
                 <aside class="immobile-cta" aria-label="Contatta l'agenzia">
-                    <p>Interessato a questo immobile?</p>
+                    <p>Sei interessato a questo immobile?</p>
                     <a href="index.html#contatti" class="btn btn--oro">Richiedi informazioni</a>
                 </aside>
 
