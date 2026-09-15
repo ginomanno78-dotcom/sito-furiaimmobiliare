@@ -732,8 +732,48 @@ document.addEventListener("DOMContentLoaded", () => {
   const paginaImmobileErrore = document.getElementById("paginaImmobileErrore");
 
   if (paginaImmobile) {
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get("id");
+    const elContratto = document.getElementById("immobileContratto");
+    const elTitolo = document.getElementById("immobileTitolo");
+    const elComune = document.getElementById("immobileComune");
+    const elPrezzo = document.getElementById("immobilePrezzo");
+    const elDescrizione = document.getElementById("immobileDescrizione");
+    const elFoto = document.getElementById("immobileFotoPrincipale");
+    const elFotoDots = document.getElementById("immobileFotoDots");
+    const elFotoCount = document.getElementById("immobileFotoCount");
+    const elBtnPlanimetria = document.getElementById("immobileBtnPlanimetria");
+    const elBtnFoto = document.getElementById("immobileBtnFoto");
+    const elBtnVideo = document.getElementById("immobileBtnVideo");
+    const elScheda = document.getElementById("immobileSchedaLista");
+    const elFotoBox = elFoto ? elFoto.closest(".immobile-galleria-principale") : null;
+    const elMappa = document.getElementById("immobileMappa");
+    const elSpecs = document.getElementById("immobileSpecs");
+    const elCondividi = document.getElementById("immobileCondividi");
+    const elMedia = document.querySelector(".immobile-media");
+    const elNav = document.getElementById("immobileNavAnnunci");
+    const elNavPrec = document.getElementById("immobileNavPrec");
+    const elNavSucc = document.getElementById("immobileNavSucc");
+    const elNavContatore = document.getElementById("immobileNavContatore");
+    const elSchedaToggle = document.getElementById("immobileSchedaToggle");
+    const lightbox = document.getElementById("immobileLightbox");
+    const lightboxFoto = document.getElementById("immobileLightboxFoto");
+    const lightboxChiudi = document.getElementById("immobileLightboxChiudi");
+    const lightboxPrev = document.getElementById("immobileLightboxPrev");
+    const lightboxNext = document.getElementById("immobileLightboxNext");
+
+    /* Stato corrente (aggiornato senza reload) */
+    const stato = {
+      annuncio: null,
+      titoloRiga: "",
+      fotoLista: [],
+      indiceFoto: 0,
+      lightboxMode: "foto",
+      urlShare: "",
+      titoloShare: "",
+      testoShare: "",
+      listenersPronti: false,
+      posizionaCondividi: null,
+      applicaTaglioSchedaDevice: null
+    };
 
     const trovaAnnuncio = (annuncioId) => {
       if (!annuncioId || typeof annunci === "undefined") return null;
@@ -741,98 +781,286 @@ document.addEventListener("DOMContentLoaded", () => {
       return lista.find((a) => a.id === annuncioId && !a.placeholder && a.collegabile) || null;
     };
 
-    const annuncio = trovaAnnuncio(id);
+    const listaNavDa = (annuncio) => {
+      const listaBase =
+        annuncio.contratto && /affitto/i.test(annuncio.contratto)
+          ? annunci.affitto || []
+          : annunci.vendita || [];
+      return listaBase.filter((a) => !a.placeholder && a.collegabile);
+    };
 
-    if (!annuncio) {
-      paginaImmobile.hidden = true;
-      if (paginaImmobileErrore) paginaImmobileErrore.hidden = false;
-    } else {
-      if (paginaImmobileErrore) paginaImmobileErrore.hidden = true;
-      paginaImmobile.hidden = false;
-      paginaImmobile.dataset.stato = "pronto";
+    const adattaOrientamentoFoto = () => {
+      if (!elFoto || !elFotoBox || !elFoto.naturalWidth || !elFoto.naturalHeight) return;
+      elFotoBox.dataset.orientamento =
+        elFoto.naturalWidth >= elFoto.naturalHeight ? "landscape" : "portrait";
+    };
 
-      const prezzo = typeof formatPrezzo === "function" ? formatPrezzo(annuncio.prezzo) : "";
+    const aggiornaDotsAttivi = () => {
+      if (!elFotoDots) return;
+      elFotoDots.querySelectorAll(".immobile-foto-dot").forEach((d, i) => {
+        d.classList.toggle("is-active", i === stato.indiceFoto);
+      });
+    };
 
-      const elContratto = document.getElementById("immobileContratto");
-      const elTitolo = document.getElementById("immobileTitolo");
-      const elComune = document.getElementById("immobileComune");
-      const elPrezzo = document.getElementById("immobilePrezzo");
-      const elDescrizione = document.getElementById("immobileDescrizione");
-      const elFoto = document.getElementById("immobileFotoPrincipale");
-      const elFotoDots = document.getElementById("immobileFotoDots");
-      const elFotoCount = document.getElementById("immobileFotoCount");
-      const elBtnPlanimetria = document.getElementById("immobileBtnPlanimetria");
-      const elBtnFoto = document.getElementById("immobileBtnFoto");
-      const elBtnVideo = document.getElementById("immobileBtnVideo");
-      const elScheda = document.getElementById("immobileSchedaLista");
-      const elFotoBox = elFoto ? elFoto.closest(".immobile-galleria-principale") : null;
-      const elMappa = document.getElementById("immobileMappa");
+    const mostraFoto = (src, alt) => {
+      if (!elFoto) return;
+      elFoto.src = src;
+      elFoto.alt = alt || stato.titoloRiga;
+      if (elFoto.complete && elFoto.naturalWidth) adattaOrientamentoFoto();
+      aggiornaDotsAttivi();
+    };
 
-      // Etichetta contratto in evidenza (es. IN VENDITA)
-      const contrattoLabel =
-        annuncio.contratto && /affitto/i.test(annuncio.contratto) ? "IN AFFITTO" : "IN VENDITA";
+    const chiudiLightbox = () => {
+      if (!lightbox) return;
+      lightbox.hidden = true;
+      document.body.classList.remove("immobile-lightbox-open");
+      stato.lightboxMode = "foto";
+      if (lightboxPrev) lightboxPrev.hidden = false;
+      if (lightboxNext) lightboxNext.hidden = false;
+    };
 
-      // Titolo su un rigo: tipologia + via + eventuale angolo
-      const viaTitolo = (annuncio.via || "").replace(/A\.B\./g, "A. B.");
-      let titoloRiga = annuncio.tipologia || "";
-      if (viaTitolo) titoloRiga += ` in ${viaTitolo}`;
-      if (annuncio.angoloCon) {
-        const angolo = annuncio.angoloCon.replace(/^Via\s+/i, "via ");
-        titoloRiga += ` (ad angolo con ${angolo})`;
+    const aggiornaLightboxFoto = () => {
+      if (!lightboxFoto || !stato.fotoLista.length) return;
+      stato.lightboxMode = "foto";
+      const src = stato.fotoLista[stato.indiceFoto];
+      lightboxFoto.src = src;
+      lightboxFoto.alt = `${stato.titoloRiga} — foto ${stato.indiceFoto + 1}`;
+      mostraFoto(src, lightboxFoto.alt);
+      if (lightboxPrev) lightboxPrev.hidden = stato.fotoLista.length <= 1;
+      if (lightboxNext) lightboxNext.hidden = stato.fotoLista.length <= 1;
+    };
+
+    const apriLightbox = (indice) => {
+      if (!lightbox || !stato.fotoLista.length) return;
+      stato.indiceFoto =
+        ((indice % stato.fotoLista.length) + stato.fotoLista.length) % stato.fotoLista.length;
+      aggiornaLightboxFoto();
+      lightbox.hidden = false;
+      document.body.classList.add("immobile-lightbox-open");
+      if (lightboxChiudi) lightboxChiudi.focus();
+    };
+
+    const apriPlanimetria = () => {
+      if (!lightbox || !lightboxFoto || !stato.annuncio || !stato.annuncio.planimetria) return;
+      stato.lightboxMode = "planimetria";
+      lightboxFoto.src = stato.annuncio.planimetria;
+      lightboxFoto.alt = `${stato.titoloRiga} — planimetria`;
+      if (lightboxPrev) lightboxPrev.hidden = true;
+      if (lightboxNext) lightboxNext.hidden = true;
+      lightbox.hidden = false;
+      document.body.classList.add("immobile-lightbox-open");
+      if (lightboxChiudi) lightboxChiudi.focus();
+    };
+
+    const lightboxVai = (dir) => {
+      if (stato.lightboxMode !== "foto" || !stato.fotoLista.length) return;
+      stato.indiceFoto =
+        (stato.indiceFoto + dir + stato.fotoLista.length) % stato.fotoLista.length;
+      aggiornaLightboxFoto();
+    };
+
+    const aggiornaNavAnnunci = () => {
+      const annuncio = stato.annuncio;
+      if (!elNav || !annuncio) return;
+      const listaNav = listaNavDa(annuncio);
+      const idxNav = listaNav.findIndex((a) => a.id === annuncio.id);
+      if (idxNav >= 0 && listaNav.length > 1) {
+        elNav.hidden = false;
+        if (elNavContatore) elNavContatore.textContent = `${idxNav + 1}/${listaNav.length}`;
+        if (elNavPrec) elNavPrec.disabled = idxNav <= 0;
+        if (elNavSucc) elNavSucc.disabled = idxNav >= listaNav.length - 1;
+      } else {
+        elNav.hidden = true;
       }
+    };
 
-      document.title = `${titoloRiga} — Furia Immobiliare Srls`;
+    const aggiornaSchedaTecnica = () => {
+      const annuncio = stato.annuncio;
+      if (!elScheda || !annuncio) return;
 
-      if (elContratto) elContratto.textContent = contrattoLabel;
-      if (elTitolo) elTitolo.textContent = titoloRiga;
-      if (elComune) elComune.textContent = (annuncio.comune || "").toUpperCase();
-      if (elPrezzo) elPrezzo.textContent = prezzo;
-      if (elDescrizione) elDescrizione.textContent = annuncio.descrizione || "";
+      const siNo = (v) => (v ? "Sì" : "No");
+      const righe = [
+        ["Superficie", annuncio.mq != null ? `${annuncio.mq} mq` : null],
+        ["Locali", annuncio.locali],
+        ["Camere da letto", annuncio.camere],
+        ["Bagni", annuncio.bagni],
+        ["Cucina", annuncio.cucina],
+        ["Piano", typeof formatPiano === "function" ? formatPiano(annuncio.piano) : annuncio.piano],
+        ["Piani edificio", annuncio.pianiEdificio],
+        ["Stato conservazione", annuncio.statoConservazione],
+        ["Anno di costruzione", annuncio.annoCostruzione],
+        ["Ascensore", annuncio.ascensore == null ? null : siNo(annuncio.ascensore)],
+        ["Balconi", annuncio.balconi],
+        ["Arredato", annuncio.arredato == null ? null : siNo(annuncio.arredato)],
+        ["Pertinenze", annuncio.pertinenze],
+        ["Riscaldamento", annuncio.riscaldamento],
+        ["Classe energetica", annuncio.classeEnergetica]
+      ].filter(([, val]) => val != null && val !== "");
 
-      /* Specs sotto prezzo: mq, locali, bagni, piano (come card home) */
-      const elSpecs = document.getElementById("immobileSpecs");
-      if (elSpecs) {
-        const bagnoLabel =
-          annuncio.bagni == null
-            ? ""
-            : `${annuncio.bagni} bagno${annuncio.bagni === 1 ? "" : "i"}`;
-        const pianoLabel =
-          typeof formatPiano === "function" ? formatPiano(annuncio.piano) : annuncio.piano;
-        const voci = [
-          {
-            icona: "assets/images/icons/icon-planimetria.svg",
-            testo: annuncio.mq != null ? `${annuncio.mq} mq.` : null
-          },
-          {
-            icona: "assets/images/icons/icon-camera-letto.svg",
-            testo: annuncio.locali != null ? `${annuncio.locali} locali` : null
-          },
-          {
-            icona: "assets/images/icons/icon-bagno.svg",
-            testo: bagnoLabel || null
-          },
-          {
-            icona: "assets/images/icons/icon-scale.svg",
-            testo: pianoLabel || null
+      const tagliScheda = [
+        { label: "Piano", fino: "immobile-scheda-fino", extra: "immobile-scheda-extra" },
+        { label: "Piani edificio", fino: "immobile-scheda-fino-piani", extra: "immobile-scheda-extra-piani" },
+        { label: "Anno di costruzione", fino: "immobile-scheda-fino-anno", extra: "immobile-scheda-extra-anno" },
+        { label: "Ascensore", fino: "immobile-scheda-fino-ascensore", extra: "immobile-scheda-extra-ascensore" },
+        { label: "Balconi", fino: "immobile-scheda-fino-desktop", extra: "immobile-scheda-extra-desktop" }
+      ];
+      const indiciTaglio = tagliScheda.map((t) => ({
+        ...t,
+        idx: righe.findIndex(([label]) => label === t.label)
+      }));
+
+      const usaToggleScheda = righe.length > 6;
+
+      elScheda.innerHTML = righe
+        .map(([label, val], i) => {
+          const classi = [];
+          if (usaToggleScheda) {
+            indiciTaglio.forEach((t) => {
+              if (label === t.label) classi.push(t.fino);
+              if (t.idx >= 0 && i > t.idx) classi.push(t.extra);
+            });
           }
-        ].filter((v) => v.testo);
+          const cls = classi.length ? ` class="${classi.join(" ")}"` : "";
+          return `<div${cls}><dt>${label}</dt><dd>${val}</dd></div>`;
+        })
+        .join("");
 
-        elSpecs.innerHTML = voci
-          .map(
-            (v) =>
-              `<div class="card-spec"><span class="card-spec-icon"><img src="${v.icona}" alt="" width="26" height="26"></span><span>${v.testo}</span></div>`
-          )
-          .join("");
+      const elSchedaBox = elScheda.closest(".immobile-scheda");
+      const haExtra =
+        usaToggleScheda && indiciTaglio.some((t) => t.idx >= 0 && t.idx < righe.length - 1);
+
+      stato.applicaTaglioSchedaDevice = () => {
+        if (!elSchedaBox) return;
+        if (!usaToggleScheda) {
+          elSchedaBox.removeAttribute("data-scheda-taglio");
+          return;
+        }
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        const sw = window.screen.width || w;
+        const sh = window.screen.height || h;
+        const ua = navigator.userAgent || "";
+        const near = (a, b, tol = 12) => Math.abs(a - b) <= tol;
+        const pairMatch = (a, b, x, y) =>
+          (near(a, x) && near(b, y)) || (near(a, y) && near(b, x));
+
+        let taglio = null;
+        const landscape = w > h;
+
+        if (landscape) {
+          if (near(w, 1000, 8)) taglio = "piani";
+          else if (near(w, 1116, 8)) taglio = "anno";
+          else if (near(w, 933, 8)) taglio = "piano";
+          else if (near(w, 960, 8)) taglio = "piano";
+
+          const pairs = [
+            [w, h],
+            [sw, sh]
+          ];
+
+          for (const [pw, ph] of pairs) {
+            if (taglio) break;
+            const shortS = Math.min(pw, ph);
+            const longS = Math.max(pw, ph);
+
+            if (pairMatch(pw, ph, 1024, 600)) {
+              taglio = "piani";
+              break;
+            }
+            if (pairMatch(pw, ph, 1133, 744) || pairMatch(pw, ph, 1024, 768)) {
+              taglio = "piani";
+              break;
+            }
+            if (pairMatch(pw, ph, 1138, 712)) {
+              taglio = "anno";
+              break;
+            }
+            if (pairMatch(pw, ph, 1152, 720)) {
+              taglio = "anno";
+              break;
+            }
+            if (pairMatch(pw, ph, 1180, 820)) {
+              taglio = "ascensore";
+              break;
+            }
+            if (pairMatch(pw, ph, 1194, 834) || pairMatch(pw, ph, 1210, 834)) {
+              taglio = "balconi";
+              break;
+            }
+            if (
+              pairMatch(pw, ph, 1340, 800) ||
+              pairMatch(pw, ph, 1332, 800) ||
+              pairMatch(pw, ph, 1340, 800)
+            ) {
+              taglio = "anno";
+              break;
+            }
+            if (
+              pairMatch(pw, ph, 1120, 800) ||
+              pairMatch(pw, ph, 1067, 762) ||
+              pairMatch(pw, ph, 1112, 800) ||
+              (/OnePlus|OPD\d/i.test(ua) &&
+                shortS >= 750 &&
+                shortS <= 850 &&
+                longS >= 1050 &&
+                longS <= 1200)
+            ) {
+              taglio = "piano";
+              break;
+            }
+            if (near(pw, 1280) || (near(longS, 1280) && near(shortS, 800))) {
+              taglio = "balconi";
+              break;
+            }
+            if (
+              pairMatch(pw, ph, 1366, 1024) ||
+              pairMatch(pw, ph, 1376, 1032) ||
+              pairMatch(pw, ph, 1366, 1024)
+            ) {
+              taglio = /iPad Air|Air\//i.test(ua) ? "ascensore" : "balconi";
+              break;
+            }
+          }
+
+          if (!taglio) {
+            if (/OnePlus|OPD\d/i.test(ua)) taglio = "piano";
+            else if (/iPad Pro/i.test(ua)) taglio = "balconi";
+          }
+        }
+
+        if (taglio) elSchedaBox.setAttribute("data-scheda-taglio", taglio);
+        else elSchedaBox.removeAttribute("data-scheda-taglio");
+      };
+
+      stato.applicaTaglioSchedaDevice();
+
+      if (elSchedaToggle && elSchedaBox) {
+        const elToggleLabel = elSchedaToggle.querySelector(".immobile-scheda-toggle-label");
+        elSchedaBox.classList.remove("is-scheda-aperta");
+        if (haExtra) {
+          elSchedaToggle.hidden = false;
+          elSchedaToggle.setAttribute("aria-expanded", "false");
+          if (elToggleLabel) elToggleLabel.textContent = "Mostra di più";
+          elSchedaToggle.onclick = () => {
+            const aperta = elSchedaBox.classList.toggle("is-scheda-aperta");
+            elSchedaToggle.setAttribute("aria-expanded", aperta ? "true" : "false");
+            if (elToggleLabel) elToggleLabel.textContent = aperta ? "Mostra di meno" : "Mostra di più";
+          };
+        } else {
+          elSchedaToggle.hidden = true;
+          elSchedaToggle.onclick = null;
+        }
       }
+    };
 
-      /* Condividi: angolo alto destro foto, base = base inferiore specs */
-      const elCondividi = document.getElementById("immobileCondividi");
-      const elMedia = document.querySelector(".immobile-media");
-      if (elCondividi && elMedia && elFotoBox && elSpecs) {
-        const urlShare = window.location.href;
-        const titoloShare = titoloRiga;
-        const testoShare = `${titoloShare} — ${annuncio.comune || ""}\n${urlShare}`;
-        elCondividi.innerHTML = `<div class="card-annuncio-share">
+    const aggiornaCondividi = () => {
+      if (!elCondividi || !elMedia || !elFotoBox || !elSpecs || !stato.annuncio) return;
+
+      stato.urlShare = window.location.href;
+      stato.titoloShare = stato.titoloRiga;
+      stato.testoShare = `${stato.titoloShare} — ${stato.annuncio.comune || ""}\n${stato.urlShare}`;
+
+      elCondividi.innerHTML = `<div class="card-annuncio-share">
           <button type="button" class="card-annuncio-share-btn" aria-label="Condividi annuncio" aria-expanded="false" aria-haspopup="true">
             <span class="card-annuncio-share-tooltip" aria-hidden="true">Condividi annuncio</span>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -851,130 +1079,234 @@ document.addEventListener("DOMContentLoaded", () => {
           </ul>
         </div>`;
 
-        const shareBtn = elCondividi.querySelector(".card-annuncio-share-btn");
-        const shareMenu = elCondividi.querySelector(".card-annuncio-share-menu");
+      const shareBtn = elCondividi.querySelector(".card-annuncio-share-btn");
+      const shareMenu = elCondividi.querySelector(".card-annuncio-share-menu");
 
-        /* Allinea: base specs + bordo destro foto.
-           Solo telefoni portrait (<520px): riga prezzo.
-           Tablet ribelli (≥520: Tab S4/A7/A9/S10 FE, OnePlus Pad, M10) restano angolo foto. */
-        const mqMobilePortrait = window.matchMedia(
-          "(max-width: 519px) and (orientation: portrait)"
-        );
-        const posizionaCondividi = () => {
-          const fr = elFotoBox.getBoundingClientRect();
-          const mr = elMedia.getBoundingClientRect();
-          const h = elCondividi.offsetHeight || 28;
-          const w = elCondividi.offsetWidth || 28;
-          elCondividi.style.left = `${fr.right - mr.left - w}px`;
+      const mqMobilePortrait = window.matchMedia(
+        "(max-width: 519px) and (orientation: portrait)"
+      );
+      stato.posizionaCondividi = () => {
+        const fr = elFotoBox.getBoundingClientRect();
+        const mr = elMedia.getBoundingClientRect();
+        const h = elCondividi.offsetHeight || 28;
+        const w = elCondividi.offsetWidth || 28;
+        elCondividi.style.left = `${fr.right - mr.left - w}px`;
 
-          if (mqMobilePortrait.matches && elPrezzo) {
-            const pr = elPrezzo.getBoundingClientRect();
-            elCondividi.style.top = `${pr.top + (pr.height - h) / 2 - mr.top}px`;
+        if (mqMobilePortrait.matches && elPrezzo) {
+          const pr = elPrezzo.getBoundingClientRect();
+          elCondividi.style.top = `${pr.top + (pr.height - h) / 2 - mr.top}px`;
+        } else {
+          const sr = elSpecs.getBoundingClientRect();
+          elCondividi.style.top = `${sr.bottom - mr.top - h}px`;
+        }
+      };
+
+      requestAnimationFrame(() => requestAnimationFrame(stato.posizionaCondividi));
+
+      if (shareBtn && shareMenu) {
+        const chiudiShare = () => {
+          shareMenu.hidden = true;
+          shareBtn.setAttribute("aria-expanded", "false");
+        };
+
+        const posizionaShareMenu = () => {
+          const r = shareBtn.getBoundingClientRect();
+          shareMenu.style.left = "auto";
+          shareMenu.style.right = `${Math.max(8, window.innerWidth - r.right)}px`;
+          shareMenu.hidden = false;
+          const h = shareMenu.offsetHeight || 220;
+          const spazioSotto = window.innerHeight - r.bottom;
+          if (spazioSotto < h + 12) {
+            shareMenu.style.top = `${Math.max(8, r.top - h - 6)}px`;
           } else {
-            const sr = elSpecs.getBoundingClientRect();
-            elCondividi.style.top = `${sr.bottom - mr.top - h}px`;
+            shareMenu.style.top = `${r.bottom + 6}px`;
           }
         };
 
-        requestAnimationFrame(() => requestAnimationFrame(posizionaCondividi));
-        window.addEventListener("resize", posizionaCondividi);
-        if (typeof mqMobilePortrait.addEventListener === "function") {
-          mqMobilePortrait.addEventListener("change", posizionaCondividi);
-        } else if (typeof mqMobilePortrait.addListener === "function") {
-          mqMobilePortrait.addListener(posizionaCondividi);
-        }
-        if (typeof ResizeObserver !== "undefined") {
-          const ro = new ResizeObserver(posizionaCondividi);
-          ro.observe(elFotoBox);
-          ro.observe(elSpecs);
-          if (elPrezzo) ro.observe(elPrezzo);
-        }
+        shareBtn.onclick = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const eraChiuso = shareMenu.hidden;
+          document.querySelectorAll(".card-annuncio-share-menu").forEach((m) => {
+            m.hidden = true;
+          });
+          document.querySelectorAll(".card-annuncio-share-btn").forEach((b) => {
+            b.setAttribute("aria-expanded", "false");
+          });
+          if (eraChiuso) {
+            posizionaShareMenu();
+            shareBtn.setAttribute("aria-expanded", "true");
+          }
+        };
 
-        if (shareBtn && shareMenu) {
-          const chiudiShare = () => {
-            shareMenu.hidden = true;
-            shareBtn.setAttribute("aria-expanded", "false");
-          };
+        shareMenu.onclick = (e) => e.stopPropagation();
 
-          const posizionaShareMenu = () => {
-            const r = shareBtn.getBoundingClientRect();
-            shareMenu.style.left = "auto";
-            shareMenu.style.right = `${Math.max(8, window.innerWidth - r.right)}px`;
-            shareMenu.hidden = false;
-            const h = shareMenu.offsetHeight || 220;
-            const spazioSotto = window.innerHeight - r.bottom;
-            if (spazioSotto < h + 12) {
-              shareMenu.style.top = `${Math.max(8, r.top - h - 6)}px`;
-            } else {
-              shareMenu.style.top = `${r.bottom + 6}px`;
-            }
-          };
-
-          shareBtn.addEventListener("click", (e) => {
+        shareMenu.querySelectorAll("[data-share]").forEach((btn) => {
+          btn.onclick = async (e) => {
             e.preventDefault();
             e.stopPropagation();
-            const eraChiuso = shareMenu.hidden;
-            document.querySelectorAll(".card-annuncio-share-menu").forEach((m) => {
-              m.hidden = true;
-            });
-            document.querySelectorAll(".card-annuncio-share-btn").forEach((b) => {
-              b.setAttribute("aria-expanded", "false");
-            });
-            if (eraChiuso) {
-              posizionaShareMenu();
-              shareBtn.setAttribute("aria-expanded", "true");
-            }
-          });
-
-          shareMenu.addEventListener("click", (e) => e.stopPropagation());
-
-          shareMenu.querySelectorAll("[data-share]").forEach((btn) => {
-            btn.addEventListener("click", async (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              const canale = btn.getAttribute("data-share");
-              if (canale === "whatsapp") {
-                window.open(`https://wa.me/?text=${encodeURIComponent(testoShare)}`, "_blank", "noopener");
-              } else if (canale === "email") {
-                window.location.href = `mailto:?subject=${encodeURIComponent(titoloShare)}&body=${encodeURIComponent(testoShare)}`;
-              } else if (canale === "facebook") {
-                window.open(
-                  `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(urlShare)}`,
-                  "_blank",
-                  "noopener"
-                );
-              } else if (canale === "linkedin") {
-                window.open(
-                  `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(urlShare)}`,
-                  "_blank",
-                  "noopener"
-                );
-              } else if (canale === "copia") {
-                const label = btn.querySelector("span");
-                try {
-                  await navigator.clipboard.writeText(urlShare);
-                  if (label) label.textContent = "Link copiato";
-                  setTimeout(() => {
-                    if (label) label.textContent = "Copia link";
-                  }, 1600);
-                } catch (err) {
-                  window.prompt("Copia il link:", urlShare);
-                }
+            const canale = btn.getAttribute("data-share");
+            if (canale === "whatsapp") {
+              window.open(
+                `https://wa.me/?text=${encodeURIComponent(stato.testoShare)}`,
+                "_blank",
+                "noopener"
+              );
+            } else if (canale === "email") {
+              window.location.href = `mailto:?subject=${encodeURIComponent(stato.titoloShare)}&body=${encodeURIComponent(stato.testoShare)}`;
+            } else if (canale === "facebook") {
+              window.open(
+                `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(stato.urlShare)}`,
+                "_blank",
+                "noopener"
+              );
+            } else if (canale === "linkedin") {
+              window.open(
+                `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(stato.urlShare)}`,
+                "_blank",
+                "noopener"
+              );
+            } else if (canale === "copia") {
+              const label = btn.querySelector("span");
+              try {
+                await navigator.clipboard.writeText(stato.urlShare);
+                if (label) label.textContent = "Link copiato";
+                setTimeout(() => {
+                  if (label) label.textContent = "Copia link";
+                }, 1600);
+              } catch (err) {
+                window.prompt("Copia il link:", stato.urlShare);
               }
-              if (canale !== "copia") chiudiShare();
-            });
-          });
+            }
+            if (canale !== "copia") chiudiShare();
+          };
+        });
 
-          document.addEventListener("click", (e) => {
-            if (!elCondividi.contains(e.target) && !shareMenu.contains(e.target)) chiudiShare();
-          });
+        elCondividi.dataset.shareBound = "1";
+      }
+    };
 
-          window.addEventListener("scroll", chiudiShare, true);
-          window.addEventListener("resize", chiudiShare);
+    const aggiornaGalleria = () => {
+      const annuncio = stato.annuncio;
+      stato.fotoLista = [];
+      (annuncio.galleria || []).forEach((src) => {
+        if (src && !stato.fotoLista.includes(src)) stato.fotoLista.push(src);
+      });
+      stato.indiceFoto = 0;
+      chiudiLightbox();
+
+      if (elFotoDots) {
+        elFotoDots.innerHTML = "";
+        stato.fotoLista.forEach((_, i) => {
+          const dot = document.createElement("button");
+          dot.type = "button";
+          dot.className = "immobile-foto-dot" + (i === 0 ? " is-active" : "");
+          dot.setAttribute("aria-label", `Vai alla foto ${i + 1}`);
+          dot.addEventListener("click", (e) => {
+            e.stopPropagation();
+            stato.indiceFoto = i;
+            mostraFoto(stato.fotoLista[i], `${stato.titoloRiga} — foto ${i + 1}`);
+          });
+          elFotoDots.appendChild(dot);
+        });
+      }
+
+      if (elFotoCount) {
+        elFotoCount.textContent = `${stato.fotoLista.length} foto`;
+      }
+
+      if (elBtnPlanimetria) {
+        elBtnPlanimetria.disabled = !annuncio.planimetria;
+        elBtnPlanimetria.onclick = annuncio.planimetria ? () => apriPlanimetria() : null;
+      }
+
+      if (elBtnFoto) {
+        elBtnFoto.onclick = () => apriLightbox(stato.indiceFoto);
+        elBtnFoto.setAttribute("aria-label", `Apri fotografie (${stato.fotoLista.length})`);
+      }
+
+      if (elBtnVideo) {
+        if (annuncio.video) {
+          elBtnVideo.disabled = false;
+          elBtnVideo.onclick = () => {
+            window.open(annuncio.video, "_blank", "noopener,noreferrer");
+          };
+        } else {
+          elBtnVideo.disabled = true;
+          elBtnVideo.onclick = null;
         }
       }
 
-      /* Mappa ubicazione (via + comune), larghezza container */
+      if (stato.fotoLista.length) {
+        mostraFoto(stato.fotoLista[0], `${stato.titoloRiga} — foto 1`);
+      } else if (elFoto) {
+        elFoto.removeAttribute("src");
+        elFoto.alt = "";
+      }
+    };
+
+    const aggiornaSpecs = () => {
+      const annuncio = stato.annuncio;
+      if (!elSpecs || !annuncio) return;
+      const bagnoLabel =
+        annuncio.bagni == null ? "" : `${annuncio.bagni} bagno${annuncio.bagni === 1 ? "" : "i"}`;
+      const pianoLabel =
+        typeof formatPiano === "function" ? formatPiano(annuncio.piano) : annuncio.piano;
+      const voci = [
+        {
+          icona: "assets/images/icons/icon-planimetria.svg",
+          testo: annuncio.mq != null ? `${annuncio.mq} mq.` : null
+        },
+        {
+          icona: "assets/images/icons/icon-camera-letto.svg",
+          testo: annuncio.locali != null ? `${annuncio.locali} locali` : null
+        },
+        {
+          icona: "assets/images/icons/icon-bagno.svg",
+          testo: bagnoLabel || null
+        },
+        {
+          icona: "assets/images/icons/icon-scale.svg",
+          testo: pianoLabel || null
+        }
+      ].filter((v) => v.testo);
+
+      elSpecs.innerHTML = voci
+        .map(
+          (v) =>
+            `<div class="card-spec"><span class="card-spec-icon"><img src="${v.icona}" alt="" width="26" height="26"></span><span>${v.testo}</span></div>`
+        )
+        .join("");
+    };
+
+    const applicaAnnuncio = (annuncio) => {
+      stato.annuncio = annuncio;
+
+      const prezzo = typeof formatPrezzo === "function" ? formatPrezzo(annuncio.prezzo) : "";
+      const contrattoLabel =
+        annuncio.contratto && /affitto/i.test(annuncio.contratto) ? "IN AFFITTO" : "IN VENDITA";
+
+      const viaTitolo = (annuncio.via || "").replace(/A\.B\./g, "A. B.");
+      let titoloRiga = annuncio.tipologia || "";
+      if (viaTitolo) titoloRiga += ` in ${viaTitolo}`;
+      if (annuncio.angoloCon) {
+        const angolo = annuncio.angoloCon.replace(/^Via\s+/i, "via ");
+        titoloRiga += ` (ad angolo con ${angolo})`;
+      }
+      stato.titoloRiga = titoloRiga;
+
+      document.title = `${titoloRiga} — Furia Immobiliare Srls`;
+
+      if (elContratto) elContratto.textContent = contrattoLabel;
+      if (elTitolo) elTitolo.textContent = titoloRiga;
+      if (elComune) elComune.textContent = (annuncio.comune || "").toUpperCase();
+      if (elPrezzo) elPrezzo.textContent = prezzo;
+      if (elDescrizione) elDescrizione.textContent = annuncio.descrizione || "";
+
+      aggiornaNavAnnunci();
+      aggiornaSpecs();
+      aggiornaCondividi();
+
       if (elMappa) {
         const queryMappa = [annuncio.via, annuncio.comune].filter(Boolean).join(", ");
         if (queryMappa) {
@@ -986,389 +1318,190 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
-      /* Segna landscape/portrait sulla foto (bordo aderente all'immagine) */
-      const adattaOrientamentoFoto = () => {
-        if (!elFoto || !elFotoBox || !elFoto.naturalWidth || !elFoto.naturalHeight) return;
-        elFotoBox.dataset.orientamento =
-          elFoto.naturalWidth >= elFoto.naturalHeight ? "landscape" : "portrait";
-      };
+      aggiornaGalleria();
+      aggiornaSchedaTecnica();
+    };
 
-      /* Galleria lightbox: solo foto annuncio (cover resta solo per la card in home) */
-      const fotoLista = [];
-      (annuncio.galleria || []).forEach((src) => {
-        if (src && !fotoLista.includes(src)) fotoLista.push(src);
+    const mostraErroreImmobile = () => {
+      paginaImmobile.hidden = true;
+      if (paginaImmobileErrore) paginaImmobileErrore.hidden = false;
+      stato.annuncio = null;
+    };
+
+    const caricaImmobile = (annuncioId, opzioni = {}) => {
+      const annuncio = trovaAnnuncio(annuncioId);
+      if (!annuncio) {
+        mostraErroreImmobile();
+        return false;
+      }
+
+      if (paginaImmobileErrore) paginaImmobileErrore.hidden = true;
+      paginaImmobile.hidden = false;
+      paginaImmobile.dataset.stato = "pronto";
+
+      if (opzioni.push) {
+        const url = `immobile.html?id=${encodeURIComponent(annuncio.id)}`;
+        history.pushState({ id: annuncio.id }, "", url);
+      } else if (opzioni.replace) {
+        const url = `immobile.html?id=${encodeURIComponent(annuncio.id)}`;
+        history.replaceState({ id: annuncio.id }, "", url);
+      }
+
+      applicaAnnuncio(annuncio);
+      return true;
+    };
+
+    const vaiAdAnnuncio = (nuovoId) => {
+      if (!nuovoId || (stato.annuncio && stato.annuncio.id === nuovoId)) return;
+      chiudiLightbox();
+      paginaImmobile.classList.add("is-transizione");
+      window.setTimeout(() => {
+        caricaImmobile(nuovoId, { push: true });
+        window.scrollTo({ top: 0, behavior: "auto" });
+        requestAnimationFrame(() => {
+          paginaImmobile.classList.remove("is-transizione");
+          if (stato.posizionaCondividi) stato.posizionaCondividi();
+        });
+      }, 160);
+    };
+
+    /* Listener globali: una sola volta */
+    if (elFoto) elFoto.addEventListener("load", adattaOrientamentoFoto);
+
+    if (elFotoBox) {
+      elFotoBox.addEventListener("click", (e) => {
+        if (e.target.closest(".immobile-foto-dot")) return;
+        apriLightbox(stato.indiceFoto);
       });
+    }
 
-      let indiceFoto = 0;
-      let lightboxMode = "foto"; /* foto | planimetria */
-
-      const aggiornaDotsAttivi = () => {
-        if (!elFotoDots) return;
-        elFotoDots.querySelectorAll(".immobile-foto-dot").forEach((d, i) => {
-          d.classList.toggle("is-active", i === indiceFoto);
-        });
-      };
-
-      const mostraFoto = (src, alt) => {
-        if (!elFoto) return;
-        elFoto.src = src;
-        elFoto.alt = alt || titoloRiga;
-        if (elFoto.complete && elFoto.naturalWidth) adattaOrientamentoFoto();
-        aggiornaDotsAttivi();
-      };
-
-      if (elFoto) {
-        elFoto.addEventListener("load", adattaOrientamentoFoto);
-      }
-
-      /* ===== Lightbox overlay ===== */
-      const lightbox = document.getElementById("immobileLightbox");
-      const lightboxFoto = document.getElementById("immobileLightboxFoto");
-      const lightboxChiudi = document.getElementById("immobileLightboxChiudi");
-      const lightboxPrev = document.getElementById("immobileLightboxPrev");
-      const lightboxNext = document.getElementById("immobileLightboxNext");
-
-      const aggiornaLightboxFoto = () => {
-        if (!lightboxFoto || !fotoLista.length) return;
-        lightboxMode = "foto";
-        const src = fotoLista[indiceFoto];
-        lightboxFoto.src = src;
-        lightboxFoto.alt = `${titoloRiga} — foto ${indiceFoto + 1}`;
-        mostraFoto(src, lightboxFoto.alt);
-        if (lightboxPrev) lightboxPrev.hidden = fotoLista.length <= 1;
-        if (lightboxNext) lightboxNext.hidden = fotoLista.length <= 1;
-      };
-
-      const apriLightbox = (indice) => {
-        if (!lightbox || !fotoLista.length) return;
-        indiceFoto = ((indice % fotoLista.length) + fotoLista.length) % fotoLista.length;
-        aggiornaLightboxFoto();
-        lightbox.hidden = false;
-        document.body.classList.add("immobile-lightbox-open");
-        if (lightboxChiudi) lightboxChiudi.focus();
-      };
-
-      const apriPlanimetria = () => {
-        if (!lightbox || !lightboxFoto || !annuncio.planimetria) return;
-        lightboxMode = "planimetria";
-        lightboxFoto.src = annuncio.planimetria;
-        lightboxFoto.alt = `${titoloRiga} — planimetria`;
-        if (lightboxPrev) lightboxPrev.hidden = true;
-        if (lightboxNext) lightboxNext.hidden = true;
-        lightbox.hidden = false;
-        document.body.classList.add("immobile-lightbox-open");
-        if (lightboxChiudi) lightboxChiudi.focus();
-      };
-
-      const chiudiLightbox = () => {
-        if (!lightbox) return;
-        lightbox.hidden = true;
-        document.body.classList.remove("immobile-lightbox-open");
-        lightboxMode = "foto";
-        if (lightboxPrev) lightboxPrev.hidden = false;
-        if (lightboxNext) lightboxNext.hidden = false;
-      };
-
-      const lightboxVai = (dir) => {
-        if (lightboxMode !== "foto" || !fotoLista.length) return;
-        indiceFoto = (indiceFoto + dir + fotoLista.length) % fotoLista.length;
-        aggiornaLightboxFoto();
-      };
-
-      if (elFotoBox) {
-        elFotoBox.addEventListener("click", (e) => {
-          if (e.target.closest(".immobile-foto-dot")) return;
-          apriLightbox(indiceFoto);
-        });
-      }
-
-      if (lightboxChiudi) lightboxChiudi.addEventListener("click", (e) => {
+    if (lightboxChiudi) {
+      lightboxChiudi.addEventListener("click", (e) => {
         e.stopPropagation();
         chiudiLightbox();
       });
-
-      if (lightboxPrev) lightboxPrev.addEventListener("click", (e) => {
+    }
+    if (lightboxPrev) {
+      lightboxPrev.addEventListener("click", (e) => {
         e.stopPropagation();
         lightboxVai(-1);
       });
-
-      if (lightboxNext) lightboxNext.addEventListener("click", (e) => {
+    }
+    if (lightboxNext) {
+      lightboxNext.addEventListener("click", (e) => {
         e.stopPropagation();
         lightboxVai(1);
       });
-
-      if (lightbox) {
-        lightbox.addEventListener("click", (e) => {
-          if (e.target === lightbox) chiudiLightbox();
-        });
-      }
-
-      document.addEventListener("keydown", (e) => {
-        if (!lightbox || lightbox.hidden) return;
-        if (e.key === "Escape") chiudiLightbox();
-        if (e.key === "ArrowLeft") lightboxVai(-1);
-        if (e.key === "ArrowRight") lightboxVai(1);
+    }
+    if (lightbox) {
+      lightbox.addEventListener("click", (e) => {
+        if (e.target === lightbox) chiudiLightbox();
       });
+    }
 
-      /* Dot navigation sulla foto */
-      if (elFotoDots) {
-        elFotoDots.innerHTML = "";
-        fotoLista.forEach((_, i) => {
-          const dot = document.createElement("button");
-          dot.type = "button";
-          dot.className = "immobile-foto-dot" + (i === 0 ? " is-active" : "");
-          dot.setAttribute("aria-label", `Vai alla foto ${i + 1}`);
-          dot.addEventListener("click", (e) => {
-            e.stopPropagation();
-            indiceFoto = i;
-            mostraFoto(fotoLista[i], `${titoloRiga} — foto ${i + 1}`);
-          });
-          elFotoDots.appendChild(dot);
+    document.addEventListener("keydown", (e) => {
+      if (!lightbox || lightbox.hidden) return;
+      if (e.key === "Escape") chiudiLightbox();
+      if (e.key === "ArrowLeft") lightboxVai(-1);
+      if (e.key === "ArrowRight") lightboxVai(1);
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!elCondividi) return;
+      const shareMenu = elCondividi.querySelector(".card-annuncio-share-menu");
+      const shareBtn = elCondividi.querySelector(".card-annuncio-share-btn");
+      if (!shareMenu || !shareBtn) return;
+      if (!elCondividi.contains(e.target) && !shareMenu.contains(e.target)) {
+        shareMenu.hidden = true;
+        shareBtn.setAttribute("aria-expanded", "false");
+      }
+    });
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (!elCondividi) return;
+        const shareMenu = elCondividi.querySelector(".card-annuncio-share-menu");
+        const shareBtn = elCondividi.querySelector(".card-annuncio-share-btn");
+        if (!shareMenu || !shareBtn || shareMenu.hidden) return;
+        shareMenu.hidden = true;
+        shareBtn.setAttribute("aria-expanded", "false");
+      },
+      true
+    );
+
+    window.addEventListener("resize", () => {
+      if (stato.posizionaCondividi) stato.posizionaCondividi();
+      if (stato.applicaTaglioSchedaDevice) stato.applicaTaglioSchedaDevice();
+      if (!elCondividi) return;
+      const shareMenu = elCondividi.querySelector(".card-annuncio-share-menu");
+      const shareBtn = elCondividi.querySelector(".card-annuncio-share-btn");
+      if (shareMenu && shareBtn) {
+        shareMenu.hidden = true;
+        shareBtn.setAttribute("aria-expanded", "false");
+      }
+    });
+
+    if (typeof ResizeObserver !== "undefined" && elFotoBox && elSpecs) {
+      const ro = new ResizeObserver(() => {
+        if (stato.posizionaCondividi) stato.posizionaCondividi();
+      });
+      ro.observe(elFotoBox);
+      ro.observe(elSpecs);
+      if (elPrezzo) ro.observe(elPrezzo);
+    }
+
+    const mqMobilePortrait = window.matchMedia(
+      "(max-width: 519px) and (orientation: portrait)"
+    );
+    const onMqShare = () => {
+      if (stato.posizionaCondividi) stato.posizionaCondividi();
+    };
+    if (typeof mqMobilePortrait.addEventListener === "function") {
+      mqMobilePortrait.addEventListener("change", onMqShare);
+    } else if (typeof mqMobilePortrait.addListener === "function") {
+      mqMobilePortrait.addListener(onMqShare);
+    }
+
+    if (elNavPrec) {
+      elNavPrec.addEventListener("click", () => {
+        if (!stato.annuncio || elNavPrec.disabled) return;
+        const listaNav = listaNavDa(stato.annuncio);
+        const idxNav = listaNav.findIndex((a) => a.id === stato.annuncio.id);
+        if (idxNav <= 0) return;
+        vaiAdAnnuncio(listaNav[idxNav - 1].id);
+      });
+    }
+    if (elNavSucc) {
+      elNavSucc.addEventListener("click", () => {
+        if (!stato.annuncio || elNavSucc.disabled) return;
+        const listaNav = listaNavDa(stato.annuncio);
+        const idxNav = listaNav.findIndex((a) => a.id === stato.annuncio.id);
+        if (idxNav < 0 || idxNav >= listaNav.length - 1) return;
+        vaiAdAnnuncio(listaNav[idxNav + 1].id);
+      });
+    }
+
+    window.addEventListener("popstate", () => {
+      const idPop =
+        (history.state && history.state.id) ||
+        new URLSearchParams(window.location.search).get("id");
+      chiudiLightbox();
+      paginaImmobile.classList.add("is-transizione");
+      window.setTimeout(() => {
+        if (!caricaImmobile(idPop)) return;
+        window.scrollTo({ top: 0, behavior: "auto" });
+        requestAnimationFrame(() => {
+          paginaImmobile.classList.remove("is-transizione");
+          if (stato.posizionaCondividi) stato.posizionaCondividi();
         });
-      }
+      }, 160);
+    });
 
-      if (elFotoCount) {
-        const n = fotoLista.length;
-        elFotoCount.textContent = `${n} foto`;
-      }
-
-      if (elBtnPlanimetria) {
-        if (!annuncio.planimetria) {
-          elBtnPlanimetria.disabled = true;
-        } else {
-          elBtnPlanimetria.addEventListener("click", apriPlanimetria);
-        }
-      }
-
-      if (elBtnFoto) {
-        elBtnFoto.addEventListener("click", () => apriLightbox(indiceFoto));
-        elBtnFoto.setAttribute(
-          "aria-label",
-          `Apri fotografie (${fotoLista.length})`
-        );
-      }
-
-      if (elBtnVideo) {
-        if (annuncio.video) {
-          elBtnVideo.disabled = false;
-          elBtnVideo.addEventListener("click", () => {
-            window.open(annuncio.video, "_blank", "noopener,noreferrer");
-          });
-        } else {
-          elBtnVideo.disabled = true;
-        }
-      }
-
-      if (fotoLista.length) {
-        mostraFoto(fotoLista[0], `${titoloRiga} — foto 1`);
-      }
-
-      /* Scheda tecnica */
-      if (elScheda) {
-        const siNo = (v) => (v ? "Sì" : "No");
-        const righe = [
-          ["Superficie", annuncio.mq != null ? `${annuncio.mq} mq` : null],
-          ["Locali", annuncio.locali],
-          ["Camere da letto", annuncio.camere],
-          ["Bagni", annuncio.bagni],
-          ["Cucina", annuncio.cucina],
-          ["Piano", typeof formatPiano === "function" ? formatPiano(annuncio.piano) : annuncio.piano],
-          ["Piani edificio", annuncio.pianiEdificio],
-          ["Stato conservazione", annuncio.statoConservazione],
-          ["Anno di costruzione", annuncio.annoCostruzione],
-          ["Ascensore", annuncio.ascensore == null ? null : siNo(annuncio.ascensore)],
-          ["Balconi", annuncio.balconi],
-          ["Arredato", annuncio.arredato == null ? null : siNo(annuncio.arredato)],
-          ["Pertinenze", annuncio.pertinenze],
-          ["Riscaldamento", annuncio.riscaldamento],
-          ["Classe energetica", annuncio.classeEnergetica]
-        ].filter(([, val]) => val != null && val !== "");
-
-        // Tagli toggle: Piano (mobile), Piani/Anno/Ascensore (tablet mirati), Balconi (desktop/default)
-        const tagliScheda = [
-          { label: "Piano", fino: "immobile-scheda-fino", extra: "immobile-scheda-extra" },
-          { label: "Piani edificio", fino: "immobile-scheda-fino-piani", extra: "immobile-scheda-extra-piani" },
-          { label: "Anno di costruzione", fino: "immobile-scheda-fino-anno", extra: "immobile-scheda-extra-anno" },
-          { label: "Ascensore", fino: "immobile-scheda-fino-ascensore", extra: "immobile-scheda-extra-ascensore" },
-          { label: "Balconi", fino: "immobile-scheda-fino-desktop", extra: "immobile-scheda-extra-desktop" }
-        ];
-        const indiciTaglio = tagliScheda.map((t) => ({
-          ...t,
-          idx: righe.findIndex(([label]) => label === t.label)
-        }));
-
-        elScheda.innerHTML = righe
-          .map(([label, val], i) => {
-            const classi = [];
-            indiciTaglio.forEach((t) => {
-              if (label === t.label) classi.push(t.fino);
-              if (t.idx >= 0 && i > t.idx) classi.push(t.extra);
-            });
-            const cls = classi.length ? ` class="${classi.join(" ")}"` : "";
-            return `<div${cls}><dt>${label}</dt><dd>${val}</dd></div>`;
-          })
-          .join("");
-
-        const elSchedaToggle = document.getElementById("immobileSchedaToggle");
-        const elSchedaBox = elScheda.closest(".immobile-scheda");
-        const haExtra = indiciTaglio.some((t) => t.idx >= 0 && t.idx < righe.length - 1);
-
-        /* Solo i modelli elencati: imposta data-scheda-taglio (override del default) */
-        const applicaTaglioSchedaDevice = () => {
-          if (!elSchedaBox) return;
-          const w = window.innerWidth;
-          const h = window.innerHeight;
-          const sw = window.screen.width || w;
-          const sh = window.screen.height || h;
-          const ua = navigator.userAgent || "";
-          const near = (a, b, tol = 12) => Math.abs(a - b) <= tol;
-          const pairMatch = (a, b, x, y) =>
-            (near(a, x) && near(b, y)) || (near(a, y) && near(b, x));
-
-          let taglio = null;
-          const landscape = w > h;
-
-          if (landscape) {
-            /* Misure reali landscape segnalate — solo questi 4, tol. stretta */
-            if (near(w, 1000, 8)) taglio = "piani"; /* Tab A7 */
-            else if (near(w, 1116, 8)) taglio = "anno"; /* Tab A9 */
-            else if (near(w, 933, 8)) taglio = "piano"; /* OnePlus Pad */
-            else if (near(w, 960, 8)) taglio = "piano"; /* Lenovo Tab M10 */
-
-            /* Prova inner e screen (Chrome DevTools a volte diverge) */
-            const pairs = [
-              [w, h],
-              [sw, sh]
-            ];
-
-            for (const [pw, ph] of pairs) {
-              if (taglio) break;
-              const shortS = Math.min(pw, ph);
-              const longS = Math.max(pw, ph);
-
-              /* Nest Hub 1024×600 */
-              if (pairMatch(pw, ph, 1024, 600)) {
-                taglio = "piani";
-                break;
-              }
-              /* iPad mini 1133×744 o 1024×768 */
-              if (pairMatch(pw, ph, 1133, 744) || pairMatch(pw, ph, 1024, 768)) {
-                taglio = "piani";
-                break;
-              }
-              /* Tab S4 1138×712 */
-              if (pairMatch(pw, ph, 1138, 712)) {
-                taglio = "anno";
-                break;
-              }
-              /* Tab S10 FE ~1152×720 */
-              if (pairMatch(pw, ph, 1152, 720)) {
-                taglio = "anno";
-                break;
-              }
-              /* iPad Air 11" 1180×820 */
-              if (pairMatch(pw, ph, 1180, 820)) {
-                taglio = "ascensore";
-                break;
-              }
-              /* iPad Pro 11" 1194×834 / 1210×834 */
-              if (pairMatch(pw, ph, 1194, 834) || pairMatch(pw, ph, 1210, 834)) {
-                taglio = "balconi";
-                break;
-              }
-              /* Tab A9 1340×800 (anche 1332 / 1340) */
-              if (
-                pairMatch(pw, ph, 1340, 800) ||
-                pairMatch(pw, ph, 1332, 800) ||
-                pairMatch(pw, ph, 1340, 800)
-              ) {
-                taglio = "anno";
-                break;
-              }
-              /* OnePlus Pad: CSS tipico 1120×800 (800×1120 portrait) */
-              if (
-                pairMatch(pw, ph, 1120, 800) ||
-                pairMatch(pw, ph, 1067, 762) ||
-                pairMatch(pw, ph, 1112, 800) ||
-                (/OnePlus|OPD\d/i.test(ua) && shortS >= 750 && shortS <= 850 && longS >= 1050 && longS <= 1200)
-              ) {
-                taglio = "piano";
-                break;
-              }
-              /* Tablet landscape larghezza 1280px: dopo Balconi */
-              if (near(pw, 1280) || (near(longS, 1280) && near(shortS, 800))) {
-                taglio = "balconi";
-                break;
-              }
-              /* iPad Pro 12.9" / 13" 1366×1024 o 1376×1032 */
-              if (
-                pairMatch(pw, ph, 1366, 1024) ||
-                pairMatch(pw, ph, 1376, 1032) ||
-                pairMatch(pw, ph, 1366, 1024)
-              ) {
-                taglio = /iPad Air|Air\//i.test(ua) ? "ascensore" : "balconi";
-                break;
-              }
-            }
-
-            /* Fallback UA-only per OnePlus / iPad Pro se le misure non matchano */
-            if (!taglio) {
-              if (/OnePlus|OPD\d/i.test(ua)) taglio = "piano";
-              else if (/iPad Pro/i.test(ua)) taglio = "balconi";
-            }
-          }
-
-          if (taglio) {
-            elSchedaBox.setAttribute("data-scheda-taglio", taglio);
-          } else {
-            elSchedaBox.removeAttribute("data-scheda-taglio");
-          }
-        };
-
-        applicaTaglioSchedaDevice();
-        window.addEventListener("resize", applicaTaglioSchedaDevice);
-        if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
-          navigator.userAgentData
-            .getHighEntropyValues(["model"])
-            .then((info) => {
-              const model = (info && info.model) || "";
-              if (!elSchedaBox || !model) return;
-              const iw = window.innerWidth;
-              /* Non sovrascrivere le 4 larghezze mirate né i 1280px */
-              if (
-                Math.abs(iw - 1280) <= 12 ||
-                Math.abs(iw - 1000) <= 8 ||
-                Math.abs(iw - 1116) <= 8 ||
-                Math.abs(iw - 933) <= 8 ||
-                Math.abs(iw - 960) <= 8
-              ) {
-                return;
-              }
-              const m = model.toLowerCase();
-              if (/oneplus|opd/.test(m)) elSchedaBox.setAttribute("data-scheda-taglio", "piano");
-              else if (/tab a9|sm-x11/.test(m)) elSchedaBox.setAttribute("data-scheda-taglio", "anno");
-              else if (/ipad pro/.test(m)) elSchedaBox.setAttribute("data-scheda-taglio", "balconi");
-            })
-            .catch(() => {});
-        }
-        if (elSchedaToggle && elSchedaBox) {
-          const elToggleLabel = elSchedaToggle.querySelector(".immobile-scheda-toggle-label");
-          elSchedaBox.classList.remove("is-scheda-aperta");
-          if (haExtra) {
-            elSchedaToggle.hidden = false;
-            elSchedaToggle.setAttribute("aria-expanded", "false");
-            if (elToggleLabel) elToggleLabel.textContent = "Mostra di più";
-            elSchedaToggle.onclick = () => {
-              const aperta = elSchedaBox.classList.toggle("is-scheda-aperta");
-              elSchedaToggle.setAttribute("aria-expanded", aperta ? "true" : "false");
-              if (elToggleLabel) elToggleLabel.textContent = aperta ? "Mostra di meno" : "Mostra di più";
-            };
-          } else {
-            elSchedaToggle.hidden = true;
-            elSchedaToggle.onclick = null;
-          }
-        }
-      }
+    /* Caricamento iniziale */
+    const idIniziale = new URLSearchParams(window.location.search).get("id");
+    if (caricaImmobile(idIniziale, { replace: true })) {
+      /* ok */
     }
   }
 });

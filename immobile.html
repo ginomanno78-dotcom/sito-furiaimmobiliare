@@ -73,7 +73,18 @@
             <div class="container pagina-immobile-inner">
 
                 <header class="immobile-header">
-                    <p class="immobile-contratto" id="immobileContratto"></p>
+                    <div class="immobile-contratto-riga">
+                        <p class="immobile-contratto" id="immobileContratto"></p>
+                        <nav class="immobile-nav-annunci" id="immobileNavAnnunci" aria-label="Navigazione annunci"
+                            hidden>
+                            <button type="button" class="immobile-nav-annunci-btn" id="immobileNavPrec"
+                                aria-label="Annuncio precedente">&lt; prec.</button>
+                            <span class="immobile-nav-annunci-contatore" id="immobileNavContatore"
+                                aria-live="polite"></span>
+                            <button type="button" class="immobile-nav-annunci-btn" id="immobileNavSucc"
+                                aria-label="Annuncio successivo">succ. &gt;</button>
+                        </nav>
+                    </div>
                     <h1 class="immobile-titolo" id="immobileTitolo"></h1>
                     <p class="immobile-comune" id="immobileComune"></p>
                     <p class="immobile-prezzo" id="immobilePrezzo"></p>

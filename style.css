@@ -1016,6 +1016,19 @@ h2 {
   display: none;
 }
 
+/* Una sola card: niente gap/footer sotto (allinea lo spazio alla sezione successiva) */
+.carousel.is-singolo {
+  row-gap: 0;
+}
+
+.carousel.is-singolo .carousel-footer {
+  display: none;
+}
+
+.carousel.is-singolo .carousel-track {
+  padding-bottom: 0;
+}
+
 /* Una sola card: niente scroll/drag orizzontale (niente oscillio al tocco) */
 .carousel.is-singolo .carousel-track {
   overflow-x: hidden;
@@ -1237,9 +1250,9 @@ h2 {
   border-radius: 0 0 var(--raggio-md) var(--raggio-md);
 }
 
-/* Card Sparanise: 3 righi testo — prezzo / tipologia+via / comune */
-.card-annuncio[data-id="sparanise-cinquegrana-via-kennedy"] .card-annuncio-body {
-  background: var(--colore-sfondo);
+/* Layout card collegabili (modello standard): prezzo / tipologia+via / comune / specs */
+.card-annuncio--cliccabile .card-annuncio-body {
+  background: #1B1B1B;
   grid-template-columns: 1fr;
   grid-template-areas:
     "prezzo"
@@ -1249,7 +1262,7 @@ h2 {
   align-items: start;
 }
 
-.card-annuncio[data-id="sparanise-cinquegrana-via-kennedy"] .card-annuncio-prezzo {
+.card-annuncio--cliccabile .card-annuncio-prezzo {
   grid-area: unset;
   justify-self: start;
   text-align: left;
@@ -1259,7 +1272,7 @@ h2 {
   color: var(--colore-accento);
 }
 
-.card-annuncio[data-id="sparanise-cinquegrana-via-kennedy"] .card-annuncio-prezzo-riga {
+.card-annuncio--cliccabile .card-annuncio-prezzo-riga {
   grid-area: prezzo;
   display: flex;
   align-items: center;
@@ -1269,14 +1282,14 @@ h2 {
   min-width: 0;
 }
 
-.card-annuncio[data-id="sparanise-cinquegrana-via-kennedy"] .card-annuncio-tipo {
+.card-annuncio--cliccabile .card-annuncio-tipo {
   grid-area: tipo;
   font-family: var(--font-corpo);
   font-weight: 400;
   color: var(--colore-testo);
 }
 
-.card-annuncio[data-id="sparanise-cinquegrana-via-kennedy"] .card-annuncio-comune {
+.card-annuncio--cliccabile .card-annuncio-comune {
   grid-area: comune;
   font-family: var(--font-corpo);
   font-weight: 400;
@@ -1284,15 +1297,15 @@ h2 {
   color: var(--colore-testo);
 }
 
-.card-annuncio[data-id="sparanise-cinquegrana-via-kennedy"] .card-annuncio-specs {
+.card-annuncio--cliccabile .card-annuncio-specs {
   grid-area: specs;
 }
 
-.card-annuncio[data-id="sparanise-cinquegrana-via-kennedy"] .card-spec {
+.card-annuncio--cliccabile .card-spec {
   background: var(--colore-secondario);
 }
 
-.card-annuncio[data-id="sparanise-cinquegrana-via-kennedy"] .card-annuncio-cta {
+.card-annuncio--cliccabile .card-annuncio-cta {
   display: none;
 }
 
@@ -1495,6 +1508,16 @@ h2 {
     align-items: start;
   }
 
+  /* Card collegabili: stesso layout desktop anche su mobile */
+  .card-annuncio--cliccabile .card-annuncio-body {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "prezzo"
+      "tipo"
+      "comune"
+      "specs";
+  }
+
   .card-annuncio-specs {
     width: 100%;
     justify-content: space-between;
@@ -1570,7 +1593,7 @@ h2 {
 /* Banner: tutta larghezza — desktop/tablet = composito; mobile portrait = stack */
 .vendi-banner {
   width: 100%;
-  margin: 0 0 var(--spazio-5);
+  margin: 0 0 var(--spazio-6);
   overflow: hidden;
 }
 
@@ -1725,8 +1748,8 @@ h2 {
     align-items: start;
   }
 
-  /* Sparanise: mantiene i 3 righi anche in tablet portrait */
-  #immobili-vendita .card-annuncio[data-id="sparanise-cinquegrana-via-kennedy"] .card-annuncio-body {
+  /* Card collegabili: mantiene i 3 righi anche in tablet portrait */
+  #immobili-vendita .card-annuncio--cliccabile .card-annuncio-body {
     grid-template-columns: 1fr;
     grid-template-areas:
       "prezzo"
@@ -1757,7 +1780,7 @@ h2 {
     font-size: 1.1rem;
   }
 
-  #immobili-vendita .card-annuncio[data-id="sparanise-cinquegrana-via-kennedy"] .card-annuncio-prezzo {
+  #immobili-vendita .card-annuncio--cliccabile .card-annuncio-prezzo {
     font-size: calc(1.1rem + 7px);
   }
 
@@ -2134,17 +2157,18 @@ h2 {
   color: #E4E4DE;
 }
 
+/* Banner full-bleed (fuori da .container, come .vendi-banner) */
 .valuta-loco {
   position: relative;
   width: 100%;
   overflow: hidden;
-  border-radius: var(--raggio-md);
 }
 
 .valuta-loco-desktop {
   display: block;
   width: 100%;
   height: auto;
+  vertical-align: middle;
 }
 
 .valuta-loco-mobile {
@@ -3232,6 +3256,12 @@ h2 {
 .pagina-immobile {
   /* Spazio sotto navbar fixed a pillola */
   padding: calc(8px + var(--nav-height) + var(--spazio-4)) 0 var(--spazio-7);
+  transition: opacity 0.18s ease;
+}
+
+.pagina-immobile.is-transizione {
+  opacity: 0.28;
+  pointer-events: none;
 }
 
 .pagina-immobile-inner {
@@ -3246,6 +3276,15 @@ h2 {
   gap: var(--spazio-2);
 }
 
+.immobile-contratto-riga {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: var(--spazio-2);
+  border-bottom: 1px solid var(--colore-accento);
+}
+
 .immobile-contratto {
   margin: 0;
   font-size: clamp(1.15rem, 2.5vw, 1.5rem);
@@ -3253,6 +3292,46 @@ h2 {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--colore-primario);
+}
+
+.immobile-nav-annunci {
+  display: flex;
+  align-items: baseline;
+  flex-shrink: 0;
+  gap: 6px;
+  font-size: clamp(0.78rem, 1.6vw, 0.95rem);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--colore-testo);
+}
+
+.immobile-nav-annunci[hidden] {
+  display: none;
+}
+
+.immobile-nav-annunci-btn {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--colore-accento);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.immobile-nav-annunci-btn:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
+.immobile-nav-annunci-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.immobile-nav-annunci-contatore {
+  white-space: nowrap;
+  color: var(--colore-testo);
 }
 
 .immobile-titolo {
@@ -3552,6 +3631,7 @@ h2 {
   font-size: 1rem;
   line-height: 1.7;
   color: var(--colore-testo);
+  white-space: pre-line;
 }
 
 .immobile-mappa-sezione {
