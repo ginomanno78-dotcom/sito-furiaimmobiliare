@@ -2527,6 +2527,27 @@ h2 {
   max-width: 920px;
 }
 
+/* Mobile/tablet: le colonne non esistono in layout → ordine originale dei 4 toggle */
+.servizi-col {
+  display: contents;
+}
+
+.servizi-item--valutazione {
+  order: 1;
+}
+
+.servizi-item--marketing {
+  order: 2;
+}
+
+.servizi-item--pratiche {
+  order: 3;
+}
+
+.servizi-item--consulenza {
+  order: 4;
+}
+
 .servizi-item {
   border-bottom: 1px solid rgba(228, 228, 222, 0.22);
 }
@@ -2694,8 +2715,10 @@ h2 {
   }
 }
 
-/* Desktop only (≥1367px): 4 toggle su 2 righi, colonne a metà uguale */
-@media (min-width: 1367px) {
+/* Desktop (≥1367) + tablet/iPad landscape da 1280px (Surface Pro 7 1368 incluso):
+   2 colonne indipendenti — sx: Valutazione → Pratiche | dx: Marketing → Consulenza */
+@media (min-width: 1367px),
+(min-width: 1280px) and (max-width: 1366px) and (orientation: landscape) {
   .servizi-accordion {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2703,10 +2726,18 @@ h2 {
     row-gap: 0;
     max-width: none;
     width: 100%;
+    align-items: start;
+  }
+
+  .servizi-col {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
   }
 
   .servizi-item {
     min-width: 0;
+    order: unset;
   }
 }
 
