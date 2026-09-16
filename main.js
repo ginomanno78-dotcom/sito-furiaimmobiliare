@@ -137,9 +137,67 @@ document.addEventListener("DOMContentLoaded", () => {
     },
   });
 
-  /* === Submit ricerca (placeholder: scroll agli annunci vendita) === */
-  // TODO: collegare filtro reale quando disponibili listing/pagine
+  /* === Submit ricerca hero: apre l’annuncio coerente (compra) === */
+  const normalizzaRicerca = (testo) =>
+    (testo || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9\s]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+
+  /* Mappa valore dropdown → tipologie in annunci.js */
+  const tipologiaMatchSearch = (tipologiaAnnuncio, tipoSearch) => {
+    if (!tipoSearch) return true;
+    const t = normalizzaRicerca(tipologiaAnnuncio);
+    if (tipoSearch === "appartamenti") {
+      /* Palazzo (con appartamenti) incluso nella ricerca appartamenti */
+      return t.includes("appartament") || t.includes("palazzo");
+    }
+    if (tipoSearch === "commerciale") return t.includes("comm");
+    if (tipoSearch === "case-ville") {
+      return t.includes("casa") || t.includes("ville") || t.includes("villa");
+    }
+    if (tipoSearch === "terreno") return t.includes("terreno");
+    if (tipoSearch === "garage") return t.includes("garage") || t.includes("box");
+    if (tipoSearch === "nuove-costruzioni") {
+      return t.includes("nuova") || t.includes("nuovo") || t.includes("costruzion");
+    }
+    return false;
+  };
+
+  const luogoMatchSearch = (annuncio, query) => {
+    if (!query) return true;
+    const hay = normalizzaRicerca(
+      [annuncio.comune, annuncio.comuneCard, annuncio.via, annuncio.viaBreve, annuncio.angoloCon, annuncio.nome]
+        .filter(Boolean)
+        .join(" ")
+    );
+    const tokens = normalizzaRicerca(query).split(" ").filter(Boolean);
+    return tokens.length > 0 && tokens.every((tok) => hay.includes(tok));
+  };
+
+  const trovaAnnuncioDaRicerca = (tipo, query) => {
+    const lista =
+      typeof annunci !== "undefined" && Array.isArray(annunci.vendita)
+        ? annunci.vendita.filter((a) => !a.placeholder && a.collegabile)
+        : [];
+    return (
+      lista.find(
+        (a) => tipologiaMatchSearch(a.tipologia, tipo) && luogoMatchSearch(a, query)
+      ) || null
+    );
+  };
+
+  const vaiAgliAnnunciVendita = () => {
+    const target = document.getElementById("immobili-vendita");
+    if (target) target.scrollIntoView({ behavior: "smooth" });
+    else window.location.hash = "immobili-vendita";
+  };
+
   const heroSearchForm = document.getElementById("heroSearchForm");
+  const searchQueryInput = document.getElementById("searchQuery");
   if (heroSearchForm) {
     heroSearchForm.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -150,14 +208,23 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       if (azione === "vendi") {
         const target = document.getElementById("vendi");
-        if (target) {
-          target.scrollIntoView({ behavior: "smooth" });
-        } else {
-          window.location.hash = "vendi";
-        }
+        if (target) target.scrollIntoView({ behavior: "smooth" });
+        else window.location.hash = "vendi";
         return;
       }
-      window.location.href = "immobile.html?id=sparanise-cinquegrana-via-kennedy";
+      /* Compra: tipologia + città/indirizzo → scheda immobile */
+      const tipo = tipoInput ? tipoInput.value : "";
+      const query = searchQueryInput ? searchQueryInput.value : "";
+      if (!tipo && !normalizzaRicerca(query)) {
+        vaiAgliAnnunciVendita();
+        return;
+      }
+      const trovato = trovaAnnuncioDaRicerca(tipo, query);
+      if (trovato) {
+        window.location.href = `immobile.html?id=${encodeURIComponent(trovato.id)}`;
+        return;
+      }
+      vaiAgliAnnunciVendita();
     });
   }
 
@@ -165,6 +232,34 @@ document.addEventListener("DOMContentLoaded", () => {
   const trackVendita = document.getElementById("carouselVenditaTrack");
   const dotsVendita = document.getElementById("carouselVenditaDots");
   const carouselVendita = document.querySelector('[data-carousel="vendita"]');
+
+  /* Riduce il font di tipologia+via finché resta su un rigo, senza troncare */
+  const adattaTipoCard = (elTipo) => {
+    if (!elTipo) return;
+    elTipo.style.fontSize = "";
+    if (getComputedStyle(elTipo).whiteSpace !== "nowrap") return;
+    let size = parseFloat(getComputedStyle(elTipo).fontSize);
+    const min = 10;
+    while (elTipo.scrollWidth > elTipo.clientWidth + 1 && size > min) {
+      size -= 0.5;
+      elTipo.style.fontSize = `${size}px`;
+    }
+  };
+
+  const adattaTuttiTipiCard = () => {
+    document.querySelectorAll(".card-annuncio-tipo").forEach(adattaTipoCard);
+  };
+
+  /* Icona tipologia prima del nome città (card immobili) */
+  const iconaPerTipologia = (tipologia) => {
+    const t = (tipologia || "").toLowerCase();
+    if (t.includes("comm")) return "assets/images/icons/icon-commerciale.svg";
+    /* Appartamento e Palazzo (con appartamenti) */
+    return "assets/images/icons/icon-appartamenti.svg";
+  };
+
+  const htmlComuneConIcona = (testo, tipologia) =>
+    `<p class="card-annuncio-comune"><img class="card-annuncio-comune-icon" src="${iconaPerTipologia(tipologia)}" alt="" width="16" height="16" aria-hidden="true"><span>${testo}</span></p>`;
 
   const creaCardAnnuncio = (annuncio) => {
     const article = document.createElement("article");
@@ -196,7 +291,8 @@ document.addEventListener("DOMContentLoaded", () => {
       return article;
     }
 
-    const titolo = formatTipologia(annuncio);
+    const usaViaBreve = window.matchMedia("(max-width: 1366px)").matches;
+    const titolo = formatTipologia(annuncio, { viaBreve: usaViaBreve });
     const prezzo = formatPrezzo(annuncio.prezzo);
     const href = annuncio.collegabile ? `immobile.html?id=${encodeURIComponent(annuncio.id)}` : "";
     /* Con link a tutta card, Scopri resta solo testo (niente <a> annidati) */
@@ -232,7 +328,7 @@ document.addEventListener("DOMContentLoaded", () => {
           ${shareHtml}
         </div>`
       : `<div class="card-annuncio-riga">
-          <p class="card-annuncio-comune">${annuncio.comune}</p>
+          ${htmlComuneConIcona(annuncio.comune, annuncio.tipologia)}
           <p class="card-annuncio-prezzo">${prezzo}</p>
         </div>`;
 
@@ -244,12 +340,12 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="card-annuncio-body">
         ${prezzoRiga}
         <p class="card-annuncio-tipo">${titolo}</p>
-        <p class="card-annuncio-comune">${annuncio.comune}</p>
+        ${htmlComuneConIcona(annuncio.comuneCard || annuncio.comune, annuncio.tipologia)}
         <div class="card-annuncio-meta">
           <div class="card-annuncio-specs">
             <div class="card-spec"><span class="card-spec-icon"><img src="assets/images/icons/icon-planimetria.svg" alt="" width="26" height="26"></span><span>${annuncio.mq} mq.</span></div>
-            <div class="card-spec"><span class="card-spec-icon"><img src="assets/images/icons/icon-camera-letto.svg" alt="" width="26" height="26"></span><span>${annuncio.locali} locali</span></div>
-            <div class="card-spec"><span class="card-spec-icon"><img src="assets/images/icons/icon-bagno.svg" alt="" width="26" height="26"></span><span>${annuncio.bagni} bagno${annuncio.bagni === 1 ? "" : "i"}</span></div>
+            <div class="card-spec"><span class="card-spec-icon"><img src="assets/images/icons/icon-camera-letto.svg" alt="" width="26" height="26"></span><span>${annuncio.localiEtichetta != null ? annuncio.localiEtichetta + " locali" : annuncio.locali + " locali"}</span></div>
+            <div class="card-spec"><span class="card-spec-icon"><img src="assets/images/icons/icon-bagno.svg" alt="" width="26" height="26"></span><span>${annuncio.bagni} ${annuncio.bagni === 1 ? "bagno" : "bagni"}</span></div>
             <div class="card-spec"><span class="card-spec-icon"><img src="assets/images/icons/icon-scale.svg" alt="" width="26" height="26"></span><span>${formatPiano(annuncio.piano)}</span></div>
           </div>
           ${cta}
@@ -264,8 +360,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="card-annuncio-meta">
           <div class="card-annuncio-specs">
             <div class="card-spec"><span class="card-spec-icon"><img src="assets/images/icons/icon-planimetria.svg" alt="" width="26" height="26"></span><span>${annuncio.mq} mq.</span></div>
-            <div class="card-spec"><span class="card-spec-icon"><img src="assets/images/icons/icon-camera-letto.svg" alt="" width="26" height="26"></span><span>${annuncio.locali} locali</span></div>
-            <div class="card-spec"><span class="card-spec-icon"><img src="assets/images/icons/icon-bagno.svg" alt="" width="26" height="26"></span><span>${annuncio.bagni} bagno${annuncio.bagni === 1 ? "" : "i"}</span></div>
+            <div class="card-spec"><span class="card-spec-icon"><img src="assets/images/icons/icon-camera-letto.svg" alt="" width="26" height="26"></span><span>${annuncio.localiEtichetta != null ? annuncio.localiEtichetta + " locali" : annuncio.locali + " locali"}</span></div>
+            <div class="card-spec"><span class="card-spec-icon"><img src="assets/images/icons/icon-bagno.svg" alt="" width="26" height="26"></span><span>${annuncio.bagni} ${annuncio.bagni === 1 ? "bagno" : "bagni"}</span></div>
             <div class="card-spec"><span class="card-spec-icon"><img src="assets/images/icons/icon-scale.svg" alt="" width="26" height="26"></span><span>${formatPiano(annuncio.piano)}</span></div>
           </div>
           ${cta}
@@ -371,6 +467,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
+    requestAnimationFrame(() => adattaTipoCard(article.querySelector(".card-annuncio-tipo")));
     return article;
   };
 
@@ -420,6 +517,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (btnPrev) btnPrev.addEventListener("click", () => scrollByCard(-1));
     if (btnNext) btnNext.addEventListener("click", () => scrollByCard(1));
 
+    const aggiornaFrecce = () => {
+      if (!btnPrev || !btnNext || singolo) return;
+      const maxScroll = trackEl.scrollWidth - trackEl.clientWidth;
+      btnPrev.disabled = trackEl.scrollLeft <= 2;
+      btnNext.disabled = trackEl.scrollLeft >= maxScroll - 2;
+    };
+
     const aggiornaDots = () => {
       const list = cards();
       if (!list.length) return;
@@ -428,9 +532,31 @@ document.addEventListener("DOMContentLoaded", () => {
       const dots = [...dotsEl.querySelectorAll(".carousel-dot")];
       const active = Math.min(Math.max(index, 0), dots.length - 1);
       dots.forEach((d, i) => d.classList.toggle("is-active", i === active));
+      aggiornaFrecce();
     };
 
     trackEl.addEventListener("scroll", aggiornaDots, { passive: true });
+    aggiornaFrecce();
+
+    /* Rotella mouse: scorrimento orizzontale del carosello */
+    trackEl.addEventListener(
+      "wheel",
+      (e) => {
+        if (singolo) return;
+        if (trackEl.scrollWidth <= trackEl.clientWidth + 2) return;
+        const delta = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+        if (!delta) return;
+        e.preventDefault();
+        trackEl.style.scrollSnapType = "none";
+        trackEl.scrollLeft += delta;
+        window.clearTimeout(trackEl._wheelSnapTimer);
+        trackEl._wheelSnapTimer = window.setTimeout(() => {
+          trackEl.style.scrollSnapType = "x mandatory";
+          aggiornaDots();
+        }, 120);
+      },
+      { passive: false }
+    );
 
     // Drag disattivato se c’è una sola card (evita oscillio touch su mobile)
     if (singolo) return;
@@ -475,6 +601,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (typeof getAnnunciVenditaHome === "function") {
     initCarousel(carouselVendita, trackVendita, dotsVendita, getAnnunciVenditaHome());
+    requestAnimationFrame(adattaTuttiTipiCard);
+    window.addEventListener("resize", () => requestAnimationFrame(adattaTuttiTipiCard));
   }
 
   /* ===== FORM VALUTA ===== */
@@ -759,6 +887,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const lightboxChiudi = document.getElementById("immobileLightboxChiudi");
     const lightboxPrev = document.getElementById("immobileLightboxPrev");
     const lightboxNext = document.getElementById("immobileLightboxNext");
+    const elUnitaSezione = document.getElementById("immobileUnitaSezione");
+    const elUnitaGriglia = document.getElementById("immobileUnitaGriglia");
 
     /* Stato corrente (aggiornato senza reload) */
     const stato = {
@@ -766,6 +896,8 @@ document.addEventListener("DOMContentLoaded", () => {
       titoloRiga: "",
       fotoLista: [],
       indiceFoto: 0,
+      planimetrieLista: [],
+      indicePlanimetria: 0,
       lightboxMode: "foto",
       urlShare: "",
       titoloShare: "",
@@ -787,6 +919,15 @@ document.addEventListener("DOMContentLoaded", () => {
           ? annunci.affitto || []
           : annunci.vendita || [];
       return listaBase.filter((a) => !a.placeholder && a.collegabile);
+    };
+
+    const getPlanimetrie = (annuncio) => {
+      if (!annuncio) return [];
+      if (Array.isArray(annuncio.planimetrie) && annuncio.planimetrie.length) {
+        return annuncio.planimetrie.filter(Boolean);
+      }
+      if (annuncio.planimetria) return [annuncio.planimetria];
+      return [];
     };
 
     const adattaOrientamentoFoto = () => {
@@ -841,22 +982,97 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const apriPlanimetria = () => {
-      if (!lightbox || !lightboxFoto || !stato.annuncio || !stato.annuncio.planimetria) return;
+      if (!lightbox || !lightboxFoto || !stato.annuncio) return;
+      const lista = getPlanimetrie(stato.annuncio);
+      if (!lista.length) return;
+      stato.planimetrieLista = lista;
+      stato.indicePlanimetria = 0;
       stato.lightboxMode = "planimetria";
-      lightboxFoto.src = stato.annuncio.planimetria;
-      lightboxFoto.alt = `${stato.titoloRiga} — planimetria`;
-      if (lightboxPrev) lightboxPrev.hidden = true;
-      if (lightboxNext) lightboxNext.hidden = true;
+      const src = lista[0];
+      lightboxFoto.src = src;
+      lightboxFoto.alt = `${stato.titoloRiga} — planimetria 1/${lista.length}`;
+      if (lightboxPrev) lightboxPrev.hidden = lista.length <= 1;
+      if (lightboxNext) lightboxNext.hidden = lista.length <= 1;
       lightbox.hidden = false;
       document.body.classList.add("immobile-lightbox-open");
       if (lightboxChiudi) lightboxChiudi.focus();
     };
 
     const lightboxVai = (dir) => {
+      if (stato.lightboxMode === "planimetria" && stato.planimetrieLista.length) {
+        const n = stato.planimetrieLista.length;
+        stato.indicePlanimetria = (stato.indicePlanimetria + dir + n) % n;
+        const src = stato.planimetrieLista[stato.indicePlanimetria];
+        if (lightboxFoto) {
+          lightboxFoto.src = src;
+          lightboxFoto.alt = `${stato.titoloRiga} — planimetria ${stato.indicePlanimetria + 1}/${n}`;
+        }
+        return;
+      }
       if (stato.lightboxMode !== "foto" || !stato.fotoLista.length) return;
       stato.indiceFoto =
         (stato.indiceFoto + dir + stato.fotoLista.length) % stato.fotoLista.length;
       aggiornaLightboxFoto();
+    };
+
+    /* Sfoglia foto nel box anteprima (swipe) */
+    const galleriaVai = (dir) => {
+      if (!stato.fotoLista.length) return;
+      stato.indiceFoto =
+        (stato.indiceFoto + dir + stato.fotoLista.length) % stato.fotoLista.length;
+      mostraFoto(
+        stato.fotoLista[stato.indiceFoto],
+        `${stato.titoloRiga} — foto ${stato.indiceFoto + 1}`
+      );
+    };
+
+    /* Swipe orizzontale touch/penna; tap opzionale (es. apri lightbox) */
+    const attivaSwipe = (el, { onSwipeLeft, onSwipeRight, onTap, ignora }) => {
+      if (!el) return;
+      let startX = 0;
+      let startY = 0;
+      let tracking = false;
+      let mosso = false;
+      const SOGLIA = 42;
+
+      el.addEventListener("pointerdown", (e) => {
+        if (e.pointerType === "mouse" && e.button !== 0) return;
+        if (ignora && ignora(e.target)) return;
+        tracking = true;
+        mosso = false;
+        startX = e.clientX;
+        startY = e.clientY;
+        try {
+          el.setPointerCapture(e.pointerId);
+        } catch (err) {
+          /* ignore */
+        }
+      });
+
+      el.addEventListener("pointermove", (e) => {
+        if (!tracking) return;
+        if (Math.abs(e.clientX - startX) > 8 || Math.abs(e.clientY - startY) > 8) {
+          mosso = true;
+        }
+      });
+
+      const fine = (e) => {
+        if (!tracking) return;
+        tracking = false;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        if (Math.abs(dx) >= SOGLIA && Math.abs(dx) > Math.abs(dy)) {
+          if (dx < 0) onSwipeLeft && onSwipeLeft();
+          else onSwipeRight && onSwipeRight();
+          return;
+        }
+        if (!mosso && onTap) onTap(e);
+      };
+
+      el.addEventListener("pointerup", fine);
+      el.addEventListener("pointercancel", () => {
+        tracking = false;
+      });
     };
 
     const aggiornaNavAnnunci = () => {
@@ -909,7 +1125,7 @@ document.addEventListener("DOMContentLoaded", () => {
         idx: righe.findIndex(([label]) => label === t.label)
       }));
 
-      const usaToggleScheda = righe.length > 6;
+      const usaToggleScheda = righe.length > 12;
 
       elScheda.innerHTML = righe
         .map(([label, val], i) => {
@@ -1216,8 +1432,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (elBtnPlanimetria) {
-        elBtnPlanimetria.disabled = !annuncio.planimetria;
-        elBtnPlanimetria.onclick = annuncio.planimetria ? () => apriPlanimetria() : null;
+        const haPlanimetria = getPlanimetrie(annuncio).length > 0;
+        elBtnPlanimetria.disabled = !haPlanimetria;
+        elBtnPlanimetria.onclick = haPlanimetria ? () => apriPlanimetria() : null;
       }
 
       if (elBtnFoto) {
@@ -1249,9 +1466,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const annuncio = stato.annuncio;
       if (!elSpecs || !annuncio) return;
       const bagnoLabel =
-        annuncio.bagni == null ? "" : `${annuncio.bagni} bagno${annuncio.bagni === 1 ? "" : "i"}`;
+        annuncio.bagni == null ? "" : `${annuncio.bagni} ${annuncio.bagni === 1 ? "bagno" : "bagni"}`;
       const pianoLabel =
         typeof formatPiano === "function" ? formatPiano(annuncio.piano) : annuncio.piano;
+      const localiLabel =
+        annuncio.localiEtichetta != null
+          ? `${annuncio.localiEtichetta} locali`
+          : annuncio.locali != null
+            ? `${annuncio.locali} locali`
+            : null;
       const voci = [
         {
           icona: "assets/images/icons/icon-planimetria.svg",
@@ -1259,7 +1482,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
           icona: "assets/images/icons/icon-camera-letto.svg",
-          testo: annuncio.locali != null ? `${annuncio.locali} locali` : null
+          testo: localiLabel
         },
         {
           icona: "assets/images/icons/icon-bagno.svg",
@@ -1276,6 +1499,32 @@ document.addEventListener("DOMContentLoaded", () => {
           (v) =>
             `<div class="card-spec"><span class="card-spec-icon"><img src="${v.icona}" alt="" width="26" height="26"></span><span>${v.testo}</span></div>`
         )
+        .join("");
+    };
+
+    const aggiornaUnita = () => {
+      const annuncio = stato.annuncio;
+      if (!elUnitaSezione || !elUnitaGriglia) return;
+      const lista = Array.isArray(annuncio && annuncio.unita) ? annuncio.unita : [];
+      if (!lista.length) {
+        elUnitaSezione.hidden = true;
+        elUnitaGriglia.innerHTML = "";
+        return;
+      }
+
+      elUnitaSezione.hidden = false;
+      elUnitaGriglia.innerHTML = lista
+        .map((u) => {
+          const righe = [
+            ["Piano", u.piano],
+            ["Superficie", u.superficie],
+            ["Coefficiente", u.coefficiente],
+            ["Tipo superficie", u.tipoSuperficie],
+            ["Sup. commerciale", u.superficieCommerciale]
+          ].filter(([, v]) => v != null && v !== "");
+          const dl = righe.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
+          return `<article class="immobile-unita-box"><h3>${u.titolo || "Unità"}</h3><dl>${dl}</dl></article>`;
+        })
         .join("");
     };
 
@@ -1299,7 +1548,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (elContratto) elContratto.textContent = contrattoLabel;
       if (elTitolo) elTitolo.textContent = titoloRiga;
-      if (elComune) elComune.textContent = (annuncio.comune || "").toUpperCase();
+      if (elComune) {
+        const comuneMobileBreve =
+          annuncio.comuneCard &&
+          window.matchMedia("(max-width: 767px) and (orientation: portrait)").matches;
+        const testoComune = (
+          comuneMobileBreve ? annuncio.comuneCard : annuncio.comune || ""
+        ).toUpperCase();
+        elComune.innerHTML = `<img class="immobile-comune-icon" src="${iconaPerTipologia(annuncio.tipologia)}" alt="" width="16" height="16" aria-hidden="true"><span>${testoComune}</span>`;
+      }
       if (elPrezzo) elPrezzo.textContent = prezzo;
       if (elDescrizione) elDescrizione.textContent = annuncio.descrizione || "";
 
@@ -1320,6 +1577,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       aggiornaGalleria();
       aggiornaSchedaTecnica();
+      aggiornaUnita();
     };
 
     const mostraErroreImmobile = () => {
@@ -1368,12 +1626,23 @@ document.addEventListener("DOMContentLoaded", () => {
     /* Listener globali: una sola volta */
     if (elFoto) elFoto.addEventListener("load", adattaOrientamentoFoto);
 
-    if (elFotoBox) {
-      elFotoBox.addEventListener("click", (e) => {
+    /* Box foto: swipe per sfogliare, tap per lightbox (dots esclusi) */
+    attivaSwipe(elFotoBox, {
+      ignora: (t) => !!(t && t.closest && t.closest(".immobile-foto-dot")),
+      onSwipeLeft: () => galleriaVai(1),
+      onSwipeRight: () => galleriaVai(-1),
+      onTap: (e) => {
         if (e.target.closest(".immobile-foto-dot")) return;
         apriLightbox(stato.indiceFoto);
-      });
-    }
+      }
+    });
+
+    /* Lightbox: swipe oltre alle frecce */
+    attivaSwipe(lightbox, {
+      ignora: (t) => !!(t && t.closest && t.closest("button")),
+      onSwipeLeft: () => lightboxVai(1),
+      onSwipeRight: () => lightboxVai(-1)
+    });
 
     if (lightboxChiudi) {
       lightboxChiudi.addEventListener("click", (e) => {
