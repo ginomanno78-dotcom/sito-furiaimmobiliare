@@ -181,11 +181,27 @@
                 </h2>
 
                 <div class="carousel" data-carousel="vendita">
+                    <button type="button" class="carousel-btn carousel-btn--prev" aria-label="Card precedente">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="20" height="20"
+                            aria-hidden="true">
+                            <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </button>
+
                     <div class="carousel-viewport">
                         <div class="carousel-track" id="carouselVenditaTrack">
                             <!-- Card generate da data/annunci.js -->
                         </div>
                     </div>
+
+                    <button type="button" class="carousel-btn carousel-btn--next" aria-label="Card successiva">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="20" height="20"
+                            aria-hidden="true">
+                            <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </button>
 
                     <div class="carousel-footer">
                         <div class="carousel-dots" id="carouselVenditaDots" aria-label="Paginazione carosello"></div>
@@ -512,8 +528,8 @@
                         <div class="servizi-item servizi-item--valutazione">
                             <button type="button" class="servizi-toggle" aria-expanded="false"
                                 aria-controls="servizi-panel-valutazione" id="servizi-btn-valutazione">
-                                <img class="servizi-icona" src="assets/images/icons/icon-chart-no-axes-combined.svg" alt=""
-                                    width="48" height="48">
+                                <img class="servizi-icona" src="assets/images/icons/icon-chart-no-axes-combined.svg"
+                                    alt="" width="48" height="48">
                                 <span class="servizi-toggle-titolo"><span>Valutazione
                                         &amp;</span><span>Perizie</span></span>
                                 <span class="servizi-toggle-segno" aria-hidden="true">+</span>
@@ -522,15 +538,18 @@
                                 aria-labelledby="servizi-btn-valutazione" hidden>
                                 <div class="servizi-voce">
                                     <p class="servizi-voce-titolo">Valutazione commerciale</p>
-                                    <p class="servizi-voce-testo">Analizziamo il tuo immobile e il mercato di riferimento
+                                    <p class="servizi-voce-testo">Analizziamo il tuo immobile e il mercato di
+                                        riferimento
                                         per
-                                        indicarti un prezzo di vendita o affitto realistico, basato su dati concreti e non
+                                        indicarti un prezzo di vendita o affitto realistico, basato su dati concreti e
+                                        non
                                         su
                                         stime a caso.</p>
                                 </div>
                                 <div class="servizi-voce">
                                     <p class="servizi-voce-titolo">Perizie estimative scritte</p>
-                                    <p class="servizi-voce-testo">Un documento tecnico formale con la stima dettagliata del
+                                    <p class="servizi-voce-testo">Un documento tecnico formale con la stima dettagliata
+                                        del
                                         valore dell'immobile, utile per successioni, divisioni patrimoniali o pratiche
                                         bancarie.</p>
                                 </div>
@@ -547,9 +566,10 @@
                         <div class="servizi-item servizi-item--pratiche">
                             <button type="button" class="servizi-toggle" aria-expanded="false"
                                 aria-controls="servizi-panel-pratiche" id="servizi-btn-pratiche">
-                                <img class="servizi-icona" src="assets/images/icons/icon-file-text.svg" alt="" width="48"
-                                    height="48">
-                                <span class="servizi-toggle-titolo"><span>Pratiche &amp;</span><span>Contratti</span></span>
+                                <img class="servizi-icona" src="assets/images/icons/icon-file-text.svg" alt=""
+                                    width="48" height="48">
+                                <span class="servizi-toggle-titolo"><span>Pratiche
+                                        &amp;</span><span>Contratti</span></span>
                                 <span class="servizi-toggle-segno" aria-hidden="true">+</span>
                             </button>
                             <div class="servizi-panel" id="servizi-panel-pratiche" role="region"
@@ -562,17 +582,20 @@
                                 </div>
                                 <div class="servizi-voce">
                                     <p class="servizi-voce-titolo">Redazione preliminari</p>
-                                    <p class="servizi-voce-testo">Prepariamo il contratto preliminare di compravendita con
+                                    <p class="servizi-voce-testo">Prepariamo il contratto preliminare di compravendita
+                                        con
                                         tutte le clausole necessarie a tutelare entrambe le parti.</p>
                                 </div>
                                 <div class="servizi-voce">
                                     <p class="servizi-voce-titolo">Redazione contratti di locazione</p>
-                                    <p class="servizi-voce-testo">Contratti di affitto redatti secondo la normativa vigente,
+                                    <p class="servizi-voce-testo">Contratti di affitto redatti secondo la normativa
+                                        vigente,
                                         con le clausole più adatte alla tua situazione specifica.</p>
                                 </div>
                                 <div class="servizi-voce">
                                     <p class="servizi-voce-titolo">Registrazione preliminari</p>
-                                    <p class="servizi-voce-testo">Ci occupiamo della registrazione del preliminare presso
+                                    <p class="servizi-voce-testo">Ci occupiamo della registrazione del preliminare
+                                        presso
                                         l'Agenzia delle Entrate, con tutti gli adempimenti fiscali del caso.</p>
                                 </div>
                             </div>
@@ -584,8 +607,8 @@
                         <div class="servizi-item servizi-item--marketing">
                             <button type="button" class="servizi-toggle" aria-expanded="false"
                                 aria-controls="servizi-panel-marketing" id="servizi-btn-marketing">
-                                <img class="servizi-icona" src="assets/images/icons/icon-image-play.svg" alt="" width="48"
-                                    height="48">
+                                <img class="servizi-icona" src="assets/images/icons/icon-image-play.svg" alt=""
+                                    width="48" height="48">
                                 <span class="servizi-toggle-titolo"><span>Marketing
                                         &amp;</span><span>Presentazione</span></span>
                                 <span class="servizi-toggle-segno" aria-hidden="true">+</span>
@@ -600,7 +623,8 @@
                                 </div>
                                 <div class="servizi-voce">
                                     <p class="servizi-voce-titolo">Promozione pubblicitaria online</p>
-                                    <p class="servizi-voce-testo">Il tuo immobile visibile sul nostro sito immobiliare e sui
+                                    <p class="servizi-voce-testo">Il tuo immobile visibile sul nostro sito immobiliare e
+                                        sui
                                         nostri canali social, con un annuncio curato in ogni dettaglio.</p>
                                 </div>
                                 <div class="servizi-voce">
@@ -630,7 +654,8 @@
                                 </div>
                                 <div class="servizi-voce">
                                     <p class="servizi-voce-titolo">Assistenza tecnica architettonica</p>
-                                    <p class="servizi-voce-testo">Un tecnico di fiducia a tua disposizione per verifiche,
+                                    <p class="servizi-voce-testo">Un tecnico di fiducia a tua disposizione per
+                                        verifiche,
                                         pratiche edilizie o consulenze su ristrutturazioni e progetti.</p>
                                 </div>
                                 <div class="servizi-voce">
@@ -658,6 +683,8 @@
                     <span class="sezione-titolo-testo"><span>Faq</span></span>
                 </h2>
                 <p class="faq-occhiello">Domande Frequenti</p>
+                <p class="faq-intro">Ottieni risposte rapide e sicure alle domande più frequenti sull'acquisto, la
+                    vendita e l'investimento immobiliare.</p>
 
                 <div class="faq-lista" data-faq>
                     <div class="faq-item">
