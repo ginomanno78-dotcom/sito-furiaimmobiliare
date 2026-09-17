@@ -1859,6 +1859,7 @@ h2 {
 
 /* Mobile portrait <400px: tipologia + indirizzo su due righe ok */
 @media (max-width: 399px) and (orientation: portrait) {
+
   .card-annuncio-tipo,
   #immobili-vendita .card-annuncio-tipo {
     white-space: normal;
@@ -1868,6 +1869,7 @@ h2 {
 
 /* Portrait ≥400px (mobile/tablet/iPad): un solo rigo, size adattiva via JS */
 @media (min-width: 400px) and (orientation: portrait) {
+
   .card-annuncio-tipo,
   #immobili-vendita .card-annuncio-tipo {
     white-space: nowrap;
@@ -2217,9 +2219,19 @@ h2 {
   color: var(--colore-successo);
 }
 
-/* Banner valutazione in loco (testi già nel file grafico) */
+/* Banner valutazione in loco: card a sx + foto quadrata a dx (mockup) */
+.valuta-loco {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--spazio-4);
+  width: 100%;
+  margin-top: var(--spazio-5);
+  overflow: visible;
+}
+
 .valuta-loco-titolo {
-  margin: 0 0 var(--spazio-4);
+  margin: 0;
   font-family: var(--font-titoli);
   font-size: clamp(1.05rem, 2vw, 1.25rem);
   font-weight: 700;
@@ -2229,133 +2241,323 @@ h2 {
   color: #E4E4DE;
 }
 
-/* Banner full-bleed (fuori da .container, come .vendi-banner) */
-.valuta-loco {
+.valuta-loco-inner {
   position: relative;
-  width: 100%;
-  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spazio-4);
+  align-items: stretch;
+  min-width: 0;
+  isolation: isolate;
 }
 
-.valuta-loco-desktop {
+/* Alone secondario: a tutta larghezza schermo (solo sx/dx), non sopra/sotto */
+.valuta-loco-inner::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  background: var(--colore-secondario);
+  border-radius: 0;
+  filter: blur(42px);
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.valuta-loco-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.valuta-loco-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spazio-3);
+  flex: 1 1 auto;
+  padding: var(--spazio-3) var(--spazio-4);
+  border: none;
+  border-radius: 20px;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.valuta-loco-card-testo {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+/* Icona sopra il titolo, angolo alto sx, colore secondario */
+.valuta-loco-card-icona {
   display: block;
-  width: 100%;
-  height: auto;
-  vertical-align: middle;
+  width: 40px;
+  height: 40px;
+  margin: 0 0 var(--spazio-2);
+  flex-shrink: 0;
+  background-color: var(--colore-secondario);
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+  mask-repeat: no-repeat;
 }
 
-.valuta-loco-mobile {
+.valuta-loco-card-icona--ruler {
+  -webkit-mask-image: url("assets/images/icons/icon-ruler-dimension-line.svg");
+  mask-image: url("assets/images/icons/icon-ruler-dimension-line.svg");
+}
+
+.valuta-loco-card-icona--checkup {
+  -webkit-mask-image: url("assets/images/icons/icon-Checkup-Diagnostic.svg");
+  mask-image: url("assets/images/icons/icon-Checkup-Diagnostic.svg");
+}
+
+.valuta-loco-card-riga {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* Mobile: solo le card con testo; le metà vuote restano nascoste */
+.valuta-loco-card--lato,
+.valuta-loco-card--stima-lato {
   display: none;
 }
 
-.valuta-loco-testo {
-  display: block;
-  width: 100%;
-  height: auto;
+.valuta-loco-card--come {
+  background: var(--colore-accento);
+}
+
+.valuta-loco-card--lato {
+  background: var(--colore-secondario);
+  border: 1px solid var(--colore-accento);
+}
+
+.valuta-loco-card--stima {
+  background: #8D7A2A;
+}
+
+.valuta-loco-card h3 {
+  margin: 0 0 var(--spazio-2);
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--colore-sfondo);
+}
+
+.valuta-loco-card p {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--colore-sfondo);
+}
+
+.valuta-loco-card strong {
+  color: var(--colore-sfondo);
+  font-weight: 700;
+}
+
+/* Titolo stima: Poppins Bold, MAIUSCOLO */
+.valuta-loco-card h3.valuta-loco-card-criteri-titolo {
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--colore-sfondo);
+}
+
+.valuta-loco-card p.valuta-loco-card-criteri {
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--colore-sfondo);
+}
+
+/* Card stima: testi bianco puro */
+.valuta-loco-card--stima h3,
+.valuta-loco-card--stima p,
+.valuta-loco-card--stima strong,
+.valuta-loco-card--stima h3.valuta-loco-card-criteri-titolo,
+.valuta-loco-card--stima p.valuta-loco-card-criteri {
+  color: #fff;
 }
 
 .valuta-loco-foto-wrap {
   position: relative;
   width: 100%;
+  max-width: 100%;
+  aspect-ratio: 1 / 1;
+  border: 1px solid var(--colore-accento);
+  border-radius: 20px;
   overflow: hidden;
+  background: var(--colore-secondario);
+  min-width: 0;
 }
 
 .valuta-loco-foto {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 
 .valuta-loco-cta {
   position: absolute;
-  right: clamp(12px, 3vw, 28px);
-  bottom: clamp(12px, 3vw, 28px);
+  right: clamp(10px, 2vw, 20px);
+  bottom: clamp(10px, 2vw, 20px);
   z-index: 1;
   max-width: calc(100% - 24px);
+  width: fit-content;
   text-align: center;
   white-space: normal;
   line-height: 1.25;
 }
 
-/* Solo mobile portrait: testo sopra + foto sotto, un unico riquadro oro */
-@media (max-width: 767px) and (orientation: portrait) {
-  .valuta-loco {
-    border-radius: 0;
-    overflow: visible;
-  }
-
-  .valuta-loco-desktop {
-    display: none;
-  }
-
-  .valuta-loco-mobile {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    line-height: 0;
-    font-size: 0;
-    /* Bordo oro unico intorno a testo+foto (niente linea in mezzo) */
-    border: 1px solid var(--colore-primario);
-    border-radius: 10px;
-    overflow: hidden;
-    background: var(--colore-secondario);
-  }
-
-  .valuta-loco-testo {
-    display: block;
-    width: 100%;
-    height: auto;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    /* Angoli superiori 10px */
-    border-radius: 10px 10px 0 0;
-    position: relative;
-    z-index: 1;
-  }
-
+/* Mobile portrait: CTA sempre sotto la foto, fuori dall’immagine */
+@media (max-width: 1023px) and (orientation: portrait) {
   .valuta-loco-foto-wrap {
-    aspect-ratio: 16 / 9;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    /* Angoli inferiori 10px */
-    border-radius: 0 0 10px 10px;
-    overflow: hidden;
-    /* Sovrapposizione per eliminare lo spiraglio di luce */
-    margin-top: -2px;
-    position: relative;
-    z-index: 0;
-    background: var(--colore-secondario);
-  }
-
-  .valuta-loco-foto {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: calc(100% + 2px);
-    top: -1px;
-    object-fit: cover;
-    object-position: 90% center;
-    display: block;
-  }
-}
-
-/* Mobile: CTA sotto il banner, misura normale */
-@media (max-width: 767px) {
-  .valuta-loco {
+    aspect-ratio: auto;
+    height: auto;
+    overflow: visible;
     display: flex;
     flex-direction: column;
     align-items: stretch;
     gap: var(--spazio-3);
+    border: none;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .valuta-loco-foto {
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    height: auto;
+    border: 3px solid var(--colore-accento);
+    border-radius: 20px;
   }
 
   .valuta-loco-cta {
     position: static;
+    right: auto;
+    bottom: auto;
     align-self: center;
     max-width: 100%;
-    width: fit-content;
+  }
+}
+
+/* Tablet+ / Desktop: card a sinistra allineate in altezza alla foto */
+@media (min-width: 768px) {
+  .valuta-loco-inner {
+    grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+    align-items: stretch;
+    gap: var(--spazio-4);
+  }
+
+  .valuta-loco-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    height: 100%;
+    min-height: 0;
+    align-self: stretch;
+  }
+
+  .valuta-loco-foto-wrap {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    align-self: stretch;
+  }
+}
+
+/* Desktop: righe = metà altezza foto; prima 2/3+1/3; seconda 50/50 con testo a dx */
+@media (min-width: 1024px) {
+  .valuta-loco-cards {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .valuta-loco-card-riga {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 8px;
+    align-items: stretch;
+    min-height: 0;
+    height: 100%;
+  }
+
+  .valuta-loco-card-riga--stima {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .valuta-loco-card--lato,
+  .valuta-loco-card--stima-lato {
+    display: flex;
+    min-height: 100%;
+  }
+
+  /* Riquadro piccolo: padding simmetrico + specificità alta (prima non si vedeva) */
+  article.valuta-loco-card.valuta-loco-card--lato {
+    align-items: flex-end;
+    justify-content: flex-start;
+    padding: 16px 14px;
+  }
+
+  .valuta-loco-card--stima-lato {
+    position: relative;
+    padding: 0;
+    overflow: hidden;
+    border: 3px solid #8D7A2A;
+  }
+
+  .valuta-loco-card--stima-lato .valuta-loco-card-foto {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .valuta-loco-card--lato .valuta-loco-card-lato-testo {
+    margin: 0 0 0 -2px;
+    font-family: "Poppins", sans-serif;
+    font-size: 0.92rem;
+    font-weight: 700;
+    line-height: 1.35;
+    color: var(--colore-accento);
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  .valuta-loco-card--stima-testo {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+  }
+}
+
+/* Mobile: CTA sotto la foto se serve spazio */
+@media (max-width: 767px) {
+  .valuta-loco-cta {
     padding: 12px 18px;
-    font-size: 0.88rem;
+    font-size: 0.78rem;
     line-height: 1.3;
   }
 }
@@ -2389,12 +2591,12 @@ h2 {
     padding-bottom: var(--spazio-7);
   }
 
-  /* Meno spazio tra form dati e «Valutazione in loco» */
+  /* Meno spazio tra form dati e blocco valutazione in loco */
   .valuta-form {
     margin-bottom: var(--spazio-4);
   }
 
-  .valuta-loco-titolo {
+  .valuta-loco {
     margin-top: 0;
   }
 
@@ -2420,73 +2622,31 @@ h2 {
   }
 }
 
-/* Ribelli landscape (es. Surface Duo 720×540): CTA sull’immagine, un solo rigo */
+/* Landscape / tablet: CTA resta sotto il blocco (niente overlay sulla foto) */
 @media (max-width: 767px) and (orientation: landscape) and (min-height: 521px) {
-  .valuta-loco {
-    display: block;
-    position: relative;
-    overflow: hidden;
-  }
-
   .valuta-loco-cta {
-    position: absolute;
-    right: 8px;
-    bottom: 8px;
-    left: auto;
-    align-self: auto;
-    max-width: calc(100% - 16px);
-    width: fit-content;
-    min-height: 32px;
-    padding: 6px 10px;
-    font-size: 0.62rem;
-    line-height: 1.15;
-    gap: 4px;
+    font-size: 0.78rem;
+    padding: 10px 14px;
     white-space: nowrap;
   }
 }
 
-/* Telefono landscape: CTA sull’immagine, ~1cm più piccolo, lato foto */
 @media (max-width: 1023px) and (orientation: landscape) and (max-height: 520px) {
   .valuta-loco-cta {
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
-    left: auto;
-    max-width: min(42%, 260px);
-    width: fit-content;
-    min-height: 36px;
-    padding: 8px 12px;
-    font-size: 0.72rem;
-    line-height: 1.2;
-    gap: 6px;
-    white-space: normal;
+    font-size: 0.78rem;
+    padding: 10px 14px;
   }
 }
 
-/* Tablet / iPad portrait e landscape: CTA nella zona foto, senza sovrapporre «Come funziona» */
 @media (min-width: 768px) and (max-width: 1366px) and (min-height: 521px) {
   .valuta-loco-cta {
-    position: absolute;
-    right: clamp(10px, 1.8vw, 18px);
-    bottom: clamp(10px, 1.8vw, 18px);
-    left: auto;
-    /* Resta nella metà foto a destra (~1cm più piccolo del btn base) */
-    max-width: min(36%, 220px);
-    width: fit-content;
-    min-height: 34px;
-    padding: 7px 11px;
-    font-size: clamp(0.62rem, 1vw, 0.75rem);
-    line-height: 1.15;
-    gap: 5px;
-    white-space: normal;
+    font-size: clamp(0.82rem, 1.1vw, 0.95rem);
   }
 }
 
-/* Tablet / iPad landscape (+ ribelli): testo CTA sempre su un solo rigo */
 @media (min-width: 520px) and (max-width: 1366px) and (orientation: landscape) and (min-height: 521px) {
   .valuta-loco-cta {
     white-space: nowrap;
-    max-width: min(100%, 420px);
   }
 }
 
@@ -4176,6 +4336,54 @@ body.immobile-lightbox-open {
     width: 100%;
     justify-content: center;
     min-height: 44px;
+  }
+}
+
+/* Mobile portrait <400px: niente scroll laterale; card superfici intere */
+@media (max-width: 399px) and (orientation: portrait) {
+
+  .pagina-immobile-inner,
+  .immobile-corpo,
+  .immobile-unita,
+  .immobile-unita-griglia,
+  .immobile-unita-box {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .immobile-contratto-riga {
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+
+  .immobile-contratto {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .immobile-nav-annunci {
+    margin-left: auto;
+  }
+
+  .immobile-comune span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .immobile-unita-box {
+    box-sizing: border-box;
+    padding: var(--spazio-3);
+  }
+
+  .immobile-unita-box dl {
+    grid-template-columns: minmax(0, max-content) minmax(0, 1fr);
+    gap: 6px 10px;
+  }
+
+  .immobile-unita-box dt,
+  .immobile-unita-box dd {
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 }
 
