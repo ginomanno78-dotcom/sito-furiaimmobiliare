@@ -462,29 +462,58 @@
                     </div>
                 </form>
 
-                <p class="valuta-loco-titolo">Valutazione in loco</p>
-            </div>
-
-            <!-- Valutazione in loco: full-bleed; desktop = composito; mobile portrait = testo + foto -->
-            <div class="valuta-loco">
-                <img class="valuta-loco-desktop" src="assets/images/banner-valutazioni-loco.webp"
-                    alt="Valutazione in loco — prenota un sopralluogo gratuito" width="2560" height="942"
-                    loading="lazy">
-
-                <div class="valuta-loco-mobile">
-                    <img class="valuta-loco-testo" src="assets/images/banner-valuta-loco-testo-mobile.webp"
-                        alt="Valutazione in loco e come funziona il sopralluogo" width="828" height="640"
-                        loading="lazy">
-                    <div class="valuta-loco-foto-wrap">
-                        <img class="valuta-loco-foto" src="assets/images/banner-valuta-loco-foto.webp"
-                            alt="Tecnici in sopralluogo — valutazione immobiliare in loco" width="1600" height="589"
-                            loading="lazy">
+                <!-- Valutazione in loco: card testi a sx + foto quadrata a dx (layout mockup) -->
+                <div class="valuta-loco">
+                    <p class="valuta-loco-titolo">Valutazione in loco</p>
+                    <div class="valuta-loco-inner">
+                        <div class="valuta-loco-cards">
+                            <div class="valuta-loco-card-riga">
+                                <article class="valuta-loco-card valuta-loco-card--come">
+                                    <div class="valuta-loco-card-testo">
+                                        <span class="valuta-loco-card-icona valuta-loco-card-icona--checkup"
+                                            aria-hidden="true"></span>
+                                        <h3>Come funziona?</h3>
+                                        <p>Attraverso un accurato sopralluogo, il nostro personale tecnico di fiducia
+                                            valuterà
+                                            l’immobile in tutte le sue caratteristiche, effettuando una verifica della
+                                            consistenza dell’abitazione e redigendo la documentazione tecnica -
+                                            fotografica.</p>
+                                    </div>
+                                </article>
+                                <article class="valuta-loco-card valuta-loco-card--lato">
+                                    <p class="valuta-loco-card-lato-testo">Affidati a noi per una<br>
+                                        consulenza DI PERSONA<br>
+                                        e gratuita (entro i 50&nbsp;km).</p>
+                                </article>
+                            </div>
+                            <div class="valuta-loco-card-riga valuta-loco-card-riga--stima">
+                                <article class="valuta-loco-card valuta-loco-card--stima valuta-loco-card--stima-lato">
+                                    <img class="valuta-loco-card-foto" src="assets/images/foto-stima.webp"
+                                        alt="Sopralluogo e stima dell’immobile" width="800" height="600" loading="lazy">
+                                </article>
+                                <article class="valuta-loco-card valuta-loco-card--stima valuta-loco-card--stima-testo">
+                                    <div class="valuta-loco-card-testo">
+                                        <span class="valuta-loco-card-icona valuta-loco-card-icona--ruler"
+                                            aria-hidden="true"></span>
+                                        <h3 class="valuta-loco-card-criteri-titolo">la stima si basa su:</h3>
+                                        <p class="valuta-loco-card-criteri">dimensioni&nbsp;&nbsp;|&nbsp;&nbsp;stato di
+                                            conservazione&nbsp;&nbsp;|&nbsp;&nbsp;regolarità
+                                            edilizia&nbsp;&nbsp;|&nbsp;&nbsp;potenzialità
+                                            edificatorie&nbsp;&nbsp;|&nbsp;&nbsp;zona di ubicazione.</p>
+                                    </div>
+                                </article>
+                            </div>
+                        </div>
+                        <div class="valuta-loco-foto-wrap">
+                            <img class="valuta-loco-foto" src="assets/images/banner-valutazioni-loco.webp"
+                                alt="Tecnici in sopralluogo — valutazione immobiliare in loco" width="1200"
+                                height="1200" loading="lazy">
+                            <a href="#contatti" class="btn btn--oro valuta-btn valuta-loco-cta">
+                                Prenota un sopralluogo gratuito <span aria-hidden="true">&gt;</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
-
-                <a href="#contatti" class="btn btn--oro valuta-btn valuta-loco-cta">
-                    Prenota un sopralluogo gratuito <span aria-hidden="true">&gt;</span>
-                </a>
             </div>
         </section>
 
@@ -638,8 +667,8 @@
                         <div class="servizi-item servizi-item--consulenza">
                             <button type="button" class="servizi-toggle" aria-expanded="false"
                                 aria-controls="servizi-panel-consulenza" id="servizi-btn-consulenza">
-                                <img class="servizi-icona" src="assets/images/icons/icon-loco.svg" alt="" width="48"
-                                    height="48">
+                                <img class="servizi-icona" src="assets/images/icons/icon-assistenza-consulenza.svg"
+                                    alt="" width="48" height="48">
                                 <span class="servizi-toggle-titolo"><span>Consulenza
                                         &amp;</span><span>Assistenza</span></span>
                                 <span class="servizi-toggle-segno" aria-hidden="true">+</span>
