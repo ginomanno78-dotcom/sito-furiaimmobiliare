@@ -605,6 +605,35 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("resize", () => requestAnimationFrame(adattaTuttiTipiCard));
   }
 
+  /* ===== Valuta loco: altezza Affidati = 2/3 della stima (solo mobile portrait) ===== */
+  const syncValutaLocoAffidatiAltezza = () => {
+    const cards = document.querySelector(".valuta-loco-cards");
+    const stima = document.querySelector(".valuta-loco-card--stima-testo");
+    if (!cards || !stima) return;
+
+    const mq = window.matchMedia(
+      "(max-width: 599px) and (orientation: portrait)"
+    );
+    if (mq.matches) {
+      cards.style.setProperty(
+        "--valuta-stima-h",
+        `${stima.getBoundingClientRect().height}px`
+      );
+    } else {
+      cards.style.removeProperty("--valuta-stima-h");
+    }
+  };
+
+  syncValutaLocoAffidatiAltezza();
+  window.addEventListener("resize", syncValutaLocoAffidatiAltezza);
+  if (typeof ResizeObserver === "function") {
+    const stimaEl = document.querySelector(".valuta-loco-card--stima-testo");
+    if (stimaEl) {
+      const roValuta = new ResizeObserver(syncValutaLocoAffidatiAltezza);
+      roValuta.observe(stimaEl);
+    }
+  }
+
   /* ===== FORM VALUTA ===== */
   const formValuta = document.getElementById("formValutazioneOnline");
   const valutaMsg = document.getElementById("valutaFormMsg");
