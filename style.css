@@ -1726,7 +1726,7 @@ h2 {
   flex-direction: column;
   flex: 1;
   border: 1px solid var(--colore-primario);
-  border-radius: var(--raggio-md);
+  border-radius: 20px;
   overflow: hidden;
   background: var(--colore-secondario);
 }
@@ -1854,6 +1854,93 @@ h2 {
 
   #immobili-vendita .card-annuncio-cta {
     justify-self: end;
+  }
+}
+
+/* Desktop: sempre 3 card intere in vista; carosello utile dalla 4ª in poi */
+@media (min-width: 1024px) and (orientation: landscape),
+(min-width: 1367px) {
+  #immobili-vendita .carousel-track {
+    padding-left: 0;
+    padding-right: 0;
+    scroll-padding-inline: 0;
+  }
+
+  /* (100% − 2 gap da 20px) / 3 = larghezza esatta di ogni card */
+  #immobili-vendita .card-annuncio {
+    flex: 0 0 calc((100% - 40px) / 3);
+    width: calc((100% - 40px) / 3);
+    max-width: none;
+  }
+
+  /* Testi più compatti: entrano nella card a 1/3 (no specs/icone) */
+  #immobili-vendita .card-annuncio--cliccabile .card-annuncio-prezzo {
+    font-size: 1.2rem;
+  }
+
+  #immobili-vendita .card-annuncio--cliccabile .card-annuncio-tipo,
+  #immobili-vendita .card-annuncio-tipo {
+    font-size: 0.92rem;
+  }
+
+  #immobili-vendita .card-annuncio--cliccabile .card-annuncio-comune,
+  #immobili-vendita .card-annuncio-comune {
+    font-size: 0.78rem;
+  }
+}
+
+/* Desktop: alone secondario dietro il carosello — stretto in verticale, abbondante in orizzontale */
+@media (min-width: 1024px) and (orientation: landscape),
+(min-width: 1367px) {
+  #immobili-vendita .carousel {
+    isolation: isolate;
+  }
+
+  #immobili-vendita .carousel::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    bottom: 28px;
+    /* Poco oltre le frecce prev/next (non a tutta viewport) */
+    left: -18px;
+    right: -18px;
+    width: auto;
+    transform: none;
+    background: var(--colore-secondario);
+    border-radius: 0;
+    filter: blur(42px);
+    opacity: 0.85;
+    pointer-events: none;
+  }
+}
+
+/* Tablet/iPad landscape stretti (Tab S4/A9/S10, iPad mini/Air, Nest Hub):
+   specs dentro la card a 1/3 — altri modelli invariati */
+@media (min-width: 1024px) and (max-width: 1180px) and (orientation: landscape) and (max-height: 820px) {
+  #immobili-vendita .card-annuncio-specs {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    justify-content: space-between;
+    gap: 4px;
+  }
+
+  #immobili-vendita .card-spec {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 5px 2px;
+    min-height: 52px;
+    gap: 4px;
+  }
+
+  #immobili-vendita .card-spec-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  #immobili-vendita .card-spec > span:last-child {
+    font-size: 0.68rem;
   }
 }
 
@@ -2251,23 +2338,6 @@ h2 {
   isolation: isolate;
 }
 
-/* Alone secondario: a tutta larghezza schermo (solo sx/dx), non sopra/sotto */
-.valuta-loco-inner::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 100vw;
-  transform: translateX(-50%);
-  background: var(--colore-secondario);
-  border-radius: 0;
-  filter: blur(42px);
-  opacity: 0.85;
-  pointer-events: none;
-}
-
 .valuta-loco-cards {
   display: flex;
   flex-direction: column;
@@ -2461,8 +2531,10 @@ h2 {
   }
 }
 
-/* Tablet+ / Desktop: card a sinistra allineate in altezza alla foto */
-@media (min-width: 768px) {
+/* Landscape tablet + desktop: card a sx, foto a dx.
+   Portrait sotto 1024px resta impilato (niente disallineamento iPad/tablet). */
+@media (min-width: 768px) and (orientation: landscape),
+(min-width: 1024px) {
   .valuta-loco-inner {
     grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
     align-items: stretch;
@@ -2482,6 +2554,180 @@ h2 {
     width: 100%;
     aspect-ratio: 1 / 1;
     align-self: stretch;
+  }
+}
+
+/* Mobile portrait: Affidati sotto la stima, altezza = 2/3 della stima (--valuta-stima-h da JS) */
+@media (max-width: 599px) and (orientation: portrait) {
+  .valuta-loco-card-riga {
+    display: contents;
+  }
+
+  .valuta-loco-cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "come"
+      "stima"
+      "lato";
+    gap: 8px;
+  }
+
+  .valuta-loco-card--come {
+    grid-area: come;
+  }
+
+  .valuta-loco-card--stima-testo {
+    grid-area: stima;
+  }
+
+  .valuta-loco-card--stima-lato {
+    display: none;
+  }
+
+  article.valuta-loco-card.valuta-loco-card--lato {
+    grid-area: lato;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    padding: 12px 14px;
+    box-sizing: border-box;
+    height: calc(var(--valuta-stima-h, 10.5rem) * 2 / 3);
+    min-height: 0;
+  }
+
+  .valuta-loco-card--lato .valuta-loco-card-lato-testo {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1.35;
+    color: var(--colore-accento);
+    text-align: left;
+    white-space: normal;
+    max-width: 100%;
+    overflow-wrap: break-word;
+  }
+}
+
+/* Mobile portrait ≥344px: terza riga a metà — foto-stima | Affidati */
+@media (min-width: 344px) and (max-width: 599px) and (orientation: portrait) {
+  .valuta-loco-cards {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "come come"
+      "stima stima"
+      "foto lato";
+  }
+
+  .valuta-loco-card--stima-lato {
+    grid-area: foto;
+    display: flex;
+    padding: 0;
+    overflow: hidden;
+    border: 3px solid #8D7A2A;
+    box-sizing: border-box;
+    height: calc(var(--valuta-stima-h, 10.5rem) * 2 / 3);
+    min-height: 0;
+  }
+
+  .valuta-loco-card--stima-lato .valuta-loco-card-foto {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
+/* Tablet / iPad portrait ≥600px: seconda riga = stima (icona+titolo in linea) | Affidati */
+@media (min-width: 600px) and (max-width: 1023px) and (orientation: portrait) {
+  .valuta-loco-card-riga {
+    display: contents;
+  }
+
+  /* Due righe stessa altezza; stima più larga, Affidati più stretta */
+  .valuta-loco-cards {
+    display: grid;
+    grid-template-columns: 2.35fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas:
+      "come come"
+      "stima lato";
+    gap: 8px;
+    align-items: stretch;
+  }
+
+  .valuta-loco-card--come,
+  .valuta-loco-card--stima-testo,
+  article.valuta-loco-card.valuta-loco-card--lato {
+    align-self: stretch;
+    height: 100%;
+    box-sizing: border-box;
+  }
+
+  .valuta-loco-card--come {
+    grid-area: come;
+  }
+
+  .valuta-loco-card--stima-testo {
+    grid-area: stima;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    min-height: 0;
+  }
+
+  /* Icona sopra, titolo sotto; testo più grande per riempire la card larga */
+  .valuta-loco-card--stima-testo .valuta-loco-card-testo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .valuta-loco-card--stima-testo .valuta-loco-card-icona {
+    display: block;
+    width: 40px;
+    height: 40px;
+    margin: 0 0 4px;
+  }
+
+  .valuta-loco-card--stima-testo .valuta-loco-card-criteri-titolo {
+    margin: 0 0 4px;
+    font-size: 1rem;
+    line-height: 1.3;
+  }
+
+  .valuta-loco-card--stima-testo .valuta-loco-card-criteri {
+    width: 100%;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+  }
+
+  /* Affidati stretta a dx, stessa altezza della stima */
+  article.valuta-loco-card.valuta-loco-card--lato {
+    grid-area: lato;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    padding: 12px 10px;
+  }
+
+  .valuta-loco-card--lato .valuta-loco-card-lato-testo {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1.35;
+    color: var(--colore-accento);
+    text-align: left;
+    white-space: normal;
+    max-width: 100%;
+    overflow-wrap: break-word;
   }
 }
 
@@ -2535,14 +2781,16 @@ h2 {
   }
 
   .valuta-loco-card--lato .valuta-loco-card-lato-testo {
-    margin: 0 0 0 -2px;
+    margin: 0;
     font-family: "Poppins", sans-serif;
-    font-size: 0.92rem;
+    font-size: 0.8rem;
     font-weight: 700;
     line-height: 1.35;
     color: var(--colore-accento);
     text-align: left;
-    white-space: nowrap;
+    white-space: normal;
+    max-width: 100%;
+    overflow-wrap: break-word;
   }
 
   .valuta-loco-card--stima-testo {
@@ -2550,6 +2798,16 @@ h2 {
     flex-direction: column;
     align-items: stretch;
     justify-content: flex-start;
+  }
+
+  .valuta-loco-card--stima-testo .valuta-loco-card-criteri {
+    font-size: 0.78rem;
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+  }
+
+  .valuta-loco-card--stima-testo .valuta-loco-card-criteri-titolo {
+    font-size: 0.95rem;
   }
 }
 
@@ -2723,12 +2981,37 @@ h2 {
 }
 
 .servizi-foto {
+  position: relative;
+  isolation: isolate;
   margin: 0;
   width: 100%;
-  overflow: hidden;
+  overflow: visible;
   border-radius: var(--raggio-md);
   border: 1px solid #aa9333;
   box-sizing: border-box;
+}
+
+/* Alone secondario dietro la foto — alone leggero, non a tutta pagina */
+.servizi-foto::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -2%;
+  bottom: -3%;
+  left: -4%;
+  right: -4%;
+  background: var(--colore-secondario);
+  border-radius: 0;
+  filter: blur(36px);
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+/* Mobile portrait: alone più esteso solo sotto */
+@media (max-width: 767px) and (orientation: portrait) {
+  .servizi-foto::before {
+    bottom: -12%;
+  }
 }
 
 .servizi-foto img {
@@ -2738,6 +3021,7 @@ h2 {
   aspect-ratio: 4 / 3;
   object-fit: cover;
   object-position: center;
+  border-radius: var(--raggio-md);
 }
 
 .servizi-bio-nome {
