@@ -16,6 +16,7 @@
   --colore-errore: #ff2200;
   --colore-navbar: #E4E4DE;
   --colore-testo-scuro: #1A1A1A;
+  --colore-bianco: #ffffff;
 
   --ombra-base: 0 2px 8px rgba(0, 0, 0, 0.25);
   --ombra-media: 0 8px 24px rgba(0, 0, 0, 0.35);
@@ -1243,12 +1244,26 @@ h2 {
 }
 
 .card-annuncio-media {
+  position: relative;
   aspect-ratio: 440 / 250;
   background: #0a1f20;
   border: 1px solid var(--colore-primario);
   /* Solo angoli superiori arrotondati; inferiori retti */
   border-radius: var(--raggio-md) var(--raggio-md) 0 0;
   overflow: hidden;
+}
+
+/* Sopra l’hit a tutta card: hover foto e click sulla cover */
+.card-annuncio--cliccabile .card-annuncio-media {
+  z-index: 5;
+}
+
+.card-annuncio-media-link {
+  display: block;
+  height: 100%;
+  position: relative;
+  color: inherit;
+  text-decoration: none;
 }
 
 .card-annuncio-cover-link {
@@ -1262,6 +1277,26 @@ h2 {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* Seconda foto: nascosta di default; crossfade solo su desktop con hover reale */
+.card-annuncio-media-hover {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+
+  .card-annuncio-media--hover .card-annuncio-media-cover,
+  .card-annuncio-media--hover .card-annuncio-media-hover {
+    transition: opacity 0.2s ease;
+  }
+
+  .card-annuncio-media--hover:hover .card-annuncio-media-hover {
+    opacity: 1;
+  }
 }
 
 .card-annuncio-media--vuota {
@@ -1939,7 +1974,7 @@ h2 {
     height: 22px;
   }
 
-  #immobili-vendita .card-spec > span:last-child {
+  #immobili-vendita .card-spec>span:last-child {
     font-size: 0.68rem;
   }
 }
@@ -3126,14 +3161,33 @@ h2 {
   color: #aa9333;
 }
 
+/* Cerchio secondario + freccia accento verso il basso (solo toggle Servizi) */
 .servizi-toggle-segno {
+  position: relative;
   flex-shrink: 0;
-  width: 1.25em;
-  color: #aa9333;
-  font-size: 1.5rem;
-  font-weight: 400;
-  line-height: 1;
-  text-align: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--colore-secondario);
+  transition: transform 0.2s ease;
+}
+
+.servizi-toggle-segno::after {
+  content: "";
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  border-right: 2px solid var(--colore-accento);
+  border-bottom: 2px solid var(--colore-accento);
+  transform: translate(-50%, -60%) rotate(45deg);
+  box-sizing: border-box;
+}
+
+/* Aperto: freccia verso l’alto */
+.servizi-item.is-open .servizi-toggle-segno {
+  transform: rotate(180deg);
 }
 
 .servizi-panel {
@@ -3151,10 +3205,12 @@ h2 {
 
 .servizi-voce-titolo {
   margin: 0 0 var(--spazio-2);
+  font-family: var(--font-corpo);
   font-size: 0.95rem;
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1.3;
-  color: #fff;
+  text-transform: uppercase;
+  color: var(--colore-testo-muto);
   text-align: left;
 }
 
@@ -3330,14 +3386,40 @@ h2 {
   cursor: pointer;
 }
 
+/* + con bracci allungati (stessa area del segno precedente) */
 .faq-toggle {
+  position: relative;
   flex-shrink: 0;
-  width: 1.25em;
-  color: var(--colore-primario);
-  font-size: 1.5rem;
-  font-weight: 400;
-  line-height: 1;
-  text-align: center;
+  width: 0.85em;
+  height: 0.85em;
+  font-size: 1.35rem;
+}
+
+.faq-toggle::before,
+.faq-toggle::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  background: var(--colore-primario);
+  transform: translate(-50%, -50%);
+}
+
+/* Stanghetta orizzontale */
+.faq-toggle::before {
+  width: 100%;
+  height: 2px;
+}
+
+/* Stanghetta verticale */
+.faq-toggle::after {
+  width: 2px;
+  height: 100%;
+}
+
+/* Aperto: resta solo la stanghetta orizzontale (−) */
+.faq-item.is-open .faq-toggle::after {
+  display: none;
 }
 
 .faq-risposta {
@@ -4484,16 +4566,34 @@ h2 {
   right: 10px;
   left: auto;
   z-index: 2;
-  width: 36px;
-  height: 36px;
+  width: 28px;
+  height: 28px;
   padding: 0;
   border: none;
   background: transparent;
-  color: var(--colore-sfondo);
-  font-size: 2rem;
-  line-height: 1;
   cursor: pointer;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+  /* Stesso + FAQ, ruotato a X; nero pieno, senza ombra */
+  transform: rotate(45deg);
+}
+
+.immobile-lightbox-chiudi::before,
+.immobile-lightbox-chiudi::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  background: var(--colore-sfondo);
+  transform: translate(-50%, -50%);
+}
+
+.immobile-lightbox-chiudi::before {
+  width: 100%;
+  height: 2px;
+}
+
+.immobile-lightbox-chiudi::after {
+  width: 2px;
+  height: 100%;
 }
 
 .immobile-lightbox-chiudi:hover {
