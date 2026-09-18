@@ -298,7 +298,15 @@ document.addEventListener("DOMContentLoaded", () => {
     /* Con link a tutta card, Scopri resta solo testo (niente <a> annidati) */
     const cta = `<span class="card-annuncio-cta">Scopri &gt;</span>`;
     const altCover = `${titolo} a ${annuncio.comune}`;
-    const media = `<div class="card-annuncio-media"><img src="${annuncio.cover}" alt="${altCover}" width="600" height="400" loading="lazy"></div>`;
+    /* Cover + eventuale seconda foto per hover desktop (se manca coverHover resta solo cover) */
+    const mediaHover = annuncio.coverHover
+      ? `<img class="card-annuncio-media-hover" src="${annuncio.coverHover}" alt="" width="600" height="400" loading="lazy" aria-hidden="true">`
+      : "";
+    const mediaImgs = `<img class="card-annuncio-media-cover" src="${annuncio.cover}" alt="${altCover}" width="600" height="400" loading="lazy">${mediaHover}`;
+    /* Con hit a tutta card, il media sta sopra (z-index) e ha link proprio così hover+click funzionano */
+    const media = href
+      ? `<div class="card-annuncio-media${annuncio.coverHover ? " card-annuncio-media--hover" : ""}"><a class="card-annuncio-media-link" href="${href}" tabindex="-1" aria-hidden="true">${mediaImgs}</a></div>`
+      : `<div class="card-annuncio-media${annuncio.coverHover ? " card-annuncio-media--hover" : ""}">${mediaImgs}</div>`;
 
     /* Icona condividi (riusabile su tutte le card collegabili) */
     const shareHtml = href
@@ -712,22 +720,19 @@ document.addEventListener("DOMContentLoaded", () => {
           altro.classList.remove("is-open");
           const aBtn = altro.querySelector(".faq-domanda");
           const aRis = altro.querySelector(".faq-risposta");
-          const aTog = altro.querySelector(".faq-toggle");
           if (aBtn) aBtn.setAttribute("aria-expanded", "false");
           if (aRis) aRis.hidden = true;
-          if (aTog) aTog.textContent = "+";
         });
 
+        /* +/− disegnato in CSS (.is-open), non più testo */
         if (aperto) {
           item.classList.remove("is-open");
           btn.setAttribute("aria-expanded", "false");
           risposta.hidden = true;
-          toggle.textContent = "+";
         } else {
           item.classList.add("is-open");
           btn.setAttribute("aria-expanded", "true");
           risposta.hidden = false;
-          toggle.textContent = "−";
         }
       });
     });
@@ -750,22 +755,19 @@ document.addEventListener("DOMContentLoaded", () => {
           altro.classList.remove("is-open");
           const aBtn = altro.querySelector(".servizi-toggle");
           const aPanel = altro.querySelector(".servizi-panel");
-          const aSegno = altro.querySelector(".servizi-toggle-segno");
           if (aBtn) aBtn.setAttribute("aria-expanded", "false");
           if (aPanel) aPanel.hidden = true;
-          if (aSegno) aSegno.textContent = "+";
         });
 
+        /* Freccia su/giù gestita da CSS (.is-open), non più +/− */
         if (aperto) {
           item.classList.remove("is-open");
           btn.setAttribute("aria-expanded", "false");
           panel.hidden = true;
-          segno.textContent = "+";
         } else {
           item.classList.add("is-open");
           btn.setAttribute("aria-expanded", "true");
           panel.hidden = false;
-          segno.textContent = "−";
         }
       });
     });
@@ -1666,12 +1668,19 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    /* Lightbox: swipe oltre alle frecce */
-    attivaSwipe(lightbox, {
+    /* Lightbox: swipe sul frame (non sull’overlay — altrimenti il click sulla foto chiudeva) */
+    const lightboxFrame = lightbox && lightbox.querySelector(".immobile-lightbox-frame");
+    attivaSwipe(lightboxFrame, {
       ignora: (t) => !!(t && t.closest && t.closest("button")),
       onSwipeLeft: () => lightboxVai(1),
       onSwipeRight: () => lightboxVai(-1)
     });
+
+    if (lightboxFrame) {
+      lightboxFrame.addEventListener("click", (e) => {
+        e.stopPropagation();
+      });
+    }
 
     if (lightboxChiudi) {
       lightboxChiudi.addEventListener("click", (e) => {
@@ -1693,6 +1702,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     if (lightbox) {
       lightbox.addEventListener("click", (e) => {
+        /* Chiude solo fuori dalla foto (backdrop), non sulla foto/frame */
         if (e.target === lightbox) chiudiLightbox();
       });
     }

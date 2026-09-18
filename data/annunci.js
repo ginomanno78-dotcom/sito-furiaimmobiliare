@@ -40,6 +40,9 @@ const annunci = {
       descrizione:
         "Vendesi in Sparanise alla via Kennedy appartamento con doppia esposizione, sita al piano primo di 105 mq calpestabili. Composto da ampio ingresso, salone doppio, cucina, due camere da letto, bagno con antibagno, balcone e cantina. Infissi sostituiti recentemente. Ingresso su Via A. B. Nobel n.1; immobile d’angolo anche con Via Kennedy.",
       cover: "assets/images/annunci/vendita/sparanise-cinquegrana-via-kennedy/cover-cinquegrana-sparanise.webp",
+      /* Foto al passaggio mouse (solo desktop) */
+      coverHover:
+        "assets/images/annunci/vendita/sparanise-cinquegrana-via-kennedy/foto-05.webp",
       planimetria:
         "assets/images/annunci/vendita/sparanise-cinquegrana-via-kennedy/TAVOLE-CILAS-assia2-Modelpage-0001.webp",
       galleria: [
@@ -87,6 +90,9 @@ const annunci = {
         "Proponiamo in vendita un'interessante locale commerciale. Posizionato in una zona strategica ad alto passaggio e con ottima visibilità, ideale sia per chi desidera avviare o espandere il proprio business, sia come investimento a reddito. Il locale ha una superficie complessiva di 87 mq ben distribuiti e funzionali. Situato nel tessuto commerciale di Sparanise, facilmente raggiungibile e con possibilità di parcheggio nelle vicinanze per la clientela. Gli spazi interni, facilmente rimodulabili, si prestano a molteplici destinazioni: negozio di vendita al dettaglio, ufficio/studio professionale, showroom, centro servizi o attività artigianale. Piano terra con accesso disabili.\nAltezza soffitti 3,95 m. | Cablato | impianto di allarme | luci d'emergenza | parzialmente arredato | canna fumaria",
       cover:
         "assets/images/annunci/vendita/locale-commerciale-di-maio-sparanise/foto-cover.webp",
+      /* Foto al passaggio mouse (solo desktop) */
+      coverHover:
+        "assets/images/annunci/vendita/locale-commerciale-di-maio-sparanise/foto-05.webp",
       planimetria:
         "assets/images/annunci/vendita/locale-commerciale-di-maio-sparanise/planimetria.webp",
       galleria: [
