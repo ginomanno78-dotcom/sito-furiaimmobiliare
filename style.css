@@ -11,7 +11,7 @@
   --colore-secondario: #0E2B2C;
   --colore-testo: #E4E4DE;
   --colore-testo-muto: #9A9A92;
-  --colore-bordo: #3A3A3A;
+  --colore-bordo: #5a5a5a;
   --colore-successo: #2ecc71;
   --colore-errore: #ff2200;
   --colore-navbar: #E4E4DE;
@@ -1670,15 +1670,98 @@ h2 {
   color: #fff;
 }
 
-.vendi-intro {
-  margin: 0 0 var(--spazio-5);
-  font-size: clamp(0.82rem, 1.4vw, 1rem);
-  line-height: 1.55;
+/* Copy editoriale Vendi: headline + supporto, staccato dal bordo, niente troncatura */
+.vendi-intro,
+.vendi-tagline {
+  width: 100%;
+  max-width: min(36rem, 100%);
+  margin: 0 0 var(--spazio-5) auto;
+  padding-inline: 0 clamp(12px, 3vw, 28px) 0 0;
+  box-sizing: border-box;
+  font-family: var(--font-titoli);
+  text-align: right;
+}
+
+.vendi-tagline {
+  margin-bottom: var(--spazio-6);
+  margin-left: 0;
+  margin-right: auto;
+  padding-inline: 0;
+  text-align: left;
+}
+
+.vendi-intro-riga,
+.vendi-tagline-riga {
+  display: block;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: normal;
+  hyphens: none;
+}
+
+/* Headline: messaggio principale (anche su più righe) */
+.vendi-copy-lead {
+  margin: 0;
+  font-size: clamp(1.25rem, 2.4vw, 1.75rem);
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
   color: var(--colore-testo);
 }
 
-.vendi-intro-riga {
-  display: block;
+/* Aria tra headline e supporto */
+.vendi-copy-lead+.vendi-intro-riga:not(.vendi-copy-lead),
+.vendi-copy-lead+.vendi-tagline-riga:not(.vendi-copy-lead) {
+  margin-top: 0.65em;
+}
+
+/* Supporto intro: Poppins Light, maiuscolo, #5a5a5a */
+.vendi-intro-riga:not(.vendi-copy-lead) {
+  font-family: var(--font-corpo);
+  font-size: clamp(0.95rem, 1.5vw, 1.12rem);
+  font-weight: 300;
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #5a5a5a;
+}
+
+/* «Come primo passo,»: Poppins Bold */
+.vendi-intro-riga.vendi-intro-passo {
+  font-weight: 700;
+}
+
+/* Supporto sotto «Come primo passo,»: testo muto */
+.vendi-intro-riga.vendi-intro-supporto {
+  color: var(--colore-testo-muto);
+}
+
+/* Tagline (prime 3 righe): Poppins Medium, +7px, colore bordo */
+.vendi-tagline-riga:not(.vendi-tagline-chiusura) {
+  font-family: var(--font-corpo);
+  font-size: clamp(calc(0.95rem + 7px), calc(1.5vw + 7px), calc(1.12rem + 7px));
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--colore-bordo);
+}
+
+/* Prima riga tagline: colore testo */
+.vendi-tagline-riga:first-child {
+  color: var(--colore-testo-muto);
+}
+
+/* Chiusura tagline: Cardo Bold, stile normale */
+.vendi-tagline-chiusura {
+  margin-top: 0.55em;
+  font-family: var(--font-titoli);
+  font-size: clamp(1.15rem, 2.2vw, 1.55rem);
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  color: var(--colore-testo);
 }
 
 /* Banner: tutta larghezza — desktop/tablet = composito; mobile portrait = stack */
@@ -1720,14 +1803,6 @@ h2 {
   }
 }
 
-.vendi-tagline {
-  margin: 0 auto var(--spazio-6);
-  text-align: center;
-  font-size: clamp(0.78rem, 1.35vw, 1rem);
-  line-height: 1.4;
-  color: #fff;
-}
-
 .vendi-cards {
   display: grid;
   /* Mobile portrait: 1 colonna */
@@ -1738,20 +1813,20 @@ h2 {
 .vendi-card {
   display: flex;
   flex-direction: column;
-  gap: calc(var(--spazio-3) - 3mm);
+  gap: 0;
   background: transparent;
   min-width: 0;
 }
 
-/* Titolo fuori dalla card, sopra, tutto maiuscolo */
+/* Titolo subito sopra la descrizione */
 .vendi-card-titolo {
-  margin: 0;
+  margin: 0 0 var(--spazio-2);
   font-family: var(--font-corpo);
   font-size: calc(0.95rem + 3px);
   font-weight: 400;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  text-align: center;
+  text-align: left;
   color: var(--colore-primario);
   line-height: 1.3;
 }
@@ -1760,16 +1835,18 @@ h2 {
   display: flex;
   flex-direction: column;
   flex: 1;
-  border: 1px solid var(--colore-primario);
-  border-radius: 20px;
-  overflow: hidden;
-  background: var(--colore-secondario);
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+  background: transparent;
 }
 
 .vendi-card-media {
   aspect-ratio: 4 / 3;
   overflow: hidden;
-  border-bottom: 1px solid var(--colore-primario);
+  border: 1px solid var(--colore-accento);
+  border-radius: 20px;
+  box-sizing: border-box;
 }
 
 .vendi-card-media img {
@@ -1777,10 +1854,60 @@ h2 {
   height: 100%;
   object-fit: cover;
   display: block;
+  border-radius: 20px;
 }
 
 .vendi-card-body {
-  padding: var(--spazio-3) var(--spazio-3) var(--spazio-4);
+  position: relative;
+  isolation: isolate;
+  margin-top: 1mm;
+  padding: var(--spazio-3);
+  box-sizing: border-box;
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+/* Bordo 1px accento su titolo+descrizione: solo metà alta, lati sfumati in basso */
+.vendi-card-body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border: 1px solid var(--colore-accento);
+  border-radius: 20px;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom,
+      #000 0%,
+      #000 42%,
+      transparent 72%);
+  mask-image: linear-gradient(to bottom,
+      #000 0%,
+      #000 42%,
+      transparent 72%);
+}
+
+/* Alone secondario dentro il box: dall’alto, scende oltre metà e sfuma */
+.vendi-card-body::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 58%;
+  z-index: 0;
+  border-radius: 20px 20px 0 0;
+  background: var(--colore-secondario);
+  filter: blur(40px);
+  opacity: 0.55;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 20%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 20%, transparent 100%);
+}
+
+.vendi-card-titolo,
+.vendi-card-body p {
+  position: relative;
+  z-index: 2;
 }
 
 .vendi-card-body p {
@@ -2004,15 +2131,7 @@ h2 {
   .vendi-cards {
     grid-template-columns: repeat(4, 1fr);
     column-gap: var(--spazio-3);
-    /* Spazio titolo→box uniforme (subgrid) */
-    row-gap: calc(var(--spazio-3) - 3mm);
-  }
-
-  /* Subgrid: titoli su più righe non disallineano le card (es. OnePlus Pad) */
-  .vendi-card {
-    display: grid;
-    grid-template-rows: subgrid;
-    grid-row: span 2;
+    row-gap: var(--spazio-4);
   }
 }
 
@@ -2067,12 +2186,6 @@ h2 {
 @media (min-width: 1024px) {
   .sezione-vendi {
     padding: var(--spazio-8) 0;
-  }
-
-  /* Nowrap solo da desktop: su mobile/tablet evitava overflow e pagina “schiacciata” */
-  .vendi-intro-riga,
-  .vendi-tagline {
-    white-space: nowrap;
   }
 
   .vendi-cards {
@@ -2563,6 +2676,35 @@ h2 {
     bottom: auto;
     align-self: center;
     max-width: 100%;
+  }
+}
+
+/* Solo mobile portrait: alone secondario dietro la foto, spostato in basso */
+@media (max-width: 767px) and (orientation: portrait) {
+  .valuta-loco-foto-wrap {
+    isolation: isolate;
+  }
+
+  .valuta-loco-foto-wrap::before {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    left: 50%;
+    top: 0;
+    width: 108%;
+    aspect-ratio: 1 / 1;
+    transform: translate(-50%, 12%);
+    background: var(--colore-secondario);
+    border-radius: 20px;
+    filter: blur(44px);
+    opacity: 0.80;
+    pointer-events: none;
+  }
+
+  .valuta-loco-foto,
+  .valuta-loco-cta {
+    position: relative;
+    z-index: 1;
   }
 }
 
