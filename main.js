@@ -613,14 +613,14 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("resize", () => requestAnimationFrame(adattaTuttiTipiCard));
   }
 
-  /* ===== Valuta loco: altezza Affidati = 2/3 della stima (solo mobile portrait) ===== */
+  /* ===== Valuta loco: altezza Affidati = 2/3 della stima (mobile portrait + landscape <1024) ===== */
   const syncValutaLocoAffidatiAltezza = () => {
     const cards = document.querySelector(".valuta-loco-cards");
     const stima = document.querySelector(".valuta-loco-card--stima-testo");
     if (!cards || !stima) return;
 
     const mq = window.matchMedia(
-      "(max-width: 599px) and (orientation: portrait)"
+      "(max-width: 599px) and (orientation: portrait), (max-width: 1023px) and (orientation: landscape)"
     );
     if (mq.matches) {
       cards.style.setProperty(
