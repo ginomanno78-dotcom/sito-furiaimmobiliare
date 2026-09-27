@@ -264,6 +264,14 @@ h2 {
   /* niente overflow:hidden — altrimenti clippa i dropdown */
 }
 
+/* Solo desktop: pillola più stretta (+1,5 cm per lato). Mobile/tablet/iPad invariati. */
+@media (min-width: 1367px) {
+  .navbar {
+    left: calc(12px + 1.5cm);
+    right: calc(12px + 1.5cm);
+  }
+}
+
 .navbar.is-scrolled {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
 }
@@ -433,6 +441,7 @@ h2 {
   display: flex;
   flex-direction: column;
   padding: var(--spazio-4);
+  border-radius: 15px;
   box-shadow: var(--ombra-media);
   overflow-y: auto;
   transform: translateX(0);
@@ -467,9 +476,241 @@ h2 {
   inset: 0;
   width: 100%;
   height: 100%;
+  max-width: none;
   object-fit: cover;
   object-position: center;
   z-index: 0;
+}
+
+/* Default (mobile / tablet / portrait): hero = seconda immagine, niente cinematico */
+.hero-bg--esterno,
+.hero-transizione,
+.hero-brand-finale {
+  display: none;
+}
+
+.hero-bg--interno {
+  display: block;
+  opacity: 1;
+  transform: none;
+}
+
+.hero-transizione {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: #0E2B2C;
+  opacity: 0;
+}
+
+.hero-brand-finale {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  margin: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15em;
+  pointer-events: none;
+  text-align: center;
+  font-family: var(--font-titoli);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--colore-primario);
+  opacity: 0;
+}
+
+.hero-brand-finale-riga {
+  display: block;
+  line-height: 1.05;
+}
+
+.hero-brand-finale-riga:first-child {
+  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  letter-spacing: 0.06em;
+}
+
+.hero-brand-finale-riga:last-child {
+  font-size: clamp(1rem, 2.4vw, 1.85rem);
+  letter-spacing: 0.28em;
+}
+
+/* Cinematico solo ≥1280px in landscape (desktop + tablet/iPad larghi) */
+@media (min-width: 1280px) and (orientation: landscape) {
+  .hero {
+    height: 100dvh;
+    min-height: 100dvh;
+    max-height: 100dvh;
+  }
+
+  .hero-bg--esterno,
+  .hero-bg--interno,
+  .hero-transizione {
+    display: block;
+  }
+
+  .hero-brand-finale {
+    display: flex;
+  }
+
+  .hero-bg--esterno,
+  .hero-bg--interno {
+    transform-origin: 50% 50%;
+    will-change: transform, opacity;
+  }
+
+  /* UI hero rientra dopo il passaggio continuo brand/interno */
+  .hero-inner {
+    opacity: 0;
+    animation: hero-ui-entra 0.85s ease 7.1s 1 forwards;
+  }
+
+  /* Atto A+B: avvicinamento lineare alla porta (leggermente più veloce) */
+  .hero-bg--esterno {
+    animation: hero-esterno-zoom 2.5s linear 1 forwards;
+  }
+
+  /* Atto C+D: interno già in avvicinamento, compare sotto l’overlay e continua */
+  .hero-bg--interno {
+    opacity: 0;
+    transform: scale(1.35);
+    animation: hero-interno-continua 2.8s linear 2.15s 1 forwards;
+  }
+
+  /* Atto C: fondue scura (entra → picco → esce) */
+  .hero-transizione {
+    animation: hero-overlay-transizione 1.2s linear 1.95s 1 forwards;
+  }
+
+  /* Atto E: brand in uscita continua (niente stop), contestuale allo zoom interno */
+  .hero-brand-finale {
+    animation: hero-brand-finale 3.6s linear 3.7s 1 forwards;
+    transform-origin: center center;
+  }
+
+  @keyframes hero-esterno-zoom {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    88% {
+      transform: scale(1.95);
+      opacity: 1;
+    }
+
+    /* Scompare sotto l’overlay mentre entra l’interno */
+    100% {
+      transform: scale(2.05);
+      opacity: 0;
+    }
+  }
+
+  @keyframes hero-interno-continua {
+    0% {
+      opacity: 0;
+      transform: scale(1.35);
+    }
+
+    12% {
+      opacity: 1;
+      transform: scale(1.4);
+    }
+
+    100% {
+      opacity: 1;
+      transform: scale(1.72);
+    }
+  }
+
+  @keyframes hero-overlay-transizione {
+    0% {
+      opacity: 0;
+    }
+
+    35% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes hero-brand-finale {
+
+    /* Scale sempre in aumento (zoom fuori); arriva quasi “sotto” / oltre il frame */
+    0% {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+
+    16% {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+
+    100% {
+      opacity: 0;
+      transform: scale(2.35);
+    }
+  }
+
+  @keyframes hero-ui-entra {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+/* Reduced motion in landscape largo: niente animazione, resta la seconda immagine */
+@media (min-width: 1280px) and (orientation: landscape) and (prefers-reduced-motion: reduce) {
+
+  .hero-bg--esterno,
+  .hero-bg--interno,
+  .hero-transizione,
+  .hero-brand-finale,
+  .hero-inner {
+    animation: none;
+  }
+
+  .hero-bg--esterno,
+  .hero-transizione,
+  .hero-brand-finale {
+    display: none;
+  }
+
+  .hero-bg--interno {
+    display: block;
+    opacity: 1;
+    transform: none;
+  }
+
+  .hero-inner {
+    opacity: 1;
+  }
+}
+
+/* Alone colore-sfondo alla base delle immagini hero: 90% → trasparente */
+.hero::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  height: 42%;
+  pointer-events: none;
+  background: linear-gradient(to top,
+      color-mix(in srgb, var(--colore-sfondo) 100%, transparent) 0%,
+      transparent 100%);
 }
 
 /* Overlay scuro #0E2B2C al 35%: da sinistra, sfuma fino a 3/4 */
@@ -2809,7 +3050,7 @@ h2 {
   .valuta-loco-card--lato .valuta-loco-card-lato-testo {
     margin: 0;
     font-family: "Poppins", sans-serif;
-    font-size: 0.75rem;
+    font-size: calc(0.75rem + 5px);
     font-weight: 700;
     line-height: 1.35;
     color: var(--colore-accento);
@@ -3037,7 +3278,7 @@ h2 {
   .valuta-loco-card--lato .valuta-loco-card-lato-testo {
     margin: 0;
     font-family: "Poppins", sans-serif;
-    font-size: 0.75rem;
+    font-size: calc(0.75rem + 5px);
     font-weight: 700;
     line-height: 1.35;
     color: var(--colore-accento);
@@ -3784,11 +4025,26 @@ h2 {
 }
 
 .contatti-ragione {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   margin: 0 0 var(--spazio-4);
   font-family: var(--font-titoli);
-  font-size: 1.35rem;
+  font-size: calc(1.35rem + 3px);
   font-weight: 400;
   color: var(--colore-primario);
+}
+
+.contatti-ragione>span {
+  /* Allineamento ottico rispetto al logo disegno */
+  transform: translateY(4mm);
+}
+
+.contatti-logo-disegno {
+  display: block;
+  flex-shrink: 0;
+  width: auto;
+  height: 1.85em;
 }
 
 .contatti-lista {
@@ -4219,6 +4475,7 @@ h2 {
 /* Footer 5 colonne: solo desktop e tablet/iPad landscape
    (le laterali vuote bilanciano lo spazio dai bordi viewport) */
 @media (min-width: 1024px) and (orientation: landscape) {
+
   .footer-col--sx,
   .footer-col--dx {
     display: block;

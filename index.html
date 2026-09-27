@@ -75,8 +75,17 @@
 
         <!-- ===== HERO ===== -->
         <section class="hero" id="hero" aria-label="Presentazione">
-            <img src="assets/images/hero-furia.webp" alt="" class="hero-bg" width="1920" height="1080"
-                fetchpriority="high">
+            <img src="assets/images/hero-furia.webp" alt="" class="hero-bg hero-bg--esterno" width="1920"
+                height="1080" fetchpriority="high">
+            <!-- Interno: usato solo nel cinematico ≥1280px -->
+            <img src="assets/images/hero-furia2.webp" alt="" class="hero-bg hero-bg--interno" width="1920" height="1080"
+                loading="eager" decoding="async">
+            <div class="hero-transizione" aria-hidden="true"></div>
+            <!-- Atto E: brand finale (solo cinematico ≥1280px) -->
+            <p class="hero-brand-finale" aria-hidden="true">
+                <span class="hero-brand-finale-riga">FURIA</span>
+                <span class="hero-brand-finale-riga">IMMOBILIARE</span>
+            </p>
 
             <div class="container hero-inner">
 
@@ -862,7 +871,11 @@
 
                 <div class="contatti-top">
                     <div class="contatti-info">
-                        <p class="contatti-ragione">Furia Immobiliare Srls</p>
+                        <p class="contatti-ragione">
+                            <img src="assets/logo-furia-disegno.svg" alt="" class="contatti-logo-disegno" width="48"
+                                height="36">
+                            <span>Furia Immobiliare Srls</span>
+                        </p>
                         <ul class="contatti-lista">
                             <li>
                                 <img src="assets/images/icons/icon-pin.svg" alt="" width="20" height="20">
