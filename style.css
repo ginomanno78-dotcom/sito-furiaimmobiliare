@@ -587,7 +587,7 @@ h2 {
 
   /* Atto E: brand in uscita continua (niente stop), contestuale allo zoom interno */
   .hero-brand-finale {
-    animation: hero-brand-finale 3.6s linear 3.7s 1 forwards;
+    animation: hero-brand-finale 3.6s linear 3.06s 1 forwards;
     transform-origin: center center;
   }
 
@@ -632,7 +632,7 @@ h2 {
     }
 
     35% {
-      opacity: 1;
+      opacity: 0.60;
     }
 
     100% {
@@ -653,9 +653,15 @@ h2 {
       transform: scale(1.05);
     }
 
+    /* Resta visibile più a lungo; fade solo nel tratto finale */
+    76% {
+      opacity: 1;
+      transform: scale(1.85);
+    }
+
     100% {
       opacity: 0;
-      transform: scale(2.35);
+      transform: scale(2.55);
     }
   }
 
@@ -1091,6 +1097,21 @@ h2 {
 @media (min-width: 768px) and (orientation: portrait) {
   .hero-content {
     margin-left: 0;
+  }
+}
+
+/* iPad Pro 13 portrait 1032×1376: payoff/h1/sub/cta +2cm dx, +2cm basso */
+@media (width: 1032px) and (height: 1376px) and (orientation: portrait) {
+  .hero-content {
+    margin-left: 2cm;
+    margin-top: 2cm;
+  }
+}
+
+/* iPad Pro 13 landscape 1376×1032: stesso blocco +1.5cm a destra */
+@media (width: 1376px) and (height: 1032px) and (orientation: landscape) {
+  .hero-content {
+    margin-left: 1.5cm;
   }
 }
 
@@ -2009,7 +2030,16 @@ h2 {
 .vendi-banner {
   width: 100%;
   margin: 0 0 var(--spazio-6);
+  overflow: visible;
+}
+
+/* Wrapper scala allo scroll (solo desktop mouse, via JS) */
+.vendi-banner-scala {
+  width: 100%;
   overflow: hidden;
+  transform-origin: center center;
+  border-radius: 0;
+  will-change: transform;
 }
 
 .vendi-banner-desktop {
@@ -2156,6 +2186,107 @@ h2 {
   font-size: 0.88rem;
   line-height: 1.5;
   color: var(--colore-testo);
+}
+
+/* Card Vendi unita + hover (tutte): scale / foto full / testo su fondo trasparente */
+.vendi-card--unita .vendi-card-box {
+  position: relative;
+  container-type: inline-size;
+  container-name: vendi-unita;
+  background: #242424;
+  border: none;
+  border-radius: 20px;
+  overflow: hidden;
+  /* Lineare: niente cubic-bezier “spring” (evita rimbalzo al mouseout) */
+  transition: transform 0.25s linear, box-shadow 0.25s linear;
+}
+
+.vendi-card--unita .vendi-card-media {
+  position: relative;
+  z-index: 0;
+  border: none;
+  border-radius: 0;
+}
+
+/* Img nascosta: tiene l’altezza iniziale come nel demo */
+.vendi-card--unita .vendi-card-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0;
+  visibility: hidden;
+}
+
+.vendi-card--unita .vendi-card-media-hover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  /* Stessa altezza della media 4/3 — background-image inline in HTML */
+  height: calc(100cqw * 3 / 4);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: height 0.25s linear, opacity 0.25s linear;
+  opacity: 1;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.vendi-card--unita .vendi-card-body {
+  position: relative;
+  z-index: 2;
+  margin-top: 0;
+  background: #242424;
+  /* Al mouseout: ritarda il ritorno dello sfondo dopo che la foto è scesa */
+  transition: background-color 0.15s linear 0.18s;
+}
+
+.vendi-card--unita .vendi-card-body::before,
+.vendi-card--unita .vendi-card-body::after {
+  content: none;
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .vendi-card--unita .vendi-card-box:hover {
+    transform: scale(1.1);
+    box-shadow: 0 30px 18px -8px rgba(0, 0, 0, 0.28);
+    z-index: 3;
+  }
+
+  /* Sfondo grigio sparisce subito, poi parte l’espansione foto */
+  .vendi-card--unita .vendi-card-box:hover .vendi-card-body {
+    background-color: transparent;
+    transition: background-color 0.06s linear 0s;
+  }
+
+  .vendi-card--unita .vendi-card-box:hover .vendi-card-media-hover {
+    height: 100%;
+    opacity: 0.35;
+    transition: height 0.25s linear 0.04s, opacity 0.25s linear 0.04s;
+  }
+}
+
+/* Touch (mobile/tablet): dimensioni card naturali (niente scale).
+   Solo look hover interno: foto a tutta la card + opacità + testi */
+@media not ((hover: hover) and (pointer: fine)) {
+  .vendi-card--unita .vendi-card-box {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .vendi-card--unita .vendi-card-body {
+    background-color: transparent;
+    transition: none;
+  }
+
+  .vendi-card--unita .vendi-card-media-hover {
+    height: 100%;
+    opacity: 0.35;
+    transition: none;
+  }
 }
 
 /* Mobile landscape (tutti i phone, anche larghi): sempre 2 colonne */
@@ -2436,6 +2567,17 @@ h2 {
 
   .vendi-card-body p {
     font-size: 0.82rem;
+  }
+}
+
+/* Desktop mouse: micro-break griglia + gap più largo (aria per scale hover 1.1) */
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+  .vendi-cards {
+    width: calc(100% + 40px);
+    margin-left: -20px;
+    margin-right: -20px;
+    column-gap: clamp(28px, 2.8vw, 44px);
+    row-gap: var(--spazio-5);
   }
 }
 
@@ -2754,9 +2896,86 @@ h2 {
   min-width: 0;
 }
 
+/* Hover card testo (Come / Affidati / Stima): scale + ombra — solo desktop mouse */
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+
+  .valuta-loco-card--come,
+  .valuta-loco-card--lato,
+  .valuta-loco-card--stima-testo {
+    position: relative;
+    z-index: 0;
+    transition: transform 0.4s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+
+  .valuta-loco-card--come::before,
+  .valuta-loco-card--lato::before,
+  .valuta-loco-card--stima-testo::before,
+  .valuta-loco-card--come::after,
+  .valuta-loco-card--lato::after,
+  .valuta-loco-card--stima-testo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    z-index: -1;
+    pointer-events: none;
+    transition: opacity 0.4s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+
+  /* Ombra a riposo (leggera) */
+  .valuta-loco-card--come::before,
+  .valuta-loco-card--lato::before,
+  .valuta-loco-card--stima-testo::before {
+    box-shadow: -2px 2px 8px 2px hsla(0, 0%, 0%, 0.2);
+  }
+
+  /* Ombra hover (più pronunciata, sotto) */
+  .valuta-loco-card--come::after,
+  .valuta-loco-card--lato::after,
+  .valuta-loco-card--stima-testo::after {
+    box-shadow: -28px 28px 22px 10px hsla(0, 0%, 0%, 0.38);
+    opacity: 0;
+  }
+
+  .valuta-loco-card--come:hover,
+  .valuta-loco-card--lato:hover,
+  .valuta-loco-card--stima-testo:hover {
+    z-index: 1;
+    transform: scale(1.1);
+    cursor: pointer;
+  }
+
+  .valuta-loco-card--come:hover::before,
+  .valuta-loco-card--lato:hover::before,
+  .valuta-loco-card--stima-testo:hover::before {
+    opacity: 0;
+  }
+
+  .valuta-loco-card--come:hover::after,
+  .valuta-loco-card--lato:hover::after,
+  .valuta-loco-card--stima-testo:hover::after {
+    opacity: 1;
+  }
+}
+
 .valuta-loco-card-testo {
   min-width: 0;
   flex: 1 1 auto;
+}
+
+/* Wrapper overflow foto stima (pan/zoom desktop) */
+.valuta-loco-card--stima-lato .valuta-loco-card-foto-overflow {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* Caption: nascosta di default; solo desktop mouse */
+.valuta-loco-card-foto-caption {
+  display: none;
 }
 
 /* Icona sopra il titolo, angolo alto sx, colore secondario */
@@ -3369,12 +3588,68 @@ h2 {
     border: 3px solid #8D7A2A;
   }
 
+  .valuta-loco-card--stima-lato .valuta-loco-card-foto-overflow {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+  }
+
   .valuta-loco-card--stima-lato .valuta-loco-card-foto {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center;
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+
+  /* Caption + pan/zoom foto: solo desktop mouse */
+  @media (hover: hover) and (pointer: fine) {
+    .valuta-loco-card--stima-lato {
+      cursor: pointer;
+    }
+
+    .valuta-loco-card-foto-caption {
+      display: block;
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      z-index: 2;
+      width: 100%;
+      margin: 0;
+      padding: 10px 14px;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.6) 100%);
+      color: #fff;
+      text-align: center;
+      text-shadow: 0 1px 1px #000;
+      pointer-events: none;
+      backface-visibility: hidden;
+      transform: translateY(100%);
+      transition: transform 450ms ease-out;
+    }
+
+    .valuta-loco-card-foto-caption h4 {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .valuta-loco-card--stima-lato:hover .valuta-loco-card-foto-caption {
+      transform: translateY(0);
+    }
+
+    .valuta-loco-card--stima-lato .valuta-loco-card-foto {
+      transition: transform 0.4s linear;
+    }
+
+    .valuta-loco-card--stima-lato.is-foto-reset .valuta-loco-card-foto {
+      transition: transform 1s ease-out;
+    }
   }
 
   .valuta-loco-card--lato .valuta-loco-card-lato-testo {

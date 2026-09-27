@@ -75,8 +75,8 @@
 
         <!-- ===== HERO ===== -->
         <section class="hero" id="hero" aria-label="Presentazione">
-            <img src="assets/images/hero-furia.webp" alt="" class="hero-bg hero-bg--esterno" width="1920"
-                height="1080" fetchpriority="high">
+            <img src="assets/images/hero-furia.webp" alt="" class="hero-bg hero-bg--esterno" width="1920" height="1080"
+                fetchpriority="high">
             <!-- Interno: usato solo nel cinematico ≥1280px -->
             <img src="assets/images/hero-furia2.webp" alt="" class="hero-bg hero-bg--interno" width="1920" height="1080"
                 loading="eager" decoding="async">
@@ -239,9 +239,11 @@
             </div>
 
             <!-- Banner: desktop/tablet = composito; solo mobile portrait = testo + foto -->
-            <div class="vendi-banner">
-                <img class="vendi-banner-desktop" src="assets/images/banner-vendi-casa.webp"
-                    alt="Vendi casa senza pensieri, affidati a noi" width="1920" height="700" loading="lazy">
+            <div class="vendi-banner" id="vendiBannerTrack">
+                <div class="vendi-banner-scala" id="vendiBannerScala">
+                    <img class="vendi-banner-desktop" src="assets/images/banner-vendi-casa.webp"
+                        alt="Vendi casa senza pensieri, affidati a noi" width="1920" height="700" loading="lazy">
+                </div>
 
                 <div class="vendi-banner-mobile">
                     <img class="vendi-banner-testo" src="assets/images/banner-vendi-testo-mobile.webp"
@@ -262,12 +264,14 @@
                 </p>
 
                 <div class="vendi-cards">
-                    <article class="vendi-card">
+                    <article class="vendi-card vendi-card--unita">
                         <div class="vendi-card-box">
                             <div class="vendi-card-media">
                                 <img src="assets/images/vendi/Valutazione-dati.webp" alt="" width="400" height="280"
                                     loading="lazy">
                             </div>
+                            <div class="vendi-card-media-hover" aria-hidden="true"
+                                style="background-image: url('assets/images/vendi/Valutazione-dati.webp')"></div>
                             <div class="vendi-card-body">
                                 <h3 class="vendi-card-titolo">Valutazione dati</h3>
                                 <p>Ti supporteremo su tutte le decisioni durante l'intero processo di vendita. La nostra
@@ -276,12 +280,14 @@
                         </div>
                     </article>
 
-                    <article class="vendi-card">
+                    <article class="vendi-card vendi-card--unita">
                         <div class="vendi-card-box">
                             <div class="vendi-card-media">
                                 <img src="assets/images/vendi/Visibilita-su-misura.webp" alt="" width="400" height="280"
                                     loading="lazy">
                             </div>
+                            <div class="vendi-card-media-hover" aria-hidden="true"
+                                style="background-image: url('assets/images/vendi/Visibilita-su-misura.webp')"></div>
                             <div class="vendi-card-body">
                                 <h3 class="vendi-card-titolo">Visibilità su misura</h3>
                                 <p>Apprezziamo l'unicità della tua proprietà e, grazie ad attività di marketing, le
@@ -292,12 +298,14 @@
                         </div>
                     </article>
 
-                    <article class="vendi-card">
+                    <article class="vendi-card vendi-card--unita">
                         <div class="vendi-card-box">
                             <div class="vendi-card-media">
                                 <img src="assets/images/vendi/Per-ogni-cliente.webp" alt="" width="400" height="280"
                                     loading="lazy">
                             </div>
+                            <div class="vendi-card-media-hover" aria-hidden="true"
+                                style="background-image: url('assets/images/vendi/Per-ogni-cliente.webp')"></div>
                             <div class="vendi-card-body">
                                 <h3 class="vendi-card-titolo">Per ogni cliente</h3>
                                 <p>Un servizio pensato per privati, investitori immobiliari e imprese di costruzione:
@@ -309,16 +317,18 @@
                         </div>
                     </article>
 
-                    <article class="vendi-card">
+                    <article class="vendi-card vendi-card--unita">
                         <div class="vendi-card-box">
                             <div class="vendi-card-media">
                                 <img src="assets/images/vendi/Consulenza-360.webp" alt="" width="400" height="280"
                                     loading="lazy">
                             </div>
+                            <div class="vendi-card-media-hover" aria-hidden="true"
+                                style="background-image: url('assets/images/vendi/Consulenza-360.webp')"></div>
                             <div class="vendi-card-body">
                                 <h3 class="vendi-card-titolo">Consulenza a 360°</h3>
-                                <p>Il servizio offerto al cliente prevede consulenze tecniche e professionali a 360°, un
-                                    sito web moderno con tutte le offerte immobiliari residenziali e commerciali, con
+                                <p>Il servizio prevede consulenze tecniche e professionali a 360°, un
+                                    sito web moderno con tutte le offerte immobiliari, con
                                     informazioni chiare su ogni aspetto tecnico dell'immobile.</p>
                             </div>
                         </div>
@@ -505,8 +515,14 @@
                             </div>
                             <div class="valuta-loco-card-riga valuta-loco-card-riga--stima">
                                 <article class="valuta-loco-card valuta-loco-card--stima valuta-loco-card--stima-lato">
-                                    <img class="valuta-loco-card-foto" src="assets/images/foto-stima.webp"
-                                        alt="Sopralluogo e stima dell’immobile" width="800" height="600" loading="lazy">
+                                    <div class="valuta-loco-card-foto-overflow">
+                                        <div class="valuta-loco-card-foto-caption">
+                                            <h4>Sopralluogo</h4>
+                                        </div>
+                                        <img class="valuta-loco-card-foto" src="assets/images/foto-stima.webp"
+                                            alt="Sopralluogo e stima dell’immobile" width="800" height="600"
+                                            loading="lazy">
+                                    </div>
                                 </article>
                                 <article class="valuta-loco-card valuta-loco-card--stima valuta-loco-card--stima-testo">
                                     <div class="valuta-loco-card-testo">

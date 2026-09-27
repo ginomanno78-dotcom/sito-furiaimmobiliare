@@ -17,6 +17,62 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("scroll", onScrollNavbar, { passive: true });
   onScrollNavbar();
 
+  /* === Banner Vendi: scala allo scroll (equivalente SchedaScalaScroll / Motion) === */
+  const vendiTrack = document.getElementById("vendiBannerTrack");
+  const vendiScala = document.getElementById("vendiBannerScala");
+  if (vendiTrack && vendiScala) {
+    const mqDesktopMouse = window.matchMedia(
+      "(min-width: 1024px) and (hover: hover) and (pointer: fine)"
+    );
+    const mqRiduciMoto = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    // Interpola come useTransform(progress, [0, 0.88, 1], valori)
+    const mappaProgresso = (t, stop, valori) => {
+      const p = Math.min(1, Math.max(0, t));
+      for (let i = 0; i < stop.length - 1; i++) {
+        if (p >= stop[i] && p <= stop[i + 1]) {
+          const locale = (p - stop[i]) / (stop[i + 1] - stop[i] || 1);
+          return valori[i] + locale * (valori[i + 1] - valori[i]);
+        }
+      }
+      return valori[valori.length - 1];
+    };
+
+    // offset Motion: ["start end", "center center"]
+    const progressoScroll = () => {
+      const rect = vendiTrack.getBoundingClientRect();
+      const vh = window.innerHeight || 1;
+      const topA0 = vh;
+      const topA1 = vh / 2 - rect.height / 2;
+      const denom = topA0 - topA1;
+      if (Math.abs(denom) < 0.001) return 1;
+      return (topA0 - rect.top) / denom;
+    };
+
+    const resetScala = () => {
+      vendiScala.style.transform = "scale(1)";
+      vendiScala.style.borderRadius = "0px";
+    };
+
+    const aggiornaScala = () => {
+      if (!mqDesktopMouse.matches || mqRiduciMoto.matches) {
+        resetScala();
+        return;
+      }
+      const p = progressoScroll();
+      const scale = mappaProgresso(p, [0, 0.88, 1], [0.78, 1, 1]);
+      const radius = mappaProgresso(p, [0, 0.88, 1], [20, 0, 0]);
+      vendiScala.style.transform = `scale(${scale})`;
+      vendiScala.style.borderRadius = `${radius}px`;
+    };
+
+    window.addEventListener("scroll", aggiornaScala, { passive: true });
+    window.addEventListener("resize", aggiornaScala, { passive: true });
+    mqDesktopMouse.addEventListener("change", aggiornaScala);
+    mqRiduciMoto.addEventListener("change", aggiornaScala);
+    aggiornaScala();
+  }
+
   /* === Drawer mobile === */
   const apriDrawer = () => {
     if (!drawer || !overlay || !hamburger) return;
@@ -1811,5 +1867,36 @@ document.addEventListener("DOMContentLoaded", () => {
     if (caricaImmobile(idIniziale, { replace: true })) {
       /* ok */
     }
+  }
+
+  /* === Foto stima valuta-loco: pan/zoom al mouse (solo desktop) === */
+  const cardFotoStima = document.querySelector(".valuta-loco-card--stima-lato");
+  const imgFotoStima = cardFotoStima
+    ? cardFotoStima.querySelector(".valuta-loco-card-foto")
+    : null;
+  if (cardFotoStima && imgFotoStima) {
+    const mqFotoStima = window.matchMedia(
+      "(min-width: 1024px) and (hover: hover) and (pointer: fine)"
+    );
+    const mqRiduciMotoFoto = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    const resetFotoStima = () => {
+      cardFotoStima.classList.add("is-foto-reset");
+      imgFotoStima.style.transform = "translate(0, 0) scale(1)";
+    };
+
+    cardFotoStima.addEventListener("mousemove", (e) => {
+      if (!mqFotoStima.matches || mqRiduciMotoFoto.matches) return;
+      cardFotoStima.classList.remove("is-foto-reset");
+      const rect = cardFotoStima.getBoundingClientRect();
+      const x = Math.floor(e.clientX - rect.left - rect.width / 2);
+      const y = Math.floor(e.clientY - rect.top - rect.height / 2);
+      imgFotoStima.style.transform = `translate(${x}px, ${y}px) scale(2)`;
+    });
+
+    cardFotoStima.addEventListener("mouseleave", () => {
+      if (!mqFotoStima.matches || mqRiduciMotoFoto.matches) return;
+      resetFotoStima();
+    });
   }
 });
