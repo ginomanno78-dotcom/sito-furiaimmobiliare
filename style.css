@@ -894,14 +894,14 @@ h2 {
 
 .hero-payoff {
   margin: 0 0 var(--spazio-3);
-  color: #aa9333;
+  color: var(--colore-secondario);
   font-family: var(--font-corpo);
-  font-size: calc(1.05rem + 7px);
+  font-size: calc(1.05rem + 2px);
   font-weight: 700;
   letter-spacing: 0.01em;
   word-spacing: -0.05em;
   text-transform: uppercase;
-  text-shadow: 1px 1px 1px #000;
+  text-shadow: none;
 }
 
 .hero-payoff-chiavi {
@@ -2092,14 +2092,18 @@ h2 {
 /* Titolo subito sopra la descrizione */
 .vendi-card-titolo {
   margin: 0 0 var(--spazio-2);
-  font-family: var(--font-corpo);
-  font-size: calc(0.95rem + 3px);
-  font-weight: 400;
+  font-family: "Cardo", serif;
+  font-size: calc(0.95rem + 7px);
+  font-weight: 700;
   letter-spacing: 0.04em;
-  text-transform: uppercase;
+  text-transform: lowercase;
   text-align: left;
   color: var(--colore-primario);
   line-height: 1.3;
+}
+
+.vendi-card-titolo::first-letter {
+  text-transform: uppercase;
 }
 
 .vendi-card-box {
@@ -2197,6 +2201,7 @@ h2 {
   border: none;
   border-radius: 20px;
   overflow: hidden;
+  box-shadow: 0 12px 20px -4px rgba(0, 0, 0, 0.6);
   /* Lineare: niente cubic-bezier “spring” (evita rimbalzo al mouseout) */
   transition: transform 0.25s linear, box-shadow 0.25s linear;
 }
@@ -2252,7 +2257,7 @@ h2 {
 @media (hover: hover) and (pointer: fine) {
   .vendi-card--unita .vendi-card-box:hover {
     transform: scale(1.1);
-    box-shadow: 0 30px 18px -8px rgba(0, 0, 0, 0.28);
+    box-shadow: 0 30px 18px -8px rgba(0, 0, 0, 1);
     z-index: 3;
   }
 
@@ -2264,17 +2269,37 @@ h2 {
 
   .vendi-card--unita .vendi-card-box:hover .vendi-card-media-hover {
     height: 100%;
-    opacity: 0.35;
+    opacity: 1;
     transition: height 0.25s linear 0.04s, opacity 0.25s linear 0.04s;
+  }
+
+  /* Gradiente all’hover (stesso principio touch: 80→60→40→20→0) */
+  .vendi-card--unita .vendi-card-box::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0;
+    background: linear-gradient(to top,
+        rgba(0, 0, 0, 0.80) 0%,
+        rgba(0, 0, 0, 0.60) 33%,
+        rgba(0, 0, 0, 0.40) 66%,
+        rgba(0, 0, 0, 0.20) 99%,
+        transparent 100%);
+    transition: opacity 0.25s linear;
+  }
+
+  .vendi-card--unita .vendi-card-box:hover::after {
+    opacity: 1;
+    transition: opacity 0.25s linear 0.04s;
   }
 }
 
-/* Touch (mobile/tablet): dimensioni card naturali (niente scale).
-   Solo look hover interno: foto a tutta la card + opacità + testi */
+/* Touch (mobile/tablet): foto piena; opacità solo dal basso ai 3/4, sfumata */
 @media not ((hover: hover) and (pointer: fine)) {
   .vendi-card--unita .vendi-card-box {
     transform: none;
-    box-shadow: none;
   }
 
   .vendi-card--unita .vendi-card-body {
@@ -2284,8 +2309,28 @@ h2 {
 
   .vendi-card--unita .vendi-card-media-hover {
     height: 100%;
-    opacity: 0.35;
+    opacity: 1;
     transition: none;
+  }
+
+  /* Gradiente: scuro dietro i testi → sfuma fino a ~3/4 foto */
+  .vendi-card--unita .vendi-card-box::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(to top,
+        rgba(0, 0, 0, 0.80) 0%,
+        rgba(0, 0, 0, 0.60) 33%,
+        rgba(0, 0, 0, 0.40) 66%,
+        rgba(0, 0, 0, 0.20) 99%,
+        transparent 100%);
+  }
+
+  /* Solo card 4 (Consulenza 360°), touch: crop 3mm a sinistra */
+  .vendi-cards .vendi-card--unita:nth-child(4) .vendi-card-media-hover {
+    background-position: calc(50% + 3mm) center;
   }
 }
 
