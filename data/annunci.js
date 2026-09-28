@@ -251,6 +251,113 @@ const annunci = {
         }
       ]
     },
+    /* Palazzo — Francolise, SS7 km 187 */
+    {
+      id: "palazzo-via-appia-francolise",
+      collegabile: true,
+      placeholder: false,
+      nome: "Francolise",
+      tipologia: "Palazzo",
+      contratto: "Vendita",
+      via: "SS7, km 187",
+      angoloCon: "",
+      categoriaAnnuncio: "",
+      comune: "Francolise (CE)",
+      statoConservazione: "Da ristrutturare",
+      annoCostruzione: 1950,
+      prezzo: 233000,
+      mq: 638,
+      locali: 10,
+      camere: null,
+      bagni: 2,
+      piano: "Su 2 piani",
+      pianiEdificio: 2,
+      ascensore: false,
+      cucina: "",
+      balconi: 1,
+      arredato: null,
+      pertinenze: "Terrazzo, terreno",
+      riscaldamento: "",
+      classeEnergetica: "G",
+      descrizione:
+        "Immobile da ristrutturare, ubicato in ambito rurale a Francolise (SS7, km 187), sviluppato su due piani per una superficie complessiva di 638 mq e composto da 10 locali. La posizione garantisce un contesto tranquillo ma ben servito, con supermercati, scuole, banche, farmacia e stazione ferroviaria raggiungibili in pochi minuti, assicurando funzionalità e accessibilità.",
+      cover:
+        "assets/images/annunci/vendita/palazzo-via-appia-francolise/foto-01.webp",
+      coverHover:
+        "assets/images/annunci/vendita/palazzo-via-appia-francolise/foto-03.webp",
+      planimetria:
+        "assets/images/annunci/vendita/palazzo-via-appia-francolise/planimetria1.webp",
+      planimetrie: [
+        "assets/images/annunci/vendita/palazzo-via-appia-francolise/planimetria1.webp",
+        "assets/images/annunci/vendita/palazzo-via-appia-francolise/planimetria2.webp"
+      ],
+      galleria: [
+        "assets/images/annunci/vendita/palazzo-via-appia-francolise/foto-01.webp",
+        "assets/images/annunci/vendita/palazzo-via-appia-francolise/foto-02.webp",
+        "assets/images/annunci/vendita/palazzo-via-appia-francolise/foto-03.webp",
+        "assets/images/annunci/vendita/palazzo-via-appia-francolise/foto-04.webp",
+        "assets/images/annunci/vendita/palazzo-via-appia-francolise/foto-05.webp",
+        "assets/images/annunci/vendita/palazzo-via-appia-francolise/foto-06.webp",
+        "assets/images/annunci/vendita/palazzo-via-appia-francolise/foto-07.webp",
+        "assets/images/annunci/vendita/palazzo-via-appia-francolise/foto-08.webp",
+        "assets/images/annunci/vendita/palazzo-via-appia-francolise/foto-09.webp",
+        "assets/images/annunci/vendita/palazzo-via-appia-francolise/foto-10.webp",
+        "assets/images/annunci/vendita/palazzo-via-appia-francolise/foto-11.webp",
+        "assets/images/annunci/vendita/palazzo-via-appia-francolise/foto-12.webp",
+        "assets/images/annunci/vendita/palazzo-via-appia-francolise/foto-13.webp",
+        "assets/images/annunci/vendita/palazzo-via-appia-francolise/foto-14.webp",
+        "assets/images/annunci/vendita/palazzo-via-appia-francolise/foto-15.webp",
+        "assets/images/annunci/vendita/palazzo-via-appia-francolise/foto-16.webp",
+        "assets/images/annunci/vendita/palazzo-via-appia-francolise/foto-17.webp",
+        "assets/images/annunci/vendita/palazzo-via-appia-francolise/foto-18.webp"
+      ],
+      /* Dettaglio superfici (come Palazzo Santa Maria) */
+      unita: [
+        {
+          titolo: "Terreno",
+          piano: "Piano terra",
+          superficie: "1.607 m²",
+          tipoSuperficie: "Accessoria",
+          /* Prova evidenziazione in scheda */
+          inEvidenza: true
+        },
+        {
+          titolo: "Terrazzo",
+          piano: "Esterno",
+          superficie: "55 m²",
+          tipoSuperficie: "Accessoria"
+        }
+      ],
+      /* Servizi nell’area (da report, raggio ~2 km) */
+      dintorniNota: "Servizi raggiungibili in pochi minuti (entro circa 2 km).",
+      dintorni: [
+        {
+          voce: "Stazione ferroviaria",
+          dettaglio: "entro 2 km",
+          icona: "assets/images/icons/icon-pin.svg"
+        },
+        {
+          voce: "Supermercati",
+          dettaglio: "Eurospin e altri entro 2 km",
+          icona: "assets/images/icons/icon-commerciale.svg"
+        },
+        {
+          voce: "Scuole",
+          dettaglio: "entro 2 km",
+          icona: "assets/images/icons/icon-cottage.svg"
+        },
+        {
+          voce: "Banche",
+          dettaglio: "entro 2 km",
+          icona: "assets/images/icons/icon-chart-no-axes-combined.svg"
+        },
+        {
+          voce: "Farmacie",
+          dettaglio: "entro 2 km",
+          icona: "assets/images/icons/icon-Checkup-Diagnostic.svg"
+        }
+      ]
+    },
     /* Card demo — usate solo se MOSTRA_CARD_DEMO === true */
     {
       id: "demo-vendita-01",

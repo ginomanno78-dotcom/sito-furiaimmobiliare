@@ -5262,6 +5262,127 @@ h2 {
   background: var(--colore-secondario);
 }
 
+/* Prova: box unità in evidenza (es. terreno Francolise) */
+.immobile-unita-box--evidenza {
+  border: 2px solid var(--colore-primario);
+  box-shadow: 0 0 0 1px rgba(207, 181, 59, 0.28);
+  background: linear-gradient(
+    160deg,
+    rgba(207, 181, 59, 0.12) 0%,
+    var(--colore-secondario) 55%
+  );
+}
+
+.immobile-unita-badge {
+  margin: 0 0 6px;
+  font-family: var(--font-corpo);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--colore-primario);
+}
+
+.immobile-unita-box--evidenza h3 {
+  color: var(--colore-primario);
+}
+
+.immobile-unita-box--evidenza dd {
+  font-weight: 600;
+}
+
+/* Servizi nei dintorni */
+.immobile-dintorni {
+  margin-top: var(--spazio-5);
+}
+
+.immobile-dintorni[hidden] {
+  display: none;
+}
+
+.immobile-dintorni h2 {
+  margin: 0 0 var(--spazio-2);
+  font-family: var(--font-titoli);
+  font-size: 1.5rem;
+  color: var(--colore-primario);
+}
+
+.immobile-dintorni-nota {
+  margin: 0 0 var(--spazio-3);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--colore-testo-muto);
+}
+
+.immobile-dintorni-nota[hidden] {
+  display: none;
+}
+
+.immobile-dintorni-lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spazio-2);
+}
+
+.immobile-dintorni-voce {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: none;
+  border-radius: var(--raggio-md);
+  background: var(--colore-primario);
+}
+
+.immobile-dintorni-icona {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  background-color: var(--colore-sfondo);
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+}
+
+.immobile-dintorni-testo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.immobile-dintorni-nome {
+  font-family: var(--font-corpo);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--colore-sfondo);
+}
+
+.immobile-dintorni-dettaglio {
+  font-size: 0.82rem;
+  color: var(--colore-sfondo);
+  opacity: 0.85;
+}
+
+@media (min-width: 768px) {
+  .immobile-dintorni-lista {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .immobile-dintorni-lista {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 .immobile-unita-box h3 {
   margin: 0 0 var(--spazio-2);
   font-family: var(--font-titoli);

@@ -976,6 +976,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const lightboxNext = document.getElementById("immobileLightboxNext");
     const elUnitaSezione = document.getElementById("immobileUnitaSezione");
     const elUnitaGriglia = document.getElementById("immobileUnitaGriglia");
+    const elDintorniSezione = document.getElementById("immobileDintorniSezione");
+    const elDintorniLista = document.getElementById("immobileDintorniLista");
+    const elDintorniNota = document.getElementById("immobileDintorniNota");
 
     /* Stato corrente (aggiornato senza reload) */
     const stato = {
@@ -1610,7 +1613,50 @@ document.addEventListener("DOMContentLoaded", () => {
             ["Sup. commerciale", u.superficieCommerciale]
           ].filter(([, v]) => v != null && v !== "");
           const dl = righe.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
-          return `<article class="immobile-unita-box"><h3>${u.titolo || "Unità"}</h3><dl>${dl}</dl></article>`;
+          const evidenza = u.inEvidenza === true;
+          const cls = evidenza
+            ? "immobile-unita-box immobile-unita-box--evidenza"
+            : "immobile-unita-box";
+          const badge = evidenza
+            ? `<p class="immobile-unita-badge">In evidenza</p>`
+            : "";
+          return `<article class="${cls}">${badge}<h3>${u.titolo || "Unità"}</h3><dl>${dl}</dl></article>`;
+        })
+        .join("");
+    };
+
+    const aggiornaDintorni = () => {
+      const annuncio = stato.annuncio;
+      if (!elDintorniSezione || !elDintorniLista) return;
+      const lista = Array.isArray(annuncio && annuncio.dintorni) ? annuncio.dintorni : [];
+      if (!lista.length) {
+        elDintorniSezione.hidden = true;
+        elDintorniLista.innerHTML = "";
+        if (elDintorniNota) elDintorniNota.textContent = "";
+        return;
+      }
+
+      elDintorniSezione.hidden = false;
+      if (elDintorniNota) {
+        elDintorniNota.textContent = annuncio.dintorniNota || "";
+        elDintorniNota.hidden = !annuncio.dintorniNota;
+      }
+      elDintorniLista.innerHTML = lista
+        .map((voce) => {
+          if (typeof voce === "string") {
+            return `<li class="immobile-dintorni-voce"><span class="immobile-dintorni-nome">${voce}</span></li>`;
+          }
+          const nome = voce.voce || "";
+          const det = voce.dettaglio || "";
+          const icona = voce.icona || "assets/images/icons/icon-pin.svg";
+          const stileMask = `-webkit-mask-image:url('${icona}');mask-image:url('${icona}')`;
+          return `<li class="immobile-dintorni-voce">
+            <span class="immobile-dintorni-icona" style="${stileMask}" aria-hidden="true"></span>
+            <span class="immobile-dintorni-testo">
+              <span class="immobile-dintorni-nome">${nome}</span>
+              ${det ? `<span class="immobile-dintorni-dettaglio">${det}</span>` : ""}
+            </span>
+          </li>`;
         })
         .join("");
     };
@@ -1665,6 +1711,7 @@ document.addEventListener("DOMContentLoaded", () => {
       aggiornaGalleria();
       aggiornaSchedaTecnica();
       aggiornaUnita();
+      aggiornaDintorni();
     };
 
     const mostraErroreImmobile = () => {
