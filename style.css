@@ -1933,8 +1933,7 @@ h2 {
 }
 
 /* Copy editoriale Vendi: headline + supporto, staccato dal bordo, niente troncatura */
-.vendi-intro,
-.vendi-tagline {
+.vendi-intro {
   width: 100%;
   max-width: min(36rem, 100%);
   margin: 0 0 var(--spazio-5) auto;
@@ -1944,12 +1943,16 @@ h2 {
   text-align: right;
 }
 
+/* Tagline post-banner: Cardo Bold, centrata, grande, 3 righe a tutta colonna */
 .vendi-tagline {
-  margin-bottom: var(--spazio-6);
-  margin-left: 0;
-  margin-right: auto;
+  width: 100%;
+  max-width: none;
+  margin: 0 0 var(--spazio-6);
   padding-inline: 0;
-  text-align: left;
+  box-sizing: border-box;
+  font-family: var(--font-titoli);
+  font-weight: 700;
+  text-align: center;
 }
 
 .vendi-intro-riga,
@@ -1972,8 +1975,7 @@ h2 {
 }
 
 /* Aria tra headline e supporto */
-.vendi-copy-lead+.vendi-intro-riga:not(.vendi-copy-lead),
-.vendi-copy-lead+.vendi-tagline-riga:not(.vendi-copy-lead) {
+.vendi-copy-lead+.vendi-intro-riga:not(.vendi-copy-lead) {
   margin-top: 0.65em;
 }
 
@@ -1998,28 +2000,11 @@ h2 {
   color: var(--colore-testo-muto);
 }
 
-/* Tagline (prime 3 righe): Poppins Medium, +7px, colore bordo */
-.vendi-tagline-riga:not(.vendi-tagline-chiusura) {
-  font-family: var(--font-corpo);
-  font-size: clamp(calc(0.95rem + 7px), calc(1.5vw + 7px), calc(1.12rem + 7px));
-  font-weight: 500;
-  line-height: 1.25;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--colore-bordo);
-}
-
-/* Prima riga tagline: colore testo */
-.vendi-tagline-riga:first-child {
-  color: var(--colore-testo-muto);
-}
-
-/* Chiusura tagline: Poppins Medium */
-.vendi-tagline-chiusura {
-  margin-top: 0.55em;
-  font-family: var(--font-corpo);
-  font-size: clamp(1.15rem, 2.2vw, 1.55rem);
-  font-weight: 500;
+/* Tagline: tutte le righe Cardo Bold, grandi, colore testo */
+.vendi-tagline-riga {
+  font-family: var(--font-titoli);
+  font-size: clamp(1.35rem, 3.2vw, 2.25rem);
+  font-weight: 700;
   line-height: 1.35;
   letter-spacing: 0.01em;
   text-transform: none;
@@ -2565,11 +2550,12 @@ h2 {
 
   .container,
   .vendi-cards,
-  .servizi-intro,
+  .chi-siamo-intro,
   .servizi-accordion,
   .valuta-loco,
   .sezione-vendi,
   .sezione-servizi,
+  .sezione-chi-siamo,
   .sezione-valuta {
     max-width: 100%;
     min-width: 0;
@@ -2577,8 +2563,8 @@ h2 {
 
   /* Grid items: evita min-width:auto che spinge oltre il viewport */
   .vendi-card,
-  .servizi-foto,
-  .servizi-bio,
+  .chi-siamo-foto,
+  .chi-siamo-bio,
   .servizi-item {
     min-width: 0;
     max-width: 100%;
@@ -2587,7 +2573,7 @@ h2 {
   .servizi-toggle-titolo,
   .servizi-voce-titolo,
   .servizi-voce-testo,
-  .servizi-bio-testo,
+  .chi-siamo-bio-testo,
   .vendi-card-titolo,
   .vendi-card-body p {
     overflow-wrap: anywhere;
@@ -3891,92 +3877,20 @@ h2 {
   background: var(--colore-sfondo);
 }
 
-.servizi-intro {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--spazio-5);
-  margin-bottom: var(--spazio-6);
-  align-items: start;
-}
-
-.servizi-foto {
-  position: relative;
-  isolation: isolate;
-  margin: 0;
-  width: 100%;
-  overflow: visible;
-  border-radius: var(--raggio-md);
-  border: 1px solid #aa9333;
-  box-sizing: border-box;
-}
-
-/* Alone secondario dietro la foto — alone leggero, non a tutta pagina */
-.servizi-foto::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  top: -2%;
-  bottom: -3%;
-  left: -4%;
-  right: -4%;
-  background: var(--colore-secondario);
-  border-radius: 0;
-  filter: blur(36px);
-  opacity: 0.8;
-  pointer-events: none;
-}
-
-/* Mobile portrait: alone più esteso solo sotto */
-@media (max-width: 767px) and (orientation: portrait) {
-  .servizi-foto::before {
-    bottom: -12%;
-  }
-}
-
-.servizi-foto img {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-  object-position: center;
-  border-radius: var(--raggio-md);
-}
-
-.servizi-bio-nome {
-  margin: 0 0 var(--spazio-2);
-  font-family: var(--font-titoli);
-  font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+/* Prefazione breve prima delle card overview */
+.servizi-prefazione {
+  margin: calc(var(--spazio-3) * -1) 0 var(--spazio-5);
+  max-width: 40rem;
+  font-family: var(--font-corpo);
+  font-size: clamp(0.95rem, 1.6vw, 1.08rem);
   font-weight: 400;
-  color: #aa9333;
-}
-
-.servizi-bio-ruolo {
-  margin: 0 0 var(--spazio-4);
-  font-size: 0.95rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  line-height: 1.55;
   color: var(--colore-testo);
 }
 
-.servizi-bio-testo {
-  margin: 0 0 var(--spazio-3);
-  font-size: 1rem;
-  line-height: 1.65;
-  color: var(--colore-testo);
-  text-align: justify;
-}
-
-/* Mobile portrait: bio allineata a sinistra (non giustificata) */
-@media (max-width: 767px) and (orientation: portrait) {
-  .servizi-bio-testo {
-    text-align: left;
-  }
-}
-
-.servizi-bio-testo:last-child {
-  margin-bottom: 0;
+/* Spazio tra le card overview e l'accordion dettaglio */
+.sezione-servizi .vendi-cards {
+  margin-bottom: var(--spazio-6);
 }
 
 .servizi-accordion {
@@ -4115,83 +4029,9 @@ h2 {
     padding: var(--spazio-8) 0;
   }
 
-  /* Desktop: foto e bio affiancate, allineate in alto */
-  .servizi-intro {
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-    gap: var(--spazio-6);
-    align-items: start;
-  }
-
-  /* Solo foto: −5%; bio invariata nella sua colonna */
-  .servizi-foto {
-    width: 95%;
-    max-width: 95%;
-    justify-self: start;
-  }
-
-  /* Bio 3mm più in alto */
-  .servizi-bio {
-    margin-top: -3mm;
-  }
-
   .servizi-icona {
     width: 48px;
     height: 48px;
-  }
-}
-
-/* Tablet / iPad landscape sotto 1150px: bio sempre sotto la foto */
-@media (max-width: 1149px) and (orientation: landscape) {
-  .servizi-intro {
-    grid-template-columns: 1fr;
-    align-items: start;
-    justify-items: start;
-    gap: var(--spazio-4);
-  }
-
-  .servizi-foto {
-    width: min(518px, 60.5vw);
-    max-width: 100%;
-    justify-self: start;
-  }
-
-  .servizi-foto img {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-  }
-
-  .servizi-bio {
-    width: 100%;
-  }
-}
-
-/* Tablet / iPad / ribelli portrait (Tab S4, Duo, M10, OnePlus Pad, A7/A9, S10 FE):
-   foto mai a tutta pagina — ridotta di 1/4 (75%), alto a sx, bio sotto */
-@media (min-width: 520px) and (max-width: 1366px) and (orientation: portrait) {
-  .servizi-intro {
-    grid-template-columns: 1fr;
-    align-items: start;
-    justify-items: start;
-    gap: var(--spazio-4);
-  }
-
-  .servizi-foto {
-    width: 75%;
-    max-width: 75%;
-    justify-self: start;
-  }
-
-  .servizi-foto img {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-  }
-
-  .servizi-bio {
-    width: 100%;
   }
 }
 
@@ -4218,6 +4058,179 @@ h2 {
   .servizi-item {
     min-width: 0;
     order: unset;
+  }
+}
+
+/* ===== SEZIONE CHI SIAMO ===== */
+.sezione-chi-siamo {
+  padding: var(--spazio-7) 0 var(--spazio-8);
+  background: var(--colore-sfondo);
+}
+
+.chi-siamo-intro {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spazio-5);
+  align-items: start;
+}
+
+.chi-siamo-foto {
+  position: relative;
+  isolation: isolate;
+  margin: 0;
+  width: 100%;
+  overflow: visible;
+  border-radius: var(--raggio-md);
+  border: 1px solid #aa9333;
+  box-sizing: border-box;
+}
+
+/* Alone secondario dietro la foto — alone leggero, non a tutta pagina */
+.chi-siamo-foto::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -2%;
+  bottom: -3%;
+  left: -4%;
+  right: -4%;
+  background: var(--colore-secondario);
+  border-radius: 0;
+  filter: blur(36px);
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+/* Mobile portrait: alone più esteso solo sotto */
+@media (max-width: 767px) and (orientation: portrait) {
+  .chi-siamo-foto::before {
+    bottom: -12%;
+  }
+}
+
+.chi-siamo-foto img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  object-position: center;
+  border-radius: var(--raggio-md);
+}
+
+.chi-siamo-bio-nome {
+  margin: 0 0 var(--spazio-2);
+  font-family: var(--font-titoli);
+  font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+  font-weight: 400;
+  color: #aa9333;
+}
+
+.chi-siamo-bio-ruolo {
+  margin: 0 0 var(--spazio-4);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--colore-testo);
+}
+
+.chi-siamo-bio-testo {
+  margin: 0 0 var(--spazio-3);
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--colore-testo);
+  text-align: justify;
+}
+
+/* Mobile portrait: bio allineata a sinistra (non giustificata) */
+@media (max-width: 767px) and (orientation: portrait) {
+  .chi-siamo-bio-testo {
+    text-align: left;
+  }
+}
+
+.chi-siamo-bio-testo:last-child {
+  margin-bottom: 0;
+}
+
+@media (min-width: 1024px) {
+  .sezione-chi-siamo {
+    padding: var(--spazio-8) 0;
+  }
+
+  /* Desktop: foto e bio affiancate, allineate in alto */
+  .chi-siamo-intro {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: var(--spazio-6);
+    align-items: start;
+  }
+
+  /* Solo foto: −5%; bio invariata nella sua colonna */
+  .chi-siamo-foto {
+    width: 95%;
+    max-width: 95%;
+    justify-self: start;
+  }
+
+  /* Bio 3mm più in alto */
+  .chi-siamo-bio {
+    margin-top: -3mm;
+  }
+}
+
+/* Tablet / iPad landscape sotto 1150px: bio sempre sotto la foto */
+@media (max-width: 1149px) and (orientation: landscape) {
+  .chi-siamo-intro {
+    grid-template-columns: 1fr;
+    align-items: start;
+    justify-items: start;
+    gap: var(--spazio-4);
+  }
+
+  .chi-siamo-foto {
+    width: min(518px, 60.5vw);
+    max-width: 100%;
+    justify-self: start;
+  }
+
+  .chi-siamo-foto img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .chi-siamo-bio {
+    width: 100%;
+  }
+}
+
+/* Tablet / iPad / ribelli portrait (Tab S4, Duo, M10, OnePlus Pad, A7/A9, S10 FE):
+   foto mai a tutta pagina — ridotta di 1/4 (75%), alto a sx, bio sotto */
+@media (min-width: 520px) and (max-width: 1366px) and (orientation: portrait) {
+  .chi-siamo-intro {
+    grid-template-columns: 1fr;
+    align-items: start;
+    justify-items: start;
+    gap: var(--spazio-4);
+  }
+
+  .chi-siamo-foto {
+    width: 75%;
+    max-width: 75%;
+    justify-self: start;
+  }
+
+  .chi-siamo-foto img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .chi-siamo-bio {
+    width: 100%;
   }
 }
 
