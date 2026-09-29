@@ -1203,28 +1203,26 @@ document.addEventListener("DOMContentLoaded", () => {
         ["Classe energetica", annuncio.classeEnergetica]
       ].filter(([, val]) => val != null && val !== "");
 
-      const tagliScheda = [
-        { label: "Piano", fino: "immobile-scheda-fino", extra: "immobile-scheda-extra" },
-        { label: "Piani edificio", fino: "immobile-scheda-fino-piani", extra: "immobile-scheda-extra-piani" },
-        { label: "Anno di costruzione", fino: "immobile-scheda-fino-anno", extra: "immobile-scheda-extra-anno" },
-        { label: "Ascensore", fino: "immobile-scheda-fino-ascensore", extra: "immobile-scheda-extra-ascensore" },
-        { label: "Balconi", fino: "immobile-scheda-fino-desktop", extra: "immobile-scheda-extra-desktop" }
-      ];
-      const indiciTaglio = tagliScheda.map((t) => ({
-        ...t,
-        idx: righe.findIndex(([label]) => label === t.label)
-      }));
-
-      const usaToggleScheda = righe.length > 12;
+      /* Mobile >6 | Tablet/iPad >8 | Desktop >10 */
+      const taglioMobile = righe.length > 6;
+      const taglioTablet = righe.length > 8;
+      const taglioDesktop = righe.length > 10;
+      const usaToggleScheda = taglioMobile || taglioTablet || taglioDesktop;
 
       elScheda.innerHTML = righe
         .map(([label, val], i) => {
           const classi = [];
-          if (usaToggleScheda) {
-            indiciTaglio.forEach((t) => {
-              if (label === t.label) classi.push(t.fino);
-              if (t.idx >= 0 && i > t.idx) classi.push(t.extra);
-            });
+          if (taglioMobile) {
+            if (i === 5) classi.push("immobile-scheda-fino-mobile");
+            if (i > 5) classi.push("immobile-scheda-extra-mobile");
+          }
+          if (taglioTablet) {
+            if (i === 7) classi.push("immobile-scheda-fino-tablet");
+            if (i > 7) classi.push("immobile-scheda-extra-tablet");
+          }
+          if (taglioDesktop) {
+            if (i === 9) classi.push("immobile-scheda-fino-desktop");
+            if (i > 9) classi.push("immobile-scheda-extra-desktop");
           }
           const cls = classi.length ? ` class="${classi.join(" ")}"` : "";
           return `<div${cls}><dt>${label}</dt><dd>${val}</dd></div>`;
@@ -1232,110 +1230,41 @@ document.addEventListener("DOMContentLoaded", () => {
         .join("");
 
       const elSchedaBox = elScheda.closest(".immobile-scheda");
-      const haExtra =
-        usaToggleScheda && indiciTaglio.some((t) => t.idx >= 0 && t.idx < righe.length - 1);
 
+      if (elSchedaBox) {
+        elSchedaBox.classList.toggle("immobile-scheda--ha-extra-mobile", taglioMobile);
+        elSchedaBox.classList.toggle("immobile-scheda--ha-extra-tablet", taglioTablet);
+        elSchedaBox.classList.toggle("immobile-scheda--ha-extra-desktop", taglioDesktop);
+      }
+
+      /* Viewport: mobile / tablet(+ iPad Pro 13, Surface Pro 10) / desktop */
       stato.applicaTaglioSchedaDevice = () => {
         if (!elSchedaBox) return;
-        if (!usaToggleScheda) {
-          elSchedaBox.removeAttribute("data-scheda-taglio");
-          return;
-        }
+        elSchedaBox.removeAttribute("data-scheda-taglio");
+
         const w = window.innerWidth;
         const h = window.innerHeight;
-        const sw = window.screen.width || w;
-        const sh = window.screen.height || h;
-        const ua = navigator.userAgent || "";
-        const near = (a, b, tol = 12) => Math.abs(a - b) <= tol;
-        const pairMatch = (a, b, x, y) =>
-          (near(a, x) && near(b, y)) || (near(a, y) && near(b, x));
+        const near = (a, b, tol = 16) => Math.abs(a - b) <= tol;
+        const pair = (x, y) => (near(w, x) && near(h, y)) || (near(w, y) && near(h, x));
 
-        let taglio = null;
-        const landscape = w > h;
+        const isPhone = window.matchMedia(
+          "(max-width: 767px) and (orientation: portrait), (max-width: 1023px) and (orientation: landscape) and (max-height: 499px)"
+        ).matches;
+        /* Eccezioni oltre 1366: iPad Pro 13 (1032×1376) e Surface Pro 10 (1440×960) */
+        const isIpadPro13 = pair(1032, 1376);
+        const isSurfacePro10 = pair(1440, 960);
+        const isTabletRange =
+          window.matchMedia("(min-width: 768px) and (max-width: 1366px)").matches ||
+          window.matchMedia(
+            "(min-width: 700px) and (max-width: 780px) and (min-height: 500px) and (max-height: 560px) and (orientation: landscape)"
+          ).matches ||
+          isIpadPro13 ||
+          isSurfacePro10;
+        const isDesktop = !isPhone && !isTabletRange;
 
-        if (landscape) {
-          if (near(w, 1000, 8)) taglio = "piani";
-          else if (near(w, 1116, 8)) taglio = "anno";
-          else if (near(w, 933, 8)) taglio = "piano";
-          else if (near(w, 960, 8)) taglio = "piano";
-
-          const pairs = [
-            [w, h],
-            [sw, sh]
-          ];
-
-          for (const [pw, ph] of pairs) {
-            if (taglio) break;
-            const shortS = Math.min(pw, ph);
-            const longS = Math.max(pw, ph);
-
-            if (pairMatch(pw, ph, 1024, 600)) {
-              taglio = "piani";
-              break;
-            }
-            if (pairMatch(pw, ph, 1133, 744) || pairMatch(pw, ph, 1024, 768)) {
-              taglio = "piani";
-              break;
-            }
-            if (pairMatch(pw, ph, 1138, 712)) {
-              taglio = "anno";
-              break;
-            }
-            if (pairMatch(pw, ph, 1152, 720)) {
-              taglio = "anno";
-              break;
-            }
-            if (pairMatch(pw, ph, 1180, 820)) {
-              taglio = "ascensore";
-              break;
-            }
-            if (pairMatch(pw, ph, 1194, 834) || pairMatch(pw, ph, 1210, 834)) {
-              taglio = "balconi";
-              break;
-            }
-            if (
-              pairMatch(pw, ph, 1340, 800) ||
-              pairMatch(pw, ph, 1332, 800) ||
-              pairMatch(pw, ph, 1340, 800)
-            ) {
-              taglio = "anno";
-              break;
-            }
-            if (
-              pairMatch(pw, ph, 1120, 800) ||
-              pairMatch(pw, ph, 1067, 762) ||
-              pairMatch(pw, ph, 1112, 800) ||
-              (/OnePlus|OPD\d/i.test(ua) &&
-                shortS >= 750 &&
-                shortS <= 850 &&
-                longS >= 1050 &&
-                longS <= 1200)
-            ) {
-              taglio = "piano";
-              break;
-            }
-            if (near(pw, 1280) || (near(longS, 1280) && near(shortS, 800))) {
-              taglio = "balconi";
-              break;
-            }
-            if (
-              pairMatch(pw, ph, 1366, 1024) ||
-              pairMatch(pw, ph, 1376, 1032) ||
-              pairMatch(pw, ph, 1366, 1024)
-            ) {
-              taglio = /iPad Air|Air\//i.test(ua) ? "ascensore" : "balconi";
-              break;
-            }
-          }
-
-          if (!taglio) {
-            if (/OnePlus|OPD\d/i.test(ua)) taglio = "piano";
-            else if (/iPad Pro/i.test(ua)) taglio = "balconi";
-          }
-        }
-
-        if (taglio) elSchedaBox.setAttribute("data-scheda-taglio", taglio);
-        else elSchedaBox.removeAttribute("data-scheda-taglio");
+        elSchedaBox.classList.toggle("is-viewport-mobile-scheda", isPhone);
+        elSchedaBox.classList.toggle("is-viewport-tablet-scheda", isTabletRange && !isPhone);
+        elSchedaBox.classList.toggle("is-viewport-desktop-scheda", isDesktop);
       };
 
       stato.applicaTaglioSchedaDevice();
@@ -1343,7 +1272,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (elSchedaToggle && elSchedaBox) {
         const elToggleLabel = elSchedaToggle.querySelector(".immobile-scheda-toggle-label");
         elSchedaBox.classList.remove("is-scheda-aperta");
-        if (haExtra) {
+        if (usaToggleScheda) {
           elSchedaToggle.hidden = false;
           elSchedaToggle.setAttribute("aria-expanded", "false");
           if (elToggleLabel) elToggleLabel.textContent = "Mostra di più";
@@ -1351,6 +1280,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const aperta = elSchedaBox.classList.toggle("is-scheda-aperta");
             elSchedaToggle.setAttribute("aria-expanded", aperta ? "true" : "false");
             if (elToggleLabel) elToggleLabel.textContent = aperta ? "Mostra di meno" : "Mostra di più";
+            /* Evita alone/focus azzurro del browser dopo il tap */
+            elSchedaToggle.blur();
           };
         } else {
           elSchedaToggle.hidden = true;
@@ -1617,10 +1548,12 @@ document.addEventListener("DOMContentLoaded", () => {
           const cls = evidenza
             ? "immobile-unita-box immobile-unita-box--evidenza"
             : "immobile-unita-box";
-          const badge = evidenza
-            ? `<p class="immobile-unita-badge">In evidenza</p>`
-            : "";
-          return `<article class="${cls}">${badge}<h3>${u.titolo || "Unità"}</h3><dl>${dl}</dl></article>`;
+          const titolo = u.titolo || "Unità";
+          /* Terreno + barra «In evidenza» sulla stessa riga */
+          const testata = evidenza
+            ? `<div class="immobile-unita-testata"><h3>${titolo}</h3><p class="immobile-unita-badge">In evidenza</p></div>`
+            : `<h3>${titolo}</h3>`;
+          return `<article class="${cls}">${testata}<dl>${dl}</dl></article>`;
         })
         .join("");
     };
@@ -1651,7 +1584,9 @@ document.addEventListener("DOMContentLoaded", () => {
           const icona = voce.icona || "assets/images/icons/icon-pin.svg";
           const stileMask = `-webkit-mask-image:url('${icona}');mask-image:url('${icona}')`;
           return `<li class="immobile-dintorni-voce">
-            <span class="immobile-dintorni-icona" style="${stileMask}" aria-hidden="true"></span>
+            <span class="immobile-dintorni-icona-cerchio" aria-hidden="true">
+              <span class="immobile-dintorni-icona" style="${stileMask}"></span>
+            </span>
             <span class="immobile-dintorni-testo">
               <span class="immobile-dintorni-nome">${nome}</span>
               ${det ? `<span class="immobile-dintorni-dettaglio">${det}</span>` : ""}

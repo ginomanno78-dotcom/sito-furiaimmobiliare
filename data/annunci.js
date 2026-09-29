@@ -6,6 +6,65 @@
    false = solo immobili reali pubblicati (go-live) */
 const MOSTRA_CARD_DEMO = false;
 
+/** Servizi limitrofi (icone + testi); km e dettagli specifici per zona */
+function creaDintorni(opzioni = {}) {
+  const km = opzioni.km != null ? opzioni.km : 2;
+  const entro = `entro ${km} km.`;
+  return {
+    dintorniNota: `Servizi raggiungibili in pochi minuti (entro circa ${km} km).`,
+    dintorni: [
+      {
+        voce: "Stazione ferroviaria",
+        dettaglio: opzioni.stazione || entro,
+        icona: "assets/images/icons/icon-Train.svg"
+      },
+      {
+        voce: "Supermercati",
+        dettaglio: opzioni.supermercati || entro,
+        icona: "assets/images/icons/icon-Shopping-Cart-Full.svg"
+      },
+      {
+        voce: "Scuole",
+        dettaglio: opzioni.scuole || entro,
+        icona: "assets/images/icons/icon-School.svg"
+      },
+      {
+        voce: "Banca",
+        dettaglio: opzioni.banca || entro,
+        icona: "assets/images/icons/icon-Bank.svg"
+      },
+      {
+        voce: opzioni.medicoVoce || "Servizio medico e farmacie",
+        dettaglio: opzioni.medico || entro,
+        icona: opzioni.medicoIcona || "assets/images/icons/icon-Medical.svg"
+      },
+      {
+        voce: "Ufficio postale",
+        dettaglio: opzioni.postale || entro,
+        icona: "assets/images/icons/icon-Post-Office.svg"
+      }
+    ]
+  };
+}
+
+const DINTORNI_SPARANISE_1KM = creaDintorni({
+  km: 1,
+  stazione: "Staz. di Sparanise entro 1 km.",
+  supermercati: "Briò, Decò entro 1 km.",
+  scuole: "Primaria, I - II Grado entro 1 km.",
+  banca: "Intesa San Paolo entro 1 km."
+});
+
+const DINTORNI_SANTA_MARIA_1KM = creaDintorni({
+  km: 1,
+  stazione: "Staz. di Santa M. C. V. entro 1 km.",
+  supermercati: "MD, Coop, Decò entro 1 km.",
+  scuole: "Università entro 1 km.",
+  banca: "BCA, Intesa, BNL entro 1 km.",
+  medicoVoce: "Ospedale Melorio",
+  medicoIcona: "assets/images/icons/icon-Hospital.svg"
+});
+
 const annunci = {
   vendita: [
     {
@@ -56,7 +115,8 @@ const annunci = {
         "assets/images/annunci/vendita/sparanise-cinquegrana-via-kennedy/foto-08.webp",
         "assets/images/annunci/vendita/sparanise-cinquegrana-via-kennedy/foto-09.webp",
         "assets/images/annunci/vendita/sparanise-cinquegrana-via-kennedy/foto-10.webp"
-      ]
+      ],
+      ...DINTORNI_SPARANISE_1KM
     },
     /* Locale commerciale Di Maio — Via De Renzis, Sparanise */
     {
@@ -106,7 +166,8 @@ const annunci = {
         "assets/images/annunci/vendita/locale-commerciale-di-maio-sparanise/foto-08.webp",
         "assets/images/annunci/vendita/locale-commerciale-di-maio-sparanise/foto-09.webp",
         "assets/images/annunci/vendita/locale-commerciale-di-maio-sparanise/foto-10.webp"
-      ]
+      ],
+      ...DINTORNI_SPARANISE_1KM
     },
     /* Palazzo signorile — Santa Maria Capua Vetere, Via Gramsci */
     {
@@ -249,7 +310,8 @@ const annunci = {
           tipoSuperficie: "Principale",
           superficieCommerciale: "13,2 m²"
         }
-      ]
+      ],
+      ...DINTORNI_SANTA_MARIA_1KM
     },
     /* Palazzo — Francolise, SS7 km 187 */
     {
@@ -259,7 +321,7 @@ const annunci = {
       nome: "Francolise",
       tipologia: "Palazzo",
       contratto: "Vendita",
-      via: "SS7, km 187",
+      via: "strada prov. SS7, Km. 187",
       angoloCon: "",
       categoriaAnnuncio: "",
       comune: "Francolise (CE)",
@@ -333,28 +395,33 @@ const annunci = {
       dintorni: [
         {
           voce: "Stazione ferroviaria",
-          dettaglio: "entro 2 km",
-          icona: "assets/images/icons/icon-pin.svg"
+          dettaglio: "Staz. di Sparanise entro 2 km.",
+          icona: "assets/images/icons/icon-Train.svg"
         },
         {
           voce: "Supermercati",
-          dettaglio: "Eurospin e altri entro 2 km",
-          icona: "assets/images/icons/icon-commerciale.svg"
+          dettaglio: "Eurospin, DE.DA.CO. entro 2 km.",
+          icona: "assets/images/icons/icon-Shopping-Cart-Full.svg"
         },
         {
           voce: "Scuole",
-          dettaglio: "entro 2 km",
-          icona: "assets/images/icons/icon-cottage.svg"
+          dettaglio: "Primaria,  I - II Grado entro 2 km.",
+          icona: "assets/images/icons/icon-School.svg"
         },
         {
-          voce: "Banche",
-          dettaglio: "entro 2 km",
-          icona: "assets/images/icons/icon-chart-no-axes-combined.svg"
+          voce: "Banca",
+          dettaglio: "Intesa San Paolo entro 2 km.",
+          icona: "assets/images/icons/icon-Bank.svg"
         },
         {
-          voce: "Farmacie",
-          dettaglio: "entro 2 km",
-          icona: "assets/images/icons/icon-Checkup-Diagnostic.svg"
+          voce: "Servizio medico e farmacie",
+          dettaglio: "entro 2 km.",
+          icona: "assets/images/icons/icon-Medical.svg"
+        },
+        {
+          voce: "Ufficio postale",
+          dettaglio: "entro 2 km.",
+          icona: "assets/images/icons/icon-Post-Office.svg"
         }
       ]
     },
