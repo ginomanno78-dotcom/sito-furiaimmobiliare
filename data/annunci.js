@@ -321,7 +321,9 @@ const annunci = {
       nome: "Francolise",
       tipologia: "Palazzo",
       contratto: "Vendita",
-      via: "strada prov. SS7, Km. 187",
+      via: "Strada provinciale SS7, 21",
+      /* Query mappa con indirizzo esatto */
+      mapsQuery: "SS7, 21, Francolise (CE)",
       angoloCon: "",
       categoriaAnnuncio: "",
       comune: "Francolise (CE)",

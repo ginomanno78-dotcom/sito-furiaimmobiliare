@@ -73,6 +73,61 @@ document.addEventListener("DOMContentLoaded", () => {
     aggiornaScala();
   }
 
+  /* === Valuta in loco: reveal direzionale allo scroll (solo desktop, una volta) === */
+  const valutaLoco = document.querySelector(".valuta-loco");
+  if (valutaLoco) {
+    const mqDesktopValuta = window.matchMedia(
+      "(min-width: 1024px) and (hover: hover) and (pointer: fine)"
+    );
+    const mqRiduciMotoValuta = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let osservatoreValuta = null;
+
+    const rivelaValutaLoco = (conAnimazione) => {
+      valutaLoco.classList.add("is-revealed");
+      if (conAnimazione) {
+        /* Clip solo a fine corsa, altrimenti le laterali restano tagliate nel box */
+        window.setTimeout(() => {
+          valutaLoco.classList.add("is-reveal-done");
+        }, 1500);
+      } else {
+        valutaLoco.classList.add("is-reveal-done");
+      }
+    };
+
+    const avviaRevealValuta = () => {
+      if (osservatoreValuta) {
+        osservatoreValuta.disconnect();
+        osservatoreValuta = null;
+      }
+      if (!mqDesktopValuta.matches || mqRiduciMotoValuta.matches) {
+        rivelaValutaLoco(false);
+        return;
+      }
+      if (valutaLoco.classList.contains("is-revealed")) return;
+
+      osservatoreValuta = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            rivelaValutaLoco(true);
+            if (osservatoreValuta) {
+              osservatoreValuta.disconnect();
+              osservatoreValuta = null;
+            }
+          });
+        },
+        { threshold: 0.2, rootMargin: "0px 0px -300px 0px" }
+      );
+      osservatoreValuta.observe(valutaLoco);
+    };
+
+    avviaRevealValuta();
+    mqDesktopValuta.addEventListener("change", avviaRevealValuta);
+    mqRiduciMotoValuta.addEventListener("change", (e) => {
+      if (e.matches) rivelaValutaLoco(false);
+    });
+  }
+
   /* === Drawer mobile === */
   const apriDrawer = () => {
     if (!drawer || !overlay || !hamburger) return;
@@ -1633,13 +1688,20 @@ document.addEventListener("DOMContentLoaded", () => {
       aggiornaCondividi();
 
       if (elMappa) {
-        const queryMappa = [annuncio.via, annuncio.comune].filter(Boolean).join(", ");
+        const queryMappa =
+          annuncio.mapsQuery ||
+          [annuncio.via, annuncio.comune].filter(Boolean).join(", ");
         if (queryMappa) {
-          elMappa.src =
+          const nuovoSrc =
             "https://maps.google.com/maps?q=" +
             encodeURIComponent(queryMappa) +
             "&z=16&output=embed";
-          elMappa.title = "Mappa: " + queryMappa;
+          /* Reset: evita che l’iframe resti sulla mappa dell’annuncio precedente */
+          elMappa.src = "about:blank";
+          elMappa.src = nuovoSrc;
+          elMappa.title =
+            "Mappa: " +
+            ([annuncio.via, annuncio.comune].filter(Boolean).join(", ") || queryMappa);
         }
       }
 

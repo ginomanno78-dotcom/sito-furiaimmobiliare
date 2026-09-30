@@ -3040,6 +3040,94 @@ h2 {
   }
 }
 
+/* Reveal allo scroll: solo desktop mouse (no tablet/iPad touch) */
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+
+  /* Clip spento fino a fine animazione (se torna subito, restano nel box) */
+  .sezione-valuta:has(.valuta-loco:not(.is-reveal-done)),
+  .sezione-valuta:has(.valuta-loco:not(.is-reveal-done)) > .container,
+  .valuta-loco:not(.is-reveal-done),
+  .valuta-loco:not(.is-reveal-done) .valuta-loco-inner,
+  .valuta-loco:not(.is-reveal-done) .valuta-loco-cards,
+  .valuta-loco:not(.is-reveal-done) .valuta-loco-card-riga {
+    overflow: visible;
+    overflow-x: visible;
+  }
+
+  .valuta-loco-card--stima-testo,
+  .valuta-loco-card--stima-lato,
+  .valuta-loco-card--come,
+  .valuta-loco-card--lato,
+  .valuta-loco-foto-wrap {
+    opacity: 0;
+    transition:
+      transform 0.4s cubic-bezier(0.33, 1, 0.68, 1),
+      translate 1s cubic-bezier(0.33, 1, 0.68, 1),
+      opacity 0.75s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+
+  /* 1) Affidati a noi: prima, discesa breve (non da fuori schermo) */
+  .valuta-loco-card--lato {
+    translate: 0 -28vh;
+    transition-delay: 0s;
+    transition-duration: 0.4s, 1.15s, 0.7s;
+  }
+
+  /* 2) Laterali: fuori viewport — tempi calibrati per arrivare insieme (~1,15s) */
+  .valuta-loco-card--come {
+    translate: -100vw 0;
+    transition-delay: 0.18s;
+    transition-duration: 0.4s, 0.97s, 0.75s;
+  }
+
+  .valuta-loco-card--stima-lato {
+    translate: -100vw 0;
+    transition-delay: 0.28s;
+    transition-duration: 0.4s, 0.87s, 0.7s;
+  }
+
+  .valuta-loco-foto-wrap {
+    translate: 100vw 0;
+    transition-delay: 0.22s;
+    transition-duration: 0.4s, 0.93s, 0.72s;
+  }
+
+  /* 3) Ultima a partire, ma atterra col gruppo (ricongiunge) */
+  .valuta-loco-card--stima-testo {
+    translate: 0 100vh;
+    transition-delay: 0.32s;
+    transition-duration: 0.4s, 0.83s, 0.7s;
+  }
+
+  .valuta-loco.is-revealed .valuta-loco-card--stima-testo,
+  .valuta-loco.is-revealed .valuta-loco-card--stima-lato,
+  .valuta-loco.is-revealed .valuta-loco-card--come,
+  .valuta-loco.is-revealed .valuta-loco-card--lato,
+  .valuta-loco.is-revealed .valuta-loco-foto-wrap {
+    opacity: 1;
+    translate: 0 0;
+    transition-delay: 0s;
+  }
+
+  /* Dopo l’ingresso: ripristina clip anti-overflow delle card +1cm */
+  .valuta-loco.is-reveal-done .valuta-loco-inner {
+    overflow-x: clip;
+  }
+}
+
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: reduce) {
+
+  .valuta-loco-card--stima-testo,
+  .valuta-loco-card--stima-lato,
+  .valuta-loco-card--come,
+  .valuta-loco-card--lato,
+  .valuta-loco-foto-wrap {
+    opacity: 1;
+    translate: none;
+    transition: transform 0.4s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+}
+
 .valuta-loco-card-testo {
   min-width: 0;
   flex: 1 1 auto;
@@ -3288,8 +3376,8 @@ h2 {
     gap: 0;
     min-width: 0;
     width: 100%;
-    /* Evita che le card +1cm espandano il viewport */
-    overflow-x: clip;
+    /* Evita che le card +1cm espandano il viewport (attiva dopo reveal: .is-reveal-done) */
+    overflow-x: visible;
   }
 
   .valuta-loco-cards {
@@ -4270,7 +4358,7 @@ h2 {
 }
 
 .chi-siamo-bio-ruolo {
-  margin: 0 0 var(--spazio-4);
+  margin: 0 0 var(--spazio-3);
   font-family: var(--font-corpo);
   font-size: 0.95rem;
   font-weight: 400;
