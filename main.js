@@ -199,7 +199,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
-  /* === Dropdown navbar Vendi === */
+  /* === Dropdown navbar Immobili + Vendi === */
+  setupDropdown({
+    toggle: document.getElementById("navImmobiliToggle"),
+    menu: document.getElementById("navImmobiliMenu"),
+  });
+
   setupDropdown({
     toggle: document.getElementById("navVendiToggle"),
     menu: document.getElementById("navVendiMenu"),
@@ -231,16 +236,25 @@ document.addEventListener("DOMContentLoaded", () => {
     toggle: tipoToggle,
     menu: document.getElementById("searchTipoMenu"),
     onSelect: (item) => {
-      const valore = item.getAttribute("data-value");
+      const valore = item.getAttribute("data-value") || "";
       const icona = item.querySelector("img");
+      const labelEl = document.getElementById("searchTipoLabel");
       if (tipoInput) tipoInput.value = valore;
       if (tipoToggle && icona) {
-        const iconaToggle = tipoToggle.querySelector("img");
+        const iconaToggle =
+          tipoToggle.querySelector(".search-tipo-icon") || tipoToggle.querySelector("img");
         if (iconaToggle) {
           iconaToggle.src = icona.src;
-          // Cottage sul pulsante chiuso resta leggermente più grande
-          iconaToggle.classList.toggle("icon--cottage", valore === "case-ville");
+          iconaToggle.classList.toggle(
+            "icon--cottage",
+            valore === "case-ville" || valore === ""
+          );
         }
+      }
+      /* Su vendita: mostra nome tipologia per intero (o «Tipologia» se Tutte) */
+      if (labelEl) {
+        const testo = item.textContent.replace(/\s+/g, " ").trim();
+        labelEl.textContent = valore ? testo : "Tipologia";
       }
       item.parentElement.querySelectorAll('[role="option"]').forEach((opt) => {
         opt.setAttribute("aria-selected", String(opt === item));
@@ -303,15 +317,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const vaiAgliAnnunciVendita = () => {
     const target = document.getElementById("immobili-vendita");
-    if (target) target.scrollIntoView({ behavior: "smooth" });
-    else window.location.hash = "immobili-vendita";
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
+    window.location.href = "vendita.html";
   };
 
   const heroSearchForm = document.getElementById("heroSearchForm");
   const searchQueryInput = document.getElementById("searchQuery");
+  /* Callback valorizzata sulla pagina vendita (filtro lista+mappa) */
+  let applicaFiltriVendita = null;
+
   if (heroSearchForm) {
     heroSearchForm.addEventListener("submit", (e) => {
       e.preventDefault();
+      /* Pagina vendita: applica filtri in loco */
+      if (typeof applicaFiltriVendita === "function") {
+        applicaFiltriVendita();
+        return;
+      }
       const azione = azioneInput ? azioneInput.value : "compra";
       if (azione === "affitta") {
         window.location.href = "affitto.html";
@@ -414,16 +439,20 @@ document.addEventListener("DOMContentLoaded", () => {
       ? `<img class="card-annuncio-media-hover" src="${annuncio.coverHover}" alt="" width="600" height="400" loading="lazy" aria-hidden="true">`
       : "";
     const mediaImgs = `<img class="card-annuncio-media-cover" src="${annuncio.cover}" alt="${altCover}" width="600" height="400" loading="lazy">${mediaHover}`;
+    /* Barra «In vendita» in alto a sx (sopra l’hover foto) */
+    const badgeVendita =
+      String(annuncio.contratto || "").toLowerCase() === "vendita"
+        ? `<span class="card-annuncio-badge-vendita">In vendita</span>`
+        : "";
     /* Con hit a tutta card, il media sta sopra (z-index) e ha link proprio così hover+click funzionano */
     const media = href
-      ? `<div class="card-annuncio-media${annuncio.coverHover ? " card-annuncio-media--hover" : ""}"><a class="card-annuncio-media-link" href="${href}" tabindex="-1" aria-hidden="true">${mediaImgs}</a></div>`
-      : `<div class="card-annuncio-media${annuncio.coverHover ? " card-annuncio-media--hover" : ""}">${mediaImgs}</div>`;
+      ? `<div class="card-annuncio-media${annuncio.coverHover ? " card-annuncio-media--hover" : ""}"><a class="card-annuncio-media-link" href="${href}" tabindex="-1" aria-hidden="true">${mediaImgs}</a>${badgeVendita}</div>`
+      : `<div class="card-annuncio-media${annuncio.coverHover ? " card-annuncio-media--hover" : ""}">${mediaImgs}${badgeVendita}</div>`;
 
     /* Icona condividi (riusabile su tutte le card collegabili) */
     const shareHtml = href
       ? `<div class="card-annuncio-share">
           <button type="button" class="card-annuncio-share-btn" aria-label="Condividi annuncio" aria-expanded="false" aria-haspopup="true">
-            <span class="card-annuncio-share-tooltip" aria-hidden="true">Condividi annuncio</span>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <circle cx="18" cy="5" r="3" stroke="currentColor" stroke-width="1.6"/>
               <circle cx="6" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/>
@@ -722,6 +751,463 @@ document.addEventListener("DOMContentLoaded", () => {
     initCarousel(carouselVendita, trackVendita, dotsVendita, getAnnunciVenditaHome());
     requestAnimationFrame(adattaTuttiTipiCard);
     window.addEventListener("resize", () => requestAnimationFrame(adattaTuttiTipiCard));
+  }
+
+  /* === Pagina vendita.html: griglia annunci + mappa Leaflet + filtri === */
+  const venditaLista = document.getElementById("venditaLista");
+  const mappaVenditaEl = document.getElementById("mappaVendita");
+  if (venditaLista && typeof getAnnunciVenditaTutti === "function") {
+    const listaVendita = getAnnunciVenditaTutti();
+    const markerPerId = {};
+    let mappaVendita = null;
+    const elRisultati = document.getElementById("venditaRisultatiCount");
+
+    listaVendita.forEach((annuncio) => {
+      const card = creaCardAnnuncio(annuncio);
+      venditaLista.appendChild(card);
+    });
+    requestAnimationFrame(adattaTuttiTipiCard);
+
+    const evidenziaCard = (id) => {
+      venditaLista.querySelectorAll(".card-annuncio").forEach((c) => {
+        c.classList.toggle("is-mappa-attiva", c.dataset.id === id);
+      });
+      const card = venditaLista.querySelector(`.card-annuncio[data-id="${id}"]`);
+      if (card && !card.hidden) {
+        card.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    };
+
+    /* Locali: numero o stringa tipo "5+" → parte numerica */
+    const parseLocaliNum = (val) => {
+      if (val == null || val === "") return null;
+      if (typeof val === "number" && Number.isFinite(val)) return val;
+      const m = String(val).match(/(\d+)/);
+      return m ? Number(m[1]) : null;
+    };
+
+    const leggiNumeroFiltro = (id) => {
+      const el = document.getElementById(id);
+      if (!el || el.value === "" || el.value == null) return null;
+      const n = Number(el.value);
+      return Number.isFinite(n) ? n : null;
+    };
+
+    /* Mobile portrait/landscape: Prezzo/Superficie/Locali nel pannello Filtri */
+    const mqFiltriMobilePortrait = window.matchMedia(
+      "(max-width: 767px), (max-width: 1023px) and (orientation: landscape) and (max-height: 499px)"
+    );
+    const CHIAVI_FILTRO_BAR = ["prezzo", "superficie", "locali"];
+
+    const syncFiltriBarMobilePortrait = () => {
+      const isMobilePortrait = mqFiltriMobilePortrait.matches;
+      CHIAVI_FILTRO_BAR.forEach((key) => {
+        const bar = document.querySelector(`[data-filtro-bar="${key}"]`);
+        const panel = bar?.querySelector(".pagina-vendita-toggle-panel");
+        const slot = document.querySelector(`[data-filtro-slot="${key}"]`);
+        const host = document.querySelector(`[data-filtro-host="${key}"]`);
+        if (!panel || !slot || !host) return;
+
+        if (isMobilePortrait) {
+          while (panel.firstChild) host.appendChild(panel.firstChild);
+          slot.hidden = false;
+        } else {
+          while (host.firstChild) panel.appendChild(host.firstChild);
+          slot.hidden = true;
+        }
+      });
+
+      if (!isMobilePortrait) {
+        document.body.classList.remove("is-filtri-vendita-aperti");
+      }
+    };
+
+    syncFiltriBarMobilePortrait();
+    if (typeof mqFiltriMobilePortrait.addListener === "function" &&
+        typeof mqFiltriMobilePortrait.addEventListener !== "function") {
+      mqFiltriMobilePortrait.addListener(syncFiltriBarMobilePortrait);
+    }
+
+    const annuncioPassaFiltri = (annuncio) => {
+      const tipo = tipoInput ? tipoInput.value : "";
+      const query = searchQueryInput ? searchQueryInput.value : "";
+      if (!tipologiaMatchSearch(annuncio.tipologia, tipo)) return false;
+      /* Query vuota/spazi: non filtrare per luogo */
+      if (normalizzaRicerca(query) && !luogoMatchSearch(annuncio, query)) return false;
+
+      const prezzoDa = leggiNumeroFiltro("filtroPrezzoDa");
+      const prezzoA = leggiNumeroFiltro("filtroPrezzoA");
+      if (prezzoDa != null && (annuncio.prezzo == null || annuncio.prezzo < prezzoDa)) return false;
+      if (prezzoA != null && (annuncio.prezzo == null || annuncio.prezzo > prezzoA)) return false;
+
+      const mqDa = leggiNumeroFiltro("filtroMqDa");
+      const mqA = leggiNumeroFiltro("filtroMqA");
+      if (mqDa != null && (annuncio.mq == null || annuncio.mq < mqDa)) return false;
+      if (mqA != null && (annuncio.mq == null || annuncio.mq > mqA)) return false;
+
+      const localiDa = leggiNumeroFiltro("filtroLocaliDa");
+      const localiA = leggiNumeroFiltro("filtroLocaliA");
+      const nLocali = parseLocaliNum(annuncio.locali);
+      if (localiDa != null && (nLocali == null || nLocali < localiDa)) return false;
+      if (localiA != null && (nLocali == null || nLocali > localiA)) return false;
+
+      const bagniDa = leggiNumeroFiltro("filtroBagniDa");
+      const bagniA = leggiNumeroFiltro("filtroBagniA");
+      if (bagniDa != null && (annuncio.bagni == null || annuncio.bagni < bagniDa)) return false;
+      if (bagniA != null && (annuncio.bagni == null || annuncio.bagni > bagniA)) return false;
+
+      const chips = (name) =>
+        Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map((el) => el.value);
+
+      const feat = chips("feat");
+      if (feat.length) {
+        const blob = normalizzaRicerca(
+          [annuncio.pertinenze, annuncio.boxAuto, annuncio.tipologia, annuncio.descrizione]
+            .filter(Boolean)
+            .join(" ")
+        );
+        const okFeat = feat.every((f) => {
+          if (f === "terrazzo") return blob.includes("terrazz");
+          if (f === "balcone") return (annuncio.balconi != null && annuncio.balconi > 0) || blob.includes("balcon");
+          if (f === "ascensore") return annuncio.ascensore === true;
+          if (f === "garage") return blob.includes("garage") || blob.includes("box");
+          if (f === "posto-auto") {
+            return blob.includes("posto auto") || blob.includes("posti auto") || blob.includes("box auto");
+          }
+          if (f === "cantina") return blob.includes("cantina");
+          if (f === "arredato") return annuncio.arredato === true || blob.includes("arredat");
+          if (f === "giardino") return blob.includes("giardino") || blob.includes("giardini");
+          return true;
+        });
+        if (!okFeat) return false;
+      }
+
+      const pianiSel = chips("piano");
+      if (pianiSel.length) {
+        const p = annuncio.piano;
+        const pianiTot = annuncio.pianiEdificio;
+        const txt = normalizzaRicerca(String(p ?? ""));
+        const matchPiano = pianiSel.some((v) => {
+          if (v === "terra") {
+            return p === 0 || txt.includes("terra") || /(^|[\/\s])t([\/\s]|$)/.test(txt);
+          }
+          if (v === "primo") {
+            return p === 1 || txt.includes("primo") || /(^|[\/\s])1([\/\s]|$)/.test(txt);
+          }
+          if (v === "intermedio") {
+            if (typeof p === "number" && pianiTot != null) {
+              return p > 0 && p < pianiTot - 1;
+            }
+            return txt.includes("intermedio") || txt.includes("ammezz");
+          }
+          if (v === "ultimo") {
+            if (typeof p === "number" && pianiTot != null) {
+              return p >= pianiTot - 1;
+            }
+            return txt.includes("ultimo");
+          }
+          return false;
+        });
+        if (!matchPiano) return false;
+      }
+
+      const climaSel = chips("clima");
+      if (climaSel.length) {
+        const risc = normalizzaRicerca(annuncio.riscaldamento || "");
+        const blob = normalizzaRicerca(
+          [annuncio.riscaldamento, annuncio.descrizione].filter(Boolean).join(" ")
+        );
+        const matchClima = climaSel.some((v) => {
+          if (v === "auton") return risc.includes("autonom");
+          if (v === "centr") return risc.includes("central");
+          if (v === "aria") return blob.includes("aria condiz") || blob.includes("climatizz");
+          return false;
+        });
+        if (!matchClima) return false;
+      }
+
+      const statoSel = chips("stato");
+      if (statoSel.length) {
+        const st = normalizzaRicerca(annuncio.statoConservazione || "");
+        const matchStato = statoSel.some((v) => {
+          if (v === "nuovo") return st.includes("nuovo") || st.includes("costruzion");
+          if (v === "ottimo") {
+            return (st.includes("ottimo") || st.includes("ristrutturat")) && !st.includes("da ristruttur");
+          }
+          if (v === "buono") return st.includes("buono") || st.includes("abitabile");
+          if (v === "da-ristrutturare") return st.includes("da ristruttur");
+          return false;
+        });
+        if (!matchStato) return false;
+      }
+
+      const apeSel = chips("ape");
+      if (apeSel.length) {
+        const cls = String(annuncio.classeEnergetica || "")
+          .trim()
+          .toUpperCase()
+          .charAt(0);
+        if (!cls || !apeSel.includes(cls)) return false;
+      }
+
+      return true;
+    };
+
+    const aggiornaBadgeFiltriExtra = () => {
+      const badge = document.getElementById("filtriAltriBadge");
+      if (!badge) return;
+      let n = 0;
+      if (leggiNumeroFiltro("filtroBagniDa") != null) n += 1;
+      if (leggiNumeroFiltro("filtroBagniA") != null) n += 1;
+      /* Su mobile portrait Prezzo/Superficie/Locali stanno nel pannello Filtri */
+      if (mqFiltriMobilePortrait.matches) {
+        [
+          "filtroPrezzoDa",
+          "filtroPrezzoA",
+          "filtroMqDa",
+          "filtroMqA",
+          "filtroLocaliDa",
+          "filtroLocaliA",
+        ].forEach((id) => {
+          if (leggiNumeroFiltro(id) != null) n += 1;
+        });
+      }
+      n += document.querySelectorAll(
+        '#filtriAltriPanel input[type="checkbox"]:checked'
+      ).length;
+      badge.textContent = String(n);
+      badge.hidden = n === 0;
+    };
+
+    applicaFiltriVendita = () => {
+      const bounds = [];
+      let nVisibili = 0;
+
+      listaVendita.forEach((annuncio) => {
+        const ok = annuncioPassaFiltri(annuncio);
+        const card = venditaLista.querySelector(`.card-annuncio[data-id="${annuncio.id}"]`);
+        if (card) card.hidden = !ok;
+
+        const marker = markerPerId[annuncio.id];
+        if (marker && mappaVendita) {
+          if (ok) {
+            if (!mappaVendita.hasLayer(marker)) marker.addTo(mappaVendita);
+            if (annuncio.lat != null && annuncio.lng != null) {
+              bounds.push([annuncio.lat, annuncio.lng]);
+            }
+          } else if (mappaVendita.hasLayer(marker)) {
+            mappaVendita.removeLayer(marker);
+          }
+        }
+
+        if (ok) nVisibili += 1;
+      });
+
+      if (elRisultati) {
+        elRisultati.textContent =
+          nVisibili === 0
+            ? "Nessun immobile trovato con questi filtri."
+            : nVisibili === 1
+              ? "1 immobile trovato."
+              : `${nVisibili} immobili trovati.`;
+      }
+
+      if (mappaVendita) {
+        if (bounds.length === 1) {
+          mappaVendita.setView(bounds[0], 15);
+        } else if (bounds.length > 1) {
+          mappaVendita.fitBounds(bounds, { padding: [28, 28], maxZoom: 14 });
+        }
+        requestAnimationFrame(() => mappaVendita.invalidateSize());
+      }
+
+      requestAnimationFrame(adattaTuttiTipiCard);
+      aggiornaBadgeFiltriExtra();
+    };
+
+    /* Debounce input filtri */
+    let timerFiltri = null;
+    const schedulaFiltri = () => {
+      clearTimeout(timerFiltri);
+      timerFiltri = setTimeout(() => applicaFiltriVendita(), 220);
+    };
+
+    [
+      "filtroPrezzoDa",
+      "filtroPrezzoA",
+      "filtroMqDa",
+      "filtroMqA",
+      "filtroLocaliDa",
+      "filtroLocaliA",
+      "filtroBagniDa",
+      "filtroBagniA",
+    ].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener("input", schedulaFiltri);
+    });
+    if (searchQueryInput) searchQueryInput.addEventListener("input", schedulaFiltri);
+    const tipoMenu = document.getElementById("searchTipoMenu");
+    if (tipoMenu) {
+      tipoMenu.addEventListener("click", () => {
+        requestAnimationFrame(() => applicaFiltriVendita());
+      });
+    }
+
+    const filtriAltriPanel = document.getElementById("filtriAltriPanel");
+    if (filtriAltriPanel) {
+      filtriAltriPanel.addEventListener("change", schedulaFiltri);
+      filtriAltriPanel.addEventListener("input", schedulaFiltri);
+    }
+
+    const filtriAltriAzzera = document.getElementById("filtriAltriAzzera");
+    if (filtriAltriAzzera) {
+      filtriAltriAzzera.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const daAzzerare = ["filtroBagniDa", "filtroBagniA"];
+        if (mqFiltriMobilePortrait.matches) {
+          daAzzerare.push(
+            "filtroPrezzoDa",
+            "filtroPrezzoA",
+            "filtroMqDa",
+            "filtroMqA",
+            "filtroLocaliDa",
+            "filtroLocaliA"
+          );
+        }
+        daAzzerare.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.value = "";
+        });
+        filtriAltriPanel
+          ?.querySelectorAll('input[type="checkbox"]')
+          .forEach((c) => {
+            c.checked = false;
+          });
+        applicaFiltriVendita();
+      });
+    }
+
+    /* Toggle Prezzo / Superficie / Locali + pannello Filtri */
+    const toggleFiltri = document.querySelectorAll(".pagina-vendita-toggle");
+    const filtriAltriBtn = document.getElementById("filtriAltriBtn");
+    const filtriAltriChiudi = document.getElementById("filtriAltriChiudi");
+
+    const chiudiPannelloFiltriExtra = () => {
+      if (filtriAltriBtn) filtriAltriBtn.setAttribute("aria-expanded", "false");
+      if (filtriAltriPanel) filtriAltriPanel.hidden = true;
+      document.body.classList.remove("is-filtri-vendita-aperti");
+    };
+
+    const apriPannelloFiltriExtra = () => {
+      if (filtriAltriBtn) filtriAltriBtn.setAttribute("aria-expanded", "true");
+      if (filtriAltriPanel) filtriAltriPanel.hidden = false;
+      if (mqFiltriMobilePortrait.matches) {
+        document.body.classList.add("is-filtri-vendita-aperti");
+      }
+    };
+
+    const chiudiTuttiToggleFiltri = (eccetto) => {
+      toggleFiltri.forEach((wrap) => {
+        if (eccetto && wrap === eccetto) return;
+        const btn = wrap.querySelector(".pagina-vendita-toggle-btn");
+        const panel = wrap.querySelector(".pagina-vendita-toggle-panel");
+        if (btn) btn.setAttribute("aria-expanded", "false");
+        if (panel) panel.hidden = true;
+      });
+      if (!eccetto || eccetto !== "filtri-extra") chiudiPannelloFiltriExtra();
+    };
+
+    toggleFiltri.forEach((wrap) => {
+      const btn = wrap.querySelector(".pagina-vendita-toggle-btn");
+      const panel = wrap.querySelector(".pagina-vendita-toggle-panel");
+      if (!btn || !panel) return;
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const aperto = btn.getAttribute("aria-expanded") === "true";
+        chiudiTuttiToggleFiltri();
+        if (!aperto) {
+          btn.setAttribute("aria-expanded", "true");
+          panel.hidden = false;
+        }
+      });
+      panel.addEventListener("click", (e) => e.stopPropagation());
+    });
+
+    if (filtriAltriBtn && filtriAltriPanel) {
+      filtriAltriBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const aperto = filtriAltriBtn.getAttribute("aria-expanded") === "true";
+        chiudiTuttiToggleFiltri("filtri-extra");
+        if (!aperto) {
+          apriPannelloFiltriExtra();
+        } else {
+          chiudiPannelloFiltriExtra();
+        }
+      });
+      filtriAltriPanel.addEventListener("click", (e) => e.stopPropagation());
+    }
+
+    if (filtriAltriChiudi) {
+      filtriAltriChiudi.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        chiudiPannelloFiltriExtra();
+      });
+    }
+
+    document.addEventListener("click", () => chiudiTuttiToggleFiltri());
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") chiudiTuttiToggleFiltri();
+    });
+
+    /* Cambio orientamento / resize: ripristina toggle o slot mobile */
+    const onCambioFiltriViewport = () => {
+      syncFiltriBarMobilePortrait();
+      aggiornaBadgeFiltriExtra();
+    };
+    if (typeof mqFiltriMobilePortrait.addEventListener === "function") {
+      mqFiltriMobilePortrait.addEventListener("change", onCambioFiltriViewport);
+    }
+
+    if (mappaVenditaEl && typeof L !== "undefined") {
+      mappaVendita = L.map(mappaVenditaEl, {
+        scrollWheelZoom: false,
+      });
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        maxZoom: 19,
+      }).addTo(mappaVendita);
+
+      listaVendita.forEach((annuncio) => {
+        if (annuncio.lat == null || annuncio.lng == null) return;
+        const latLng = [annuncio.lat, annuncio.lng];
+        const titolo = typeof formatTipologia === "function"
+          ? formatTipologia(annuncio)
+          : annuncio.tipologia;
+        const href = `immobile.html?id=${encodeURIComponent(annuncio.id)}`;
+        const marker = L.marker(latLng).addTo(mappaVendita);
+        marker.bindPopup(
+          `<strong>${titolo}</strong><br>${annuncio.comune || ""}<br><a href="${href}">Vedi annuncio</a>`
+        );
+        marker.on("click", () => evidenziaCard(annuncio.id));
+        markerPerId[annuncio.id] = marker;
+      });
+
+      /* Abilita zoom rotella solo al focus/hover sulla mappa */
+      mappaVenditaEl.addEventListener("mouseenter", () => mappaVendita.scrollWheelZoom.enable());
+      mappaVenditaEl.addEventListener("mouseleave", () => mappaVendita.scrollWheelZoom.disable());
+
+      window.addEventListener("resize", () => {
+        mappaVendita.invalidateSize();
+      });
+      requestAnimationFrame(() => mappaVendita.invalidateSize());
+    }
+
+    /* Stato iniziale contatore + bounds */
+    applicaFiltriVendita();
   }
 
   /* ===== Valuta loco: altezza Affidati = 2/3 della stima (mobile portrait + landscape <1024) ===== */
@@ -1252,6 +1738,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ["Anno di costruzione", annuncio.annoCostruzione],
         ["Ascensore", annuncio.ascensore == null ? null : siNo(annuncio.ascensore)],
         ["Balconi", annuncio.balconi],
+        ["Box auto", annuncio.boxAuto],
         ["Arredato", annuncio.arredato == null ? null : siNo(annuncio.arredato)],
         ["Pertinenze", annuncio.pertinenze],
         ["Riscaldamento", annuncio.riscaldamento],
@@ -1354,7 +1841,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       elCondividi.innerHTML = `<div class="card-annuncio-share">
           <button type="button" class="card-annuncio-share-btn" aria-label="Condividi annuncio" aria-expanded="false" aria-haspopup="true">
-            <span class="card-annuncio-share-tooltip" aria-hidden="true">Condividi annuncio</span>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <circle cx="18" cy="5" r="3" stroke="currentColor" stroke-width="1.6"/>
               <circle cx="6" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/>
@@ -1604,10 +2090,14 @@ document.addEventListener("DOMContentLoaded", () => {
             ? "immobile-unita-box immobile-unita-box--evidenza"
             : "immobile-unita-box";
           const titolo = u.titolo || "Unità";
+          const iconaHtml = u.icona
+            ? `<span class="immobile-unita-icona" style="-webkit-mask-image:url('${u.icona}');mask-image:url('${u.icona}')" aria-hidden="true"></span>`
+            : "";
+          const titoloHtml = `<div class="immobile-unita-titolo">${iconaHtml}<h3>${titolo}</h3></div>`;
           /* Terreno + barra «In evidenza» sulla stessa riga */
           const testata = evidenza
-            ? `<div class="immobile-unita-testata"><h3>${titolo}</h3><p class="immobile-unita-badge">In evidenza</p></div>`
-            : `<h3>${titolo}</h3>`;
+            ? `<div class="immobile-unita-testata">${titoloHtml}<p class="immobile-unita-badge">In evidenza</p></div>`
+            : titoloHtml;
           return `<article class="${cls}">${testata}<dl>${dl}</dl></article>`;
         })
         .join("");

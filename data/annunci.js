@@ -79,6 +79,9 @@ const annunci = {
       angoloCon: "Via Kennedy",
       categoriaAnnuncio: "",
       comune: "Sparanise (CE)",
+      /* Coordinate mappa (Leaflet) — Via A. B. Nobel 1, Sparanise */
+      lat: 41.188602,
+      lng: 14.092139,
       /* Scheda tecnica: sostituiscono Tipologia / Contratto */
       statoConservazione: "Abitabile",
       annoCostruzione: 1968,
@@ -130,6 +133,9 @@ const annunci = {
       angoloCon: "",
       categoriaAnnuncio: "",
       comune: "Sparanise (CE)",
+      /* Via De Renzis 52, Sparanise */
+      lat: 41.19003,
+      lng: 14.093031,
       statoConservazione: "",
       annoCostruzione: null,
       prezzo: 80000,
@@ -185,6 +191,9 @@ const annunci = {
       comune: "Santa Maria Capua Vetere (CE)",
       /* Solo card home: comune abbreviato */
       comuneCard: "Santa Maria C. V. (CE)",
+      /* Via Antonio Gramsci 75, Santa Maria C. V. */
+      lat: 41.078225,
+      lng: 14.254053,
       statoConservazione: "Da ristrutturare",
       annoCostruzione: null,
       prezzo: 680000,
@@ -231,12 +240,13 @@ const annunci = {
       /* Box dettaglio superfici (dopo descrizione, prima della mappa) */
       unita: [
         {
-          titolo: "Negozio — Locale commerciale",
+          titolo: "Locale commerciale",
           piano: "Piano terra",
           superficie: "204,0 m²",
           coefficiente: "100%",
           tipoSuperficie: "Principale",
-          superficieCommerciale: "204,0 m²"
+          superficieCommerciale: "204,0 m²",
+          icona: "assets/images/icons/icon-Shop-Market.svg"
         },
         {
           titolo: "Appartamento A",
@@ -244,7 +254,8 @@ const annunci = {
           superficie: "106,9 m²",
           coefficiente: "100%",
           tipoSuperficie: "Principale",
-          superficieCommerciale: "106,9 m²"
+          superficieCommerciale: "106,9 m²",
+          icona: "assets/images/icons/icon-planimetria.svg"
         },
         {
           titolo: "Appartamento B",
@@ -252,7 +263,8 @@ const annunci = {
           superficie: "163,4 m²",
           coefficiente: "100%",
           tipoSuperficie: "Principale",
-          superficieCommerciale: "163,4 m²"
+          superficieCommerciale: "163,4 m²",
+          icona: "assets/images/icons/icon-planimetria.svg"
         },
         {
           titolo: "Appartamento C",
@@ -260,7 +272,8 @@ const annunci = {
           superficie: "131,4 m²",
           coefficiente: "100%",
           tipoSuperficie: "Principale",
-          superficieCommerciale: "131,4 m²"
+          superficieCommerciale: "131,4 m²",
+          icona: "assets/images/icons/icon-planimetria.svg"
         },
         {
           titolo: "Appartamento D",
@@ -268,7 +281,8 @@ const annunci = {
           superficie: "61,5 m²",
           coefficiente: "100%",
           tipoSuperficie: "Principale",
-          superficieCommerciale: "61,5 m²"
+          superficieCommerciale: "61,5 m²",
+          icona: "assets/images/icons/icon-planimetria.svg"
         },
         {
           titolo: "Appartamento E",
@@ -276,7 +290,8 @@ const annunci = {
           superficie: "232,9 m²",
           coefficiente: "100%",
           tipoSuperficie: "Principale",
-          superficieCommerciale: "232,9 m²"
+          superficieCommerciale: "232,9 m²",
+          icona: "assets/images/icons/icon-planimetria.svg"
         },
         {
           titolo: "Giardino",
@@ -284,31 +299,35 @@ const annunci = {
           superficie: "20,5 m²",
           coefficiente: "10%",
           tipoSuperficie: "Principale",
-          superficieCommerciale: "2,1 m²"
+          superficieCommerciale: "2,1 m²",
+          icona: "assets/images/icons/icon-Vaso-Planta.svg"
         },
         {
-          titolo: "Magazzino — Deposito 1",
+          titolo: "Magazzino — Dep. 1",
           piano: "Piano terra",
           superficie: "14,8 m²",
           coefficiente: "100%",
           tipoSuperficie: "Principale",
-          superficieCommerciale: "14,8 m²"
+          superficieCommerciale: "14,8 m²",
+          icona: "assets/images/icons/icon-Magazino.svg"
         },
         {
-          titolo: "Magazzino — Deposito 2",
+          titolo: "Magazzino — Dep. 2",
           piano: "Piano terra",
           superficie: "22,7 m²",
           coefficiente: "100%",
           tipoSuperficie: "Principale",
-          superficieCommerciale: "22,7 m²"
+          superficieCommerciale: "22,7 m²",
+          icona: "assets/images/icons/icon-Magazino.svg"
         },
         {
-          titolo: "Magazzino — Deposito 3",
+          titolo: "Magazzino — Dep. 3",
           piano: "Piano terra",
           superficie: "13,2 m²",
           coefficiente: "100%",
           tipoSuperficie: "Principale",
-          superficieCommerciale: "13,2 m²"
+          superficieCommerciale: "13,2 m²",
+          icona: "assets/images/icons/icon-Magazino.svg"
         }
       ],
       ...DINTORNI_SANTA_MARIA_1KM
@@ -324,6 +343,9 @@ const annunci = {
       via: "Strada provinciale SS7, 21",
       /* Query mappa con indirizzo esatto */
       mapsQuery: "SS7, 21, Francolise (CE)",
+      /* Pin esatto SS7, 21 Francolise (allineato a Google Maps) */
+      lat: 41.176872,
+      lng: 14.094442,
       angoloCon: "",
       categoriaAnnuncio: "",
       comune: "Francolise (CE)",
@@ -331,20 +353,21 @@ const annunci = {
       annoCostruzione: 1950,
       prezzo: 233000,
       mq: 638,
-      locali: 10,
+      locali: "5+",
       camere: null,
-      bagni: 2,
+      bagni: 3,
       piano: "Su 2 piani",
       pianiEdificio: 2,
       ascensore: false,
       cucina: "",
       balconi: 1,
       arredato: null,
+      boxAuto: "4 posti auto",
       pertinenze: "Terrazzo, terreno",
       riscaldamento: "",
       classeEnergetica: "G",
       descrizione:
-        "Immobile da ristrutturare, ubicato in ambito rurale a Francolise (SS7, km 187), sviluppato su due piani per una superficie complessiva di 638 mq e composto da 10 locali. La posizione garantisce un contesto tranquillo ma ben servito, con supermercati, scuole, banche, farmacia e stazione ferroviaria raggiungibili in pochi minuti, assicurando funzionalità e accessibilità.",
+        "Lungo la storica e strategica Via Appia a Sparanise, proponiamo in vendita un'esclusiva intera proprietà indipendente dalle straordinarie potenzialità commerciali e residenziali. L’immobile, libero su quattro lati, unisce la comodità di un'ampia abitazione privata alla redditività di un locale commerciale al piano terra, il tutto arricchito da un generoso spazio esterno. Completa la proprietà un immenso valore aggiunto: un terreno edificabile retrostante di ben 1.607 mq, perfetto per futuri ampliamenti strutturali, parcheggi o per la creazione di un'oasi relax.\n\n• Piano Terra (Locale Commerciale): Ampio locale commerciale con eccellente visibilità fronte strada sulla Via Appia, dotato di vetrine e accessi diretti. Uno spazio versatile, perfetto per accogliere un'attività di ristorazione, una reception, una sala colazioni o un negozio al dettaglio.\n\n• Primo Piano (Abitazione): Luminoso appartamento residenziale di generosa metratura, ideale come abitazione principale del proprietario/gestore o riconfigurabile in diverse camere indipendenti con bagno privato per gli ospiti.\n\n• Spazio Esterno & Giardino: Grande cortile interno che garantisce privacy e riservatezza, impreziosito da un patio ideale per allestire zone lounge o aree colazione all'aperto. Il cortile è circondato da un giardino\n\n• Terreno Edificabile: Terreno pianeggiante di 1.607 mq incluso nella proprietà. Rappresenta una vera rarità sul mercato, offrendo la possibilità di edificare ulteriori volumetrie (es. dependance, centro benessere) o di realizzare una piscina con solarium e un ampio parcheggio privato per i clienti.",
       cover:
         "assets/images/annunci/vendita/palazzo-via-appia-francolise/foto-01.webp",
       coverHover:
@@ -378,10 +401,31 @@ const annunci = {
       /* Dettaglio superfici (come Palazzo Santa Maria) */
       unita: [
         {
+          titolo: "Appartamento",
+          piano: "1",
+          superficie: "218,0 m²",
+          coefficiente: "100%",
+          tipoSuperficie: "Principale",
+          superficieCommerciale: "218,0 m²",
+          icona: "assets/images/icons/icon-planimetria.svg"
+        },
+        {
+          titolo: "Locale commerciale",
+          piano: "Piano terra",
+          superficie: "57,0 m²",
+          coefficiente: "100%",
+          tipoSuperficie: "Principale",
+          superficieCommerciale: "57,0 m²",
+          icona: "assets/images/icons/icon-Shop-Market.svg"
+        },
+        {
           titolo: "Terreno",
           piano: "Piano terra",
           superficie: "1.607 m²",
+          coefficiente: "20%",
           tipoSuperficie: "Accessoria",
+          superficieCommerciale: "321,4 m²",
+          icona: "assets/images/icons/icon-terreno.svg",
           /* Prova evidenziazione in scheda */
           inEvidenza: true
         },
@@ -389,7 +433,19 @@ const annunci = {
           titolo: "Terrazzo",
           piano: "Esterno",
           superficie: "55 m²",
-          tipoSuperficie: "Accessoria"
+          coefficiente: "30%",
+          tipoSuperficie: "Accessoria",
+          superficieCommerciale: "18,0 m²",
+          icona: "assets/images/icons/icon-Terrace.svg"
+        },
+        {
+          titolo: "Altro",
+          piano: "Piano terra",
+          superficie: "80,0 m²",
+          coefficiente: "30%",
+          tipoSuperficie: "Principale",
+          superficieCommerciale: "24,0 m²",
+          icona: "assets/images/icons/icon-planimetria.svg"
         }
       ],
       /* Servizi nell’area (da report, raggio ~2 km) */
@@ -402,7 +458,7 @@ const annunci = {
         },
         {
           voce: "Supermercati",
-          dettaglio: "Eurospin, DE.DA.CO. entro 2 km.",
+          dettaglio: "Eurospin, DO.DE.CA. entro 2 km.",
           icona: "assets/images/icons/icon-Shopping-Cart-Full.svg"
         },
         {
@@ -477,6 +533,11 @@ function getAnnunciVenditaHome() {
   if (!MOSTRA_CARD_DEMO) return reali;
   const demo = annunci.vendita.filter((a) => a.placeholder);
   return [...reali, ...demo];
+}
+
+/** Tutti gli annunci vendita pubblicati (pagina vendita.html) */
+function getAnnunciVenditaTutti() {
+  return annunci.vendita.filter((a) => !a.placeholder && a.collegabile);
 }
 
 /** Formatta prezzo stile mockup: €. 75.000 */

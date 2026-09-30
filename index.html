@@ -29,8 +29,19 @@
 
             <nav class="navbar-links" aria-label="Menu principale">
                 <a href="index.html" class="is-active">Home</a>
-                <a href="immobile.html?id=sparanise-cinquegrana-via-kennedy">Compra</a>
-                <a href="affitto.html">Affitta</a>
+
+                <div class="nav-dropdown">
+                    <button type="button" class="nav-dropdown-toggle" id="navImmobiliToggle" aria-expanded="false"
+                        aria-haspopup="true" aria-controls="navImmobiliMenu">
+                        Immobili
+                        <img src="assets/images/icons/icon-chevron-down.svg" alt="" class="icon icon--sm" width="16"
+                            height="16">
+                    </button>
+                    <ul class="nav-dropdown-menu" id="navImmobiliMenu" hidden>
+                        <li><a href="vendita.html">Vendita</a></li>
+                        <li><a href="affitto.html">Affitto</a></li>
+                    </ul>
+                </div>
 
                 <!-- Dropdown Vendi: Vendi casa + Valuta -->
                 <div class="nav-dropdown">
@@ -63,8 +74,8 @@
     <div class="drawer-overlay" id="drawerOverlay" hidden></div>
     <nav class="mobile-drawer" id="mobileDrawer" aria-label="Menu mobile" hidden>
         <a href="index.html">Home</a>
-        <a href="immobile.html?id=sparanise-cinquegrana-via-kennedy">Compra</a>
-        <a href="affitto.html">Affitta</a>
+        <a href="vendita.html">Vendita</a>
+        <a href="affitto.html">Affitto</a>
         <a href="#vendi">Vendi casa</a>
         <a href="#valuta">Valuta</a>
         <a href="#servizi">Servizi</a>
@@ -113,7 +124,7 @@
                     <div class="search-dropdown search-dropdown--tipo">
                         <button type="button" class="search-dropdown-toggle" id="searchTipoToggle" aria-expanded="false"
                             aria-haspopup="listbox" aria-controls="searchTipoMenu" aria-label="Tipologia immobile">
-                            <img src="assets/images/icons/icon-cottage.svg" alt="" class="icon icon--sm icon--cottage"
+                            <img src="assets/images/icons/icon-Home.svg" alt="" class="icon icon--sm icon--cottage"
                                 width="18" height="18">
                             <img src="assets/images/icons/icon-chevron-down.svg" alt="" class="icon icon--sm" width="16"
                                 height="16">
@@ -121,7 +132,7 @@
                         <ul class="search-dropdown-menu search-dropdown-menu--tipo" id="searchTipoMenu" role="listbox"
                             hidden>
                             <li role="option" data-value="case-ville" aria-selected="false">
-                                <img src="assets/images/icons/icon-cottage.svg" alt=""
+                                <img src="assets/images/icons/icon-Home.svg" alt=""
                                     class="icon icon--sm icon--cottage" width="18" height="18">
                                 Case - Ville
                             </li>
@@ -186,7 +197,7 @@
         <section class="sezione-annunci" id="immobili-vendita" aria-labelledby="titolo-vendita">
             <div class="container">
                 <h2 class="sezione-titolo" id="titolo-vendita">
-                    <span class="sezione-titolo-testo">Immobili In <span>Vendita</span></span>
+                    <span class="sezione-titolo-testo">Immobili In <span>Evidenza</span></span>
                 </h2>
 
                 <div class="carousel" data-carousel="vendita">
@@ -228,10 +239,10 @@
 
                 <p class="vendi-occhiello">Come vendere casa velocemente...</p>
                 <p class="vendi-intro">
-                    <span class="vendi-intro-riga vendi-copy-lead">La vendita di un immobile</span>
-                    <span class="vendi-intro-riga vendi-copy-lead">richiede una grande professionalità.</span>
-                    <span class="vendi-intro-riga vendi-intro-passo">Come primo passo,</span>
-                    <span class="vendi-intro-riga vendi-intro-supporto">valuteremo l'intero potenziale del tuo
+                    <span class="vendi-intro-riga vendi-copy-lead">La vendita di un immobile richiede una grande
+                        professionalità.</span>
+                    <span class="vendi-intro-riga vendi-intro-passo">Come primo passo:</span>
+                    <span class="vendi-intro-riga vendi-intro-supporto">Valuteremo l'intero potenziale del tuo
                         immobile,</span>
                     <span class="vendi-intro-riga vendi-intro-supporto">con tutti i suoi dettagli e le sue
                         caratteristiche.</span>
@@ -313,7 +324,7 @@
                                 </button>
                                 <ul class="valuta-dropdown-menu" id="valutaTipologiaMenu" role="listbox" hidden>
                                     <li role="option" data-value="case-ville">
-                                        <img src="assets/images/icons/icon-cottage.svg" alt="" width="18" height="18">
+                                        <img src="assets/images/icons/icon-Home.svg" alt="" width="18" height="18">
                                         Case - Ville
                                     </li>
                                     <li role="option" data-value="appartamenti">
@@ -1050,7 +1061,7 @@
                 <p class="footer-titolo">Link rapidi</p>
                 <ul class="footer-link">
                     <li><a href="index.html">Home</a></li>
-                    <li><a href="immobile.html?id=sparanise-cinquegrana-via-kennedy">Compra</a></li>
+                    <li><a href="vendita.html">Vendita</a></li>
                     <li><a href="affitto.html">Affitto</a></li>
                     <li><a href="index.html#vendi">Vendi</a></li>
                     <li><a href="index.html#valuta">Valuta</a></li>

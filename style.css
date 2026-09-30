@@ -208,16 +208,16 @@ h2 {
   height: 16px;
 }
 
-/* Cottage in elenco tipologie: scala allineata alle altre voci */
+/* Cottage/Home in elenco tipologie: stessa misura delle altre voci */
 .search-dropdown-menu--tipo .icon--cottage {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
 }
 
-/* Cottage sul pulsante chiuso: +3mm (~11px) rispetto a icon--sm */
+/* Cottage sul pulsante chiuso (hero): stessa base delle altre icone sm */
 .search-dropdown-toggle .icon--cottage {
-  width: calc(16px + 3mm);
-  height: calc(16px + 3mm);
+  width: 16px;
+  height: 16px;
 }
 
 /* ===== BOTTONI ===== */
@@ -1397,7 +1397,8 @@ h2 {
 /* Condividi annuncio (card collegabili) */
 .card-annuncio-share {
   position: relative;
-  z-index: 4;
+  /* Sopra la cover (media z-index: 5): altrimenti il menu verso l’alto resta nascosto */
+  z-index: 6;
   flex-shrink: 0;
 }
 
@@ -1409,52 +1410,18 @@ h2 {
   width: 28px;
   height: 28px;
   padding: 0;
-  border: none;
-  border-radius: 0;
+  border: 1.5px solid var(--colore-accento);
+  border-radius: 50%;
   background: transparent;
   color: var(--colore-accento);
   cursor: pointer;
+  box-sizing: border-box;
 }
 
 .card-annuncio-share-btn svg {
   width: 20px;
   height: 20px;
   display: block;
-}
-
-.card-annuncio-share-tooltip {
-  position: absolute;
-  left: 50%;
-  bottom: calc(100% + 8px);
-  transform: translateX(-50%);
-  padding: 0;
-  border: none;
-  border-radius: 0;
-  background: transparent;
-  color: #fff;
-  font-family: var(--font-corpo);
-  font-size: 0.72rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.15s ease, visibility 0.15s ease;
-  z-index: 5;
-}
-
-.card-annuncio-share-btn:hover .card-annuncio-share-tooltip,
-.card-annuncio-share-btn:focus-visible .card-annuncio-share-tooltip {
-  opacity: 1;
-  visibility: visible;
-}
-
-/* Touch / niente hover: il tooltip non esiste */
-@media (hover: none) {
-  .card-annuncio-share-tooltip {
-    display: none !important;
-  }
 }
 
 .card-annuncio-share-menu {
@@ -1547,6 +1514,27 @@ h2 {
   inset: 0;
   opacity: 0;
   pointer-events: none;
+  z-index: 1;
+}
+
+/* Barra «In vendita»: angolo alto sx, sempre sopra la foto (anche in hover) */
+.card-annuncio-badge-vendita {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  padding: 4px 12px;
+  border-radius: 0;
+  background: var(--colore-primario);
+  font-family: var(--font-corpo);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--colore-secondario);
+  pointer-events: none;
+  box-sizing: border-box;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -1918,36 +1906,36 @@ h2 {
 
 /* ===== SEZIONE VENDI (layout mockup) ===== */
 .sezione-vendi {
-  padding: var(--spazio-7) 0 var(--spazio-8);
+  padding: var(--spazio-7) 0;
   background: var(--colore-sfondo);
 }
 
 .vendi-occhiello {
-  margin: 0 0 var(--spazio-3);
+  margin: 0 0 var(--spazio-5);
   font-family: var(--font-titoli);
-  font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+  font-size: clamp(calc(1.05rem + 3px), calc(2.2vw + 3px), calc(1.35rem + 3px));
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: #fff;
 }
 
-/* Copy editoriale Vendi: headline + supporto, staccato dal bordo, niente troncatura */
+/* Copy editoriale Vendi: headline + supporto, allineato a sx */
 .vendi-intro {
   width: 100%;
-  max-width: min(36rem, 100%);
-  margin: 0 0 var(--spazio-5) auto;
-  padding-inline: 0 clamp(12px, 3vw, 28px) 0 0;
+  max-width: none;
+  margin: 0 0 var(--spazio-5);
+  padding-inline: 0;
   box-sizing: border-box;
   font-family: var(--font-titoli);
-  text-align: right;
+  text-align: left;
 }
 
 /* Tagline post-banner: Cardo Bold, centrata, grande, 3 righe a tutta colonna */
 .vendi-tagline {
   width: 100%;
   max-width: none;
-  margin: 0 0 var(--spazio-6);
+  margin: 0;
   padding-inline: 0;
   box-sizing: border-box;
   font-family: var(--font-titoli);
@@ -1964,14 +1952,23 @@ h2 {
   hyphens: none;
 }
 
-/* Headline: messaggio principale (anche su più righe) */
+/* Headline: Cardo Bold, stile normale, un solo rigo */
 .vendi-copy-lead {
   margin: 0;
-  font-size: clamp(1.25rem, 2.4vw, 1.75rem);
+  font-family: var(--font-titoli);
+  font-size: clamp(1.05rem, 2.2vw, 1.75rem);
   font-weight: 700;
   line-height: 1.35;
   letter-spacing: 0.01em;
+  text-transform: none;
   color: var(--colore-testo);
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .vendi-copy-lead {
+    white-space: normal;
+  }
 }
 
 /* Aria tra headline e supporto */
@@ -1979,24 +1976,25 @@ h2 {
   margin-top: 0.65em;
 }
 
-/* Supporto intro: Poppins Light, maiuscolo, #5a5a5a */
-.vendi-intro-riga:not(.vendi-copy-lead) {
+/* Supporto intro: Poppins Medium, stile normale */
+.vendi-intro-riga.vendi-intro-supporto {
+  font-family: var(--font-corpo);
+  font-size: clamp(calc(0.95rem + 5px), calc(1.5vw + 5px), calc(1.12rem + 5px));
+  font-weight: 500;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  color: var(--colore-testo-muto);
+}
+
+/* «Come primo passo:»: Poppins Bold, maiuscolo, testo muto */
+.vendi-intro-riga.vendi-intro-passo {
   font-family: var(--font-corpo);
   font-size: clamp(0.95rem, 1.5vw, 1.12rem);
-  font-weight: 300;
+  font-weight: 700;
   line-height: 1.6;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: #5a5a5a;
-}
-
-/* «Come primo passo,»: Poppins Bold */
-.vendi-intro-riga.vendi-intro-passo {
-  font-weight: 700;
-}
-
-/* Supporto sotto «Come primo passo,»: testo muto */
-.vendi-intro-riga.vendi-intro-supporto {
   color: var(--colore-testo-muto);
 }
 
@@ -3045,7 +3043,7 @@ h2 {
 
   /* Clip spento fino a fine animazione (se torna subito, restano nel box) */
   .sezione-valuta:has(.valuta-loco:not(.is-reveal-done)),
-  .sezione-valuta:has(.valuta-loco:not(.is-reveal-done)) > .container,
+  .sezione-valuta:has(.valuta-loco:not(.is-reveal-done))>.container,
   .valuta-loco:not(.is-reveal-done),
   .valuta-loco:not(.is-reveal-done) .valuta-loco-inner,
   .valuta-loco:not(.is-reveal-done) .valuta-loco-cards,
@@ -5551,7 +5549,32 @@ h2 {
 .immobile-unita-testata h3 {
   margin: 0;
   min-width: 0;
+}
+
+/* Titolo unità + icona accento (stessa altezza del titolo) */
+.immobile-unita-titolo {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  min-width: 0;
   flex: 1 1 auto;
+}
+
+.immobile-unita-box>.immobile-unita-titolo {
+  margin-bottom: var(--spazio-2);
+}
+
+.immobile-unita-icona {
+  flex-shrink: 0;
+  width: 1.2rem;
+  height: 1.2rem;
+  background-color: var(--colore-accento);
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+  mask-repeat: no-repeat;
 }
 
 /* Barra a dx, chiusura netta, stesso margine sx/dx sul testo */
@@ -5689,7 +5712,7 @@ h2 {
 }
 
 .immobile-unita-box h3 {
-  margin: 0 0 var(--spazio-2);
+  margin: 0;
   font-family: var(--font-titoli);
   font-size: 1.05rem;
   font-weight: 700;
@@ -5700,6 +5723,10 @@ h2 {
   text-overflow: ellipsis;
   /* Allineamento ottico (Terreno / Terrazzo) */
   transform: translateY(1mm);
+}
+
+.immobile-unita-box>h3 {
+  margin: 0 0 var(--spazio-2);
 }
 
 .immobile-unita-box dl {
@@ -5902,6 +5929,715 @@ h2 {
   flex-wrap: wrap;
   justify-content: center;
   gap: var(--spazio-3);
+}
+
+/* ===== PAGINA VENDITA (lista + mappa Leaflet) ===== */
+.pagina-vendita {
+  padding: calc(8px + var(--nav-height) + var(--spazio-5)) 0 var(--spazio-8);
+}
+
+.pagina-vendita-titolo {
+  margin: 0 0 var(--spazio-4);
+  font-family: var(--font-titoli);
+  font-size: clamp(1.85rem, 3.5vw, 2.4rem);
+  font-weight: 400;
+  color: var(--colore-primario);
+}
+
+/* Widget ricerca: sotto il titolo, sopra lista+mappa */
+.pagina-vendita-search {
+  margin-top: 0;
+  margin-bottom: var(--spazio-3);
+  margin-left: 0;
+  margin-right: 0;
+  max-width: none;
+  width: 100%;
+}
+
+/* Tipologia su vendita: di base solo icona (+ freccia) */
+.pagina-vendita-search .search-dropdown--tipo {
+  width: 100%;
+  max-width: 64px;
+}
+
+.pagina-vendita-search .search-dropdown--tipo .search-dropdown-toggle {
+  justify-content: center;
+  gap: 6px;
+  padding: 0 10px;
+  min-width: 0;
+  width: 100%;
+}
+
+.pagina-vendita-search .search-tipo-label {
+  display: none;
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: left;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--colore-testo-scuro);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pagina-vendita-search .search-dropdown--tipo .search-dropdown-toggle .icon:last-of-type {
+  margin-left: 0;
+  flex-shrink: 0;
+}
+
+.pagina-vendita-search .search-dropdown--tipo .search-dropdown-toggle .icon,
+.pagina-vendita-search .search-dropdown--tipo .search-dropdown-toggle .icon--sm,
+.pagina-vendita-search .search-dropdown--tipo .search-dropdown-toggle .icon--cottage {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.pagina-vendita-search .search-dropdown-menu--tipo .icon,
+.pagina-vendita-search .search-dropdown-menu--tipo .icon--sm,
+.pagina-vendita-search .search-dropdown-menu--tipo .icon--cottage {
+  width: 18px;
+  height: 18px;
+}
+
+/* Desktop + tablet/iPad landscape: icona + nome tipologia */
+@media (min-width: 1024px) and (orientation: landscape),
+(min-width: 1367px) {
+  .pagina-vendita-search .search-dropdown--tipo {
+    max-width: 6cm;
+  }
+
+  .pagina-vendita-search .search-dropdown--tipo .search-dropdown-toggle {
+    justify-content: flex-start;
+    gap: 8px;
+    padding: 0 12px 0 14px;
+  }
+
+  .pagina-vendita-search .search-tipo-label {
+    display: block;
+  }
+
+  .pagina-vendita-search .search-dropdown--tipo .search-dropdown-toggle .icon:last-of-type {
+    margin-left: auto;
+  }
+}
+
+/* Toggle filtri (Prezzo / Superficie / Locali) */
+.pagina-vendita-toggle {
+  position: relative;
+  min-width: 0;
+}
+
+.pagina-vendita-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 48px;
+  padding: 0 14px;
+  border: none;
+  border-radius: var(--raggio-md);
+  background: #fff;
+  color: var(--colore-testo-scuro);
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55);
+  white-space: nowrap;
+  /* Touch: evita flash azzurro su tap */
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pagina-vendita-toggle-btn[aria-expanded="true"] {
+  outline: 2px solid var(--colore-primario);
+  outline-offset: 1px;
+}
+
+.pagina-vendita-toggle-btn .icon {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s ease;
+}
+
+.pagina-vendita-toggle-btn[aria-expanded="true"] .icon {
+  transform: rotate(180deg);
+}
+
+.pagina-vendita-toggle-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: max-content;
+  min-width: 100%;
+  padding: 10px;
+  border-radius: var(--raggio-md);
+  background: #fff;
+  box-shadow: var(--ombra-media);
+}
+
+.pagina-vendita-toggle-panel[hidden] {
+  display: none;
+}
+
+.pagina-vendita-toggle-sep {
+  color: var(--colore-testo-muto);
+  font-weight: 600;
+}
+
+.pagina-vendita-filtro-input {
+  width: 96px;
+  min-width: 0;
+  height: 36px;
+  padding: 0 8px;
+  border: 1px solid rgba(14, 43, 44, 0.18);
+  border-radius: var(--raggio-sm);
+  background: #f7f7f4;
+  color: var(--colore-testo-scuro);
+  font-size: 0.88rem;
+  box-sizing: border-box;
+}
+
+.pagina-vendita-filtro-input:focus {
+  outline: 2px solid var(--colore-primario);
+  outline-offset: 1px;
+}
+
+.pagina-vendita-risultati {
+  margin: 0 0 var(--spazio-4);
+  font-size: 0.9rem;
+  color: var(--colore-testo-muto);
+}
+
+/* Pannello «Filtri» (bagni, caratteristiche, piano, clima, stato, APE) */
+.pagina-vendita-filtri-extra {
+  position: relative;
+  min-width: 0;
+}
+
+.pagina-vendita-filtri-btn {
+  position: relative;
+}
+
+.pagina-vendita-filtri-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--colore-primario);
+  color: var(--colore-testo-scuro);
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.pagina-vendita-filtri-badge[hidden] {
+  display: none;
+}
+
+.pagina-vendita-filtri-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  left: auto;
+  z-index: 50;
+  width: min(420px, calc(100vw - 40px));
+  max-height: min(70vh, 520px);
+  overflow-y: auto;
+  padding: 14px;
+  border-radius: var(--raggio-md);
+  background: #fff;
+  color: var(--colore-testo-scuro);
+  box-shadow: var(--ombra-media);
+  -webkit-overflow-scrolling: touch;
+}
+
+.pagina-vendita-filtri-panel[hidden] {
+  display: none;
+}
+
+.pagina-vendita-filtri-sezione {
+  margin-bottom: 14px;
+}
+
+.pagina-vendita-filtri-sezione:last-of-type {
+  margin-bottom: 8px;
+}
+
+.pagina-vendita-filtri-titolo {
+  margin: 0 0 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #5a5a5a;
+}
+
+.pagina-vendita-filtri-range {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pagina-vendita-filtri-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pagina-vendita-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 6px 12px;
+  border: 1px solid rgba(14, 43, 44, 0.18);
+  border-radius: 999px;
+  background: #f7f7f4;
+  font-size: 0.86rem;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.pagina-vendita-chip:has(input:checked) {
+  border-color: var(--colore-primario);
+  background: rgba(207, 181, 59, 0.18);
+}
+
+.pagina-vendita-chip input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--colore-accento);
+  flex-shrink: 0;
+}
+
+.pagina-vendita-filtri-azioni {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 4px;
+  border-top: 1px solid rgba(14, 43, 44, 0.1);
+}
+
+.pagina-vendita-filtri-azzera {
+  min-height: 40px;
+  padding: 0 12px;
+  border: none;
+  border-radius: var(--raggio-sm);
+  background: transparent;
+  color: var(--colore-accento);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Mobile: tipologia solo icona + cerca; sotto toggle + Filtri */
+.pagina-vendita-search.hero-search {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1.2fr);
+  gap: var(--spazio-2);
+  align-items: stretch;
+}
+
+.pagina-vendita-search .search-dropdown--tipo {
+  grid-column: 1;
+}
+
+.pagina-vendita-search .hero-search-input {
+  grid-column: 2;
+}
+
+.pagina-vendita-search .pagina-vendita-toggle,
+.pagina-vendita-search .pagina-vendita-filtri-extra {
+  grid-column: 1 / -1;
+}
+
+/* Intestazione pannello Filtri: nascosta fuori da mobile portrait */
+.pagina-vendita-filtri-panel-head {
+  display: none;
+}
+
+.pagina-vendita-filtri-panel-titolo {
+  margin: 0;
+  font-family: var(--font-titoli);
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--colore-testo-scuro);
+}
+
+.pagina-vendita-filtri-chiudi {
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid rgba(14, 43, 44, 0.18);
+  border-radius: var(--raggio-sm);
+  background: #f7f7f4;
+  color: var(--colore-testo-scuro);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@media (max-width: 767px) {
+  .pagina-vendita-filtri-panel {
+    left: 0;
+    right: 0;
+    width: auto;
+  }
+}
+
+/* Mobile (portrait + landscape): barra = tipo + indirizzo; Filtri sotto; pannello fullscreen */
+@media (max-width: 767px),
+(max-width: 1023px) and (orientation: landscape) and (max-height: 499px) {
+  .pagina-vendita-search.hero-search {
+    grid-template-columns: 64px minmax(0, 1fr);
+  }
+
+  .pagina-vendita-search .pagina-vendita-toggle {
+    display: none;
+  }
+
+  .pagina-vendita-search .pagina-vendita-filtri-extra {
+    grid-column: 1 / -1;
+  }
+
+  .pagina-vendita-search .hero-search-btn {
+    display: none;
+  }
+
+  .pagina-vendita-filtri-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    margin: 0 0 14px;
+    padding: 14px 0 12px;
+    background: #fff;
+    border-bottom: 1px solid rgba(14, 43, 44, 0.1);
+    /* Evita che i campi scrollino visibili sopra l’header */
+    box-shadow: 0 8px 0 #fff;
+  }
+
+  .pagina-vendita-filtri-panel {
+    position: fixed;
+    inset: 0;
+    z-index: 1700;
+    width: 100% !important;
+    max-width: none;
+    max-height: none;
+    height: 100%;
+    height: 100dvh;
+    margin: 0;
+    border-radius: 0;
+    padding: 0 14px 14px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  body.is-filtri-vendita-aperti {
+    overflow: hidden;
+  }
+
+  body.is-filtri-vendita-aperti .whatsapp-float {
+    display: none;
+  }
+}
+
+/* Tablet+: barra con Prezzo / Superficie / Locali (esclude mobile landscape basso) */
+@media (min-width: 768px) and (min-height: 500px) {
+  .pagina-vendita-search.hero-search {
+    grid-template-columns: 64px minmax(0, 1.2fr) repeat(3, minmax(100px, auto)) minmax(100px, auto) 52px;
+    gap: 8px;
+    align-items: stretch;
+  }
+
+  .pagina-vendita-search .search-dropdown--tipo,
+  .pagina-vendita-search .hero-search-input,
+  .pagina-vendita-search .pagina-vendita-toggle,
+  .pagina-vendita-search .pagina-vendita-filtri-extra {
+    grid-column: auto;
+  }
+
+  .pagina-vendita-search .search-dropdown-toggle,
+  .pagina-vendita-search .pagina-vendita-toggle-btn {
+    height: 52px;
+  }
+
+  .pagina-vendita-search .hero-search-input {
+    height: 52px;
+    padding-right: 16px;
+  }
+
+  .pagina-vendita-search .hero-search-btn {
+    position: static;
+    width: 52px;
+    height: 52px;
+    right: auto;
+  }
+
+  .pagina-vendita-filtri-sezione--bar-mobile {
+    display: none !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .pagina-vendita-search.hero-search {
+    grid-template-columns: 64px minmax(140px, 1.3fr) repeat(3, minmax(110px, auto)) minmax(110px, auto) 52px;
+  }
+
+  .pagina-vendita-filtri-panel {
+    width: min(460px, 50vw);
+  }
+}
+
+/* Landscape largo: colonna tipologia con testo */
+@media (min-width: 1024px) and (orientation: landscape),
+(min-width: 1367px) {
+  .pagina-vendita-search.hero-search {
+    grid-template-columns: minmax(0, 6cm) minmax(140px, 1.3fr) repeat(3, minmax(110px, auto)) minmax(110px, auto) 52px;
+  }
+}
+
+.pagina-vendita-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spazio-5);
+  align-items: start;
+}
+
+.pagina-vendita-lista {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spazio-4);
+  min-width: 0;
+}
+
+.pagina-vendita-lista .card-annuncio {
+  width: 100%;
+  max-width: none;
+}
+
+.pagina-vendita-lista .card-annuncio.is-mappa-attiva {
+  outline: 2px solid var(--colore-primario);
+  outline-offset: 2px;
+}
+
+.pagina-vendita-mappa-wrap {
+  position: relative;
+  width: 100%;
+  min-height: 280px;
+  height: 50vh;
+  border: 1px solid var(--colore-primario);
+  border-radius: var(--raggio-md);
+  overflow: hidden;
+  background: #0a1f20;
+}
+
+.pagina-vendita-mappa {
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+/* Popup Leaflet: testo scuro su fondo chiaro */
+.pagina-vendita-mappa .leaflet-popup-content-wrapper {
+  border-radius: var(--raggio-sm);
+  background: #E4E4DE;
+  color: #0E2B2C;
+  box-shadow: none;
+}
+
+.pagina-vendita-mappa .leaflet-popup-tip {
+  background: #E4E4DE;
+}
+
+.pagina-vendita-mappa .leaflet-popup-content {
+  margin: 10px 12px;
+  font-family: var(--font-corpo);
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+.pagina-vendita-mappa .leaflet-popup-content a {
+  color: var(--colore-accento);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+/* Specs: restano dentro la card anche su card strette (tablet) */
+.pagina-vendita-lista .card-annuncio-body {
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Tipografia compatta: evita prezzi/città giganti che stirano le card */
+.pagina-vendita-lista .card-annuncio--cliccabile .card-annuncio-prezzo {
+  font-size: 1.15rem;
+}
+
+.pagina-vendita-lista .card-annuncio--cliccabile .card-annuncio-tipo,
+.pagina-vendita-lista .card-annuncio-tipo {
+  font-size: 0.92rem;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pagina-vendita-lista .card-annuncio--cliccabile .card-annuncio-comune,
+.pagina-vendita-lista .card-annuncio-comune {
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
+}
+
+.pagina-vendita-lista .card-annuncio-specs {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  gap: 4px;
+  justify-content: space-between;
+}
+
+.pagina-vendita-lista .card-spec {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 6px 3px;
+  min-height: 56px;
+  gap: 4px;
+}
+
+.pagina-vendita-lista .card-spec-icon {
+  width: 22px;
+  height: 22px;
+}
+
+.pagina-vendita-lista .card-spec>span:last-child {
+  font-size: 0.68rem;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Tablet portrait stretto: 2 card affiancate (mappa sotto) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .pagina-vendita-lista {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* iPad Pro / tablet portrait: mappa sotto con altezza contenuta (no stiramento) */
+@media (min-width: 1024px) and (max-width: 1366px) and (orientation: portrait) {
+  .pagina-vendita-layout {
+    grid-template-columns: 1fr;
+    gap: var(--spazio-5);
+  }
+
+  .pagina-vendita-lista {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pagina-vendita-mappa-wrap {
+    position: relative;
+    top: auto;
+    height: 40vh;
+    min-height: 280px;
+    max-height: 420px;
+  }
+
+  .pagina-vendita-lista .card-spec {
+    padding: 8px 6px;
+    min-height: 64px;
+  }
+
+  .pagina-vendita-lista .card-spec-icon {
+    width: 26px;
+    height: 26px;
+  }
+
+  .pagina-vendita-lista .card-spec>span:last-child {
+    font-size: 0.78rem;
+  }
+}
+
+/* Landscape tablet + desktop: metà — lista | mappa sticky */
+@media (min-width: 1024px) and (orientation: landscape),
+(min-width: 1367px) {
+  .pagina-vendita-layout {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spazio-5);
+    align-items: start;
+  }
+
+  /* Tablet landscape: 1 card per riga (evita overflow icone) */
+  .pagina-vendita-lista {
+    grid-template-columns: 1fr;
+  }
+
+  .pagina-vendita-mappa-wrap {
+    position: sticky;
+    top: calc(8px + var(--nav-height) + var(--spazio-3));
+    height: calc(100vh - var(--nav-height) - var(--spazio-7));
+    min-height: 0;
+    max-height: none;
+    align-self: start;
+  }
+
+  .pagina-vendita-lista .card-spec {
+    padding: 8px 6px;
+    min-height: 64px;
+  }
+
+  .pagina-vendita-lista .card-spec-icon {
+    width: 26px;
+    height: 26px;
+  }
+
+  .pagina-vendita-lista .card-spec>span:last-child {
+    font-size: 0.78rem;
+  }
+}
+
+/* Tablet / iPad landscape da 1280: card impilate a metà sx, mappa a dx
+   (override della griglia a 2: resta 1fr dalla MQ landscape sopra) */
+@media (min-width: 1280px) and (max-width: 1440px) and (orientation: landscape) {
+  .pagina-vendita-lista {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Desktop: card più strette del carosello; più spazio alla mappa; oltre le 12 col */
+@media (min-width: 1441px) {
+  .pagina-vendita>.container {
+    max-width: calc(var(--container-max) + 96px);
+  }
+
+  .pagina-vendita-layout {
+    grid-template-columns: max-content minmax(0, 1fr);
+    gap: var(--spazio-3);
+  }
+
+  .pagina-vendita-lista {
+    grid-template-columns: repeat(2, 370px);
+    /* +2mm tra le due colonne (fascia verticale) */
+    gap: 16px calc(16px + 2mm);
+  }
+
+  .pagina-vendita-lista .card-annuncio {
+    width: 370px;
+    max-width: 370px;
+  }
 }
 
 /* ===== LIGHTBOX GALLERIA (overlay stile Tempocasa) ===== */

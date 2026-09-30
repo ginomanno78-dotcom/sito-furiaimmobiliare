@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendita — Furia Immobiliare Srls</title>
+    <meta name="description"
+        content="Immobili in vendita — Furia Immobiliare Srls, Sparanise (CE). Tutti gli annunci con mappa.">
+    <meta property="og:title" content="Vendita — Furia Immobiliare Srls">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="it_IT">
+    <link rel="icon" type="image/svg+xml" href="assets/logo-furia-favicon.svg">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <header class="navbar" id="navbar">
+        <div class="container navbar-inner">
+            <a href="index.html" class="navbar-brand" aria-label="Furia Immobiliare Srls — Home">
+                <img src="assets/logo-furia.svg" alt="" class="navbar-logo" width="40" height="40">
+                <span class="navbar-wordmark">FURIA IMMOBILIARE SRLS</span>
+            </a>
+
+            <nav class="navbar-links" aria-label="Menu principale">
+                <a href="index.html">Home</a>
+
+                <div class="nav-dropdown">
+                    <button type="button" class="nav-dropdown-toggle" id="navImmobiliToggle" aria-expanded="false"
+                        aria-haspopup="true" aria-controls="navImmobiliMenu">
+                        Immobili
+                        <img src="assets/images/icons/icon-chevron-down.svg" alt="" class="icon icon--sm" width="16"
+                            height="16">
+                    </button>
+                    <ul class="nav-dropdown-menu" id="navImmobiliMenu" hidden>
+                        <li><a href="vendita.html" class="is-active">Vendita</a></li>
+                        <li><a href="affitto.html">Affitto</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-dropdown">
+                    <button type="button" class="nav-dropdown-toggle" id="navVendiToggle" aria-expanded="false"
+                        aria-haspopup="true" aria-controls="navVendiMenu">
+                        Vendi
+                        <img src="assets/images/icons/icon-chevron-down.svg" alt="" class="icon icon--sm" width="16"
+                            height="16">
+                    </button>
+                    <ul class="nav-dropdown-menu" id="navVendiMenu" hidden>
+                        <li><a href="index.html#vendi">Vendi casa</a></li>
+                        <li><a href="index.html#valuta">Valuta</a></li>
+                    </ul>
+                </div>
+
+                <a href="index.html#servizi">Servizi</a>
+                <a href="index.html#contatti">Contatti</a>
+            </nav>
+
+            <button type="button" class="hamburger" id="hamburger" aria-label="Apri menu" aria-expanded="false"
+                aria-controls="mobileDrawer">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="drawer-overlay" id="drawerOverlay" hidden></div>
+    <nav class="mobile-drawer" id="mobileDrawer" aria-label="Menu mobile" hidden>
+        <a href="index.html">Home</a>
+        <a href="vendita.html">Vendita</a>
+        <a href="affitto.html">Affitto</a>
+        <a href="index.html#vendi">Vendi casa</a>
+        <a href="index.html#valuta">Valuta</a>
+        <a href="index.html#servizi">Servizi</a>
+        <a href="index.html#contatti">Contatti</a>
+    </nav>
+
+    <main id="main">
+        <section class="pagina-vendita" aria-labelledby="titolo-vendita-pagina">
+            <div class="container">
+                <h1 class="pagina-vendita-titolo" id="titolo-vendita-pagina">Immobili in vendita</h1>
+
+                <!-- Filtri vendita: tipologia + testo + toggle prezzo/superficie/locali -->
+                <form class="hero-search pagina-vendita-search" id="heroSearchForm" role="search"
+                    aria-label="Filtra immobili in vendita">
+
+                    <!-- Tipologia immobile -->
+                    <div class="search-dropdown search-dropdown--tipo">
+                        <button type="button" class="search-dropdown-toggle" id="searchTipoToggle" aria-expanded="false"
+                            aria-haspopup="listbox" aria-controls="searchTipoMenu" aria-label="Tipologia immobile">
+                            <img src="assets/images/icons/icon-Home.svg" alt=""
+                                class="icon icon--sm icon--cottage search-tipo-icon" width="18" height="18">
+                            <span class="search-tipo-label" id="searchTipoLabel">Tipologia</span>
+                            <img src="assets/images/icons/icon-chevron-down.svg" alt="" class="icon icon--sm" width="16"
+                                height="16">
+                        </button>
+                        <ul class="search-dropdown-menu search-dropdown-menu--tipo" id="searchTipoMenu" role="listbox"
+                            hidden>
+                            <li role="option" data-value="" aria-selected="true">
+                                <img src="assets/images/icons/icon-Home.svg" alt=""
+                                    class="icon icon--sm icon--cottage" width="18" height="18">
+                                Tutte
+                            </li>
+                            <li role="option" data-value="case-ville" aria-selected="false">
+                                <img src="assets/images/icons/icon-Home.svg" alt=""
+                                    class="icon icon--sm icon--cottage" width="18" height="18">
+                                Case - Ville
+                            </li>
+                            <li role="option" data-value="appartamenti" aria-selected="false">
+                                <img src="assets/images/icons/icon-appartamenti.svg" alt="" class="icon icon--sm"
+                                    width="18" height="18">
+                                Appartamenti
+                            </li>
+                            <li role="option" data-value="terreno" aria-selected="false">
+                                <img src="assets/images/icons/icon-terreno.svg" alt="" class="icon icon--sm" width="18"
+                                    height="18">
+                                Terreno
+                            </li>
+                            <li role="option" data-value="commerciale" aria-selected="false">
+                                <img src="assets/images/icons/icon-commerciale.svg" alt="" class="icon icon--sm"
+                                    width="18" height="18">
+                                Commerciale
+                            </li>
+                            <li role="option" data-value="garage" aria-selected="false">
+                                <img src="assets/images/icons/icon-garage.svg" alt="" class="icon icon--sm" width="18"
+                                    height="18">
+                                Garage
+                            </li>
+                            <li role="option" data-value="nuove-costruzioni" aria-selected="false">
+                                <img src="assets/images/icons/icon-nuove-costruzioni.svg" alt="" class="icon icon--sm"
+                                    width="18" height="18">
+                                Nuove Costruzione
+                            </li>
+                        </ul>
+                        <input type="hidden" name="tipologia" id="searchTipo" value="">
+                    </div>
+
+                    <label class="sr-only" for="searchQuery">Città, zona o indirizzo</label>
+                    <input type="search" id="searchQuery" name="q" class="hero-search-input"
+                        placeholder="Città, zona o indirizzo..." autocomplete="off">
+
+                    <!-- Toggle Prezzo (tablet+; su mobile portrait va nel pannello Filtri) -->
+                    <div class="pagina-vendita-toggle" data-filtro-bar="prezzo">
+                        <button type="button" class="pagina-vendita-toggle-btn" id="filtroPrezzoBtn"
+                            aria-expanded="false" aria-controls="filtroPrezzoPanel">
+                            <span>Prezzo</span>
+                            <img src="assets/images/icons/icon-chevron-down.svg" alt="" class="icon icon--sm" width="16"
+                                height="16">
+                        </button>
+                        <div class="pagina-vendita-toggle-panel" id="filtroPrezzoPanel" hidden>
+                            <label class="sr-only" for="filtroPrezzoDa">Prezzo da</label>
+                            <input type="number" id="filtroPrezzoDa" name="prezzoDa" class="pagina-vendita-filtro-input"
+                                placeholder="Da €" min="0" step="1000" inputmode="numeric">
+                            <span class="pagina-vendita-toggle-sep" aria-hidden="true">–</span>
+                            <label class="sr-only" for="filtroPrezzoA">Prezzo a</label>
+                            <input type="number" id="filtroPrezzoA" name="prezzoA" class="pagina-vendita-filtro-input"
+                                placeholder="A €" min="0" step="1000" inputmode="numeric">
+                        </div>
+                    </div>
+
+                    <!-- Toggle Superficie (tablet+; su mobile portrait va nel pannello Filtri) -->
+                    <div class="pagina-vendita-toggle" data-filtro-bar="superficie">
+                        <button type="button" class="pagina-vendita-toggle-btn" id="filtroSuperficieBtn"
+                            aria-expanded="false" aria-controls="filtroSuperficiePanel">
+                            <span>Superficie</span>
+                            <img src="assets/images/icons/icon-chevron-down.svg" alt="" class="icon icon--sm" width="16"
+                                height="16">
+                        </button>
+                        <div class="pagina-vendita-toggle-panel" id="filtroSuperficiePanel" hidden>
+                            <label class="sr-only" for="filtroMqDa">Superficie da</label>
+                            <input type="number" id="filtroMqDa" name="mqDa" class="pagina-vendita-filtro-input"
+                                placeholder="Da mq" min="0" step="1" inputmode="numeric">
+                            <span class="pagina-vendita-toggle-sep" aria-hidden="true">–</span>
+                            <label class="sr-only" for="filtroMqA">Superficie a</label>
+                            <input type="number" id="filtroMqA" name="mqA" class="pagina-vendita-filtro-input"
+                                placeholder="A mq" min="0" step="1" inputmode="numeric">
+                        </div>
+                    </div>
+
+                    <!-- Toggle Locali (tablet+; su mobile portrait va nel pannello Filtri) -->
+                    <div class="pagina-vendita-toggle" data-filtro-bar="locali">
+                        <button type="button" class="pagina-vendita-toggle-btn" id="filtroLocaliBtn"
+                            aria-expanded="false" aria-controls="filtroLocaliPanel">
+                            <span>Locali</span>
+                            <img src="assets/images/icons/icon-chevron-down.svg" alt="" class="icon icon--sm" width="16"
+                                height="16">
+                        </button>
+                        <div class="pagina-vendita-toggle-panel" id="filtroLocaliPanel" hidden>
+                            <label class="sr-only" for="filtroLocaliDa">Locali da</label>
+                            <input type="number" id="filtroLocaliDa" name="localiDa" class="pagina-vendita-filtro-input"
+                                placeholder="Da" min="1" max="20" step="1" inputmode="numeric">
+                            <span class="pagina-vendita-toggle-sep" aria-hidden="true">–</span>
+                            <label class="sr-only" for="filtroLocaliA">Locali a</label>
+                            <input type="number" id="filtroLocaliA" name="localiA" class="pagina-vendita-filtro-input"
+                                placeholder="A" min="1" max="20" step="1" inputmode="numeric">
+                        </div>
+                    </div>
+
+                    <!-- Altri filtri (pannello) -->
+                    <div class="pagina-vendita-filtri-extra">
+                        <button type="button" class="pagina-vendita-toggle-btn pagina-vendita-filtri-btn"
+                            id="filtriAltriBtn" aria-expanded="false" aria-controls="filtriAltriPanel">
+                            <span>Filtri</span>
+                            <span class="pagina-vendita-filtri-badge" id="filtriAltriBadge" hidden>0</span>
+                            <img src="assets/images/icons/icon-chevron-down.svg" alt="" class="icon icon--sm" width="16"
+                                height="16">
+                        </button>
+                        <div class="pagina-vendita-filtri-panel" id="filtriAltriPanel" hidden>
+                            <div class="pagina-vendita-filtri-panel-head">
+                                <p class="pagina-vendita-filtri-panel-titolo">Filtri</p>
+                                <button type="button" class="pagina-vendita-filtri-chiudi" id="filtriAltriChiudi"
+                                    aria-label="Chiudi filtri">Chiudi</button>
+                            </div>
+
+                            <!-- Mobile portrait: Prezzo / Superficie / Locali (slot riempiti via JS) -->
+                            <div class="pagina-vendita-filtri-sezione pagina-vendita-filtri-sezione--bar-mobile"
+                                data-filtro-slot="prezzo" hidden>
+                                <p class="pagina-vendita-filtri-titolo">Prezzo</p>
+                                <div class="pagina-vendita-filtri-range" data-filtro-host="prezzo"></div>
+                            </div>
+                            <div class="pagina-vendita-filtri-sezione pagina-vendita-filtri-sezione--bar-mobile"
+                                data-filtro-slot="superficie" hidden>
+                                <p class="pagina-vendita-filtri-titolo">Superficie</p>
+                                <div class="pagina-vendita-filtri-range" data-filtro-host="superficie"></div>
+                            </div>
+                            <div class="pagina-vendita-filtri-sezione pagina-vendita-filtri-sezione--bar-mobile"
+                                data-filtro-slot="locali" hidden>
+                                <p class="pagina-vendita-filtri-titolo">Locali</p>
+                                <div class="pagina-vendita-filtri-range" data-filtro-host="locali"></div>
+                            </div>
+
+                            <div class="pagina-vendita-filtri-sezione">
+                                <p class="pagina-vendita-filtri-titolo">Bagni</p>
+                                <div class="pagina-vendita-filtri-range">
+                                    <label class="sr-only" for="filtroBagniDa">Bagni da</label>
+                                    <input type="number" id="filtroBagniDa" name="bagniDa"
+                                        class="pagina-vendita-filtro-input" placeholder="Da" min="1" max="10" step="1"
+                                        inputmode="numeric">
+                                    <span class="pagina-vendita-toggle-sep" aria-hidden="true">–</span>
+                                    <label class="sr-only" for="filtroBagniA">Bagni a</label>
+                                    <input type="number" id="filtroBagniA" name="bagniA"
+                                        class="pagina-vendita-filtro-input" placeholder="A" min="1" max="10" step="1"
+                                        inputmode="numeric">
+                                </div>
+                            </div>
+
+                            <div class="pagina-vendita-filtri-sezione">
+                                <p class="pagina-vendita-filtri-titolo">Caratteristiche</p>
+                                <div class="pagina-vendita-filtri-chips" role="group" aria-label="Caratteristiche">
+                                    <label class="pagina-vendita-chip"><input type="checkbox" name="feat"
+                                            value="terrazzo"> Terrazzo</label>
+                                    <label class="pagina-vendita-chip"><input type="checkbox" name="feat"
+                                            value="balcone"> Balcone</label>
+                                    <label class="pagina-vendita-chip"><input type="checkbox" name="feat"
+                                            value="ascensore"> Ascensore</label>
+                                    <label class="pagina-vendita-chip"><input type="checkbox" name="feat"
+                                            value="garage"> Garage</label>
+                                    <label class="pagina-vendita-chip"><input type="checkbox" name="feat"
+                                            value="posto-auto"> Posto auto</label>
+                                    <label class="pagina-vendita-chip"><input type="checkbox" name="feat"
+                                            value="cantina"> Cantina</label>
+                                    <label class="pagina-vendita-chip"><input type="checkbox" name="feat"
+                                            value="arredato"> Arredato</label>
+                                    <label class="pagina-vendita-chip"><input type="checkbox" name="feat"
+                                            value="giardino"> Giardino</label>
+                                </div>
+                            </div>
+
+                            <div class="pagina-vendita-filtri-sezione">
+                                <p class="pagina-vendita-filtri-titolo">Piano</p>
+                                <div class="pagina-vendita-filtri-chips" role="group" aria-label="Piano">
+                                    <label class="pagina-vendita-chip"><input type="checkbox" name="piano"
+                                            value="terra"> Terra</label>
+                                    <label class="pagina-vendita-chip"><input type="checkbox" name="piano"
+                                            value="primo"> 1° piano</label>
+                                    <label class="pagina-vendita-chip"><input type="checkbox" name="piano"
+                                            value="intermedio"> Intermedio</label>
+                                    <label class="pagina-vendita-chip"><input type="checkbox" name="piano"
+                                            value="ultimo"> Ultimo</label>
+                                </div>
+                            </div>
+
+                            <div class="pagina-vendita-filtri-sezione">
+                                <p class="pagina-vendita-filtri-titolo">Clima</p>
+                                <div class="pagina-vendita-filtri-chips" role="group" aria-label="Clima">
+                                    <label class="pagina-vendita-chip"><input type="checkbox" name="clima"
+                                            value="auton"> Riscald. autonomo</label>
+                                    <label class="pagina-vendita-chip"><input type="checkbox" name="clima"
+                                            value="centr"> Riscald. centralizzato</label>
+                                    <label class="pagina-vendita-chip"><input type="checkbox" name="clima"
+                                            value="aria"> Aria condizionata</label>
+                                </div>
+                            </div>
+
+                            <div class="pagina-vendita-filtri-sezione">
+                                <p class="pagina-vendita-filtri-titolo">Stato immobile</p>
+                                <div class="pagina-vendita-filtri-chips" role="group" aria-label="Stato immobile">
+                                    <label class="pagina-vendita-chip"><input type="checkbox" name="stato"
+                                            value="nuovo"> Nuovo / in costruzione</label>
+                                    <label class="pagina-vendita-chip"><input type="checkbox" name="stato"
+                                            value="ottimo"> Ottimo / ristrutturato</label>
+                                    <label class="pagina-vendita-chip"><input type="checkbox" name="stato"
+                                            value="buono"> Buono / abitabile</label>
+                                    <label class="pagina-vendita-chip"><input type="checkbox" name="stato"
+                                            value="da-ristrutturare"> Da ristrutturare</label>
+                                </div>
+                            </div>
+
+                            <div class="pagina-vendita-filtri-sezione">
+                                <p class="pagina-vendita-filtri-titolo">Efficienza energetica</p>
+                                <div class="pagina-vendita-filtri-chips" role="group"
+                                    aria-label="Classe energetica">
+                                    <label class="pagina-vendita-chip"><input type="checkbox" name="ape" value="A">
+                                        A</label>
+                                    <label class="pagina-vendita-chip"><input type="checkbox" name="ape" value="B">
+                                        B</label>
+                                    <label class="pagina-vendita-chip"><input type="checkbox" name="ape" value="C">
+                                        C</label>
+                                    <label class="pagina-vendita-chip"><input type="checkbox" name="ape" value="D">
+                                        D</label>
+                                    <label class="pagina-vendita-chip"><input type="checkbox" name="ape" value="E">
+                                        E</label>
+                                    <label class="pagina-vendita-chip"><input type="checkbox" name="ape" value="F">
+                                        F</label>
+                                    <label class="pagina-vendita-chip"><input type="checkbox" name="ape" value="G">
+                                        G</label>
+                                </div>
+                            </div>
+
+                            <div class="pagina-vendita-filtri-azioni">
+                                <button type="button" class="pagina-vendita-filtri-azzera"
+                                    id="filtriAltriAzzera">Azzera filtri</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="hero-search-btn" aria-label="Applica filtri">
+                        <img src="assets/images/icons/icon-search.svg" alt="" class="icon" width="20" height="20">
+                    </button>
+                </form>
+                <p class="pagina-vendita-risultati" id="venditaRisultatiCount" aria-live="polite"></p>
+
+                <div class="pagina-vendita-layout">
+                    <!-- Colonna sx: griglia 2 card per riga -->
+                    <div class="pagina-vendita-lista" id="venditaLista" aria-label="Elenco immobili in vendita"></div>
+
+                    <!-- Colonna dx: mappa Leaflet -->
+                    <aside class="pagina-vendita-mappa-wrap" aria-label="Mappa immobili">
+                        <div id="mappaVendita" class="pagina-vendita-mappa" role="img"
+                            aria-label="Mappa con la posizione degli immobili in vendita"></div>
+                    </aside>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="site-footer" id="footer">
+        <div class="site-footer-bg" aria-hidden="true">
+            <img src="assets/images/footer-skyline-sparanise.webp" alt="" width="1920" height="600" loading="lazy">
+        </div>
+        <div class="container site-footer-inner">
+            <div class="footer-col footer-col--sx" aria-hidden="true"></div>
+            <div class="footer-col footer-col--info">
+                <p class="footer-ragione">Furia Immobiliare Srls</p>
+                <ul class="footer-info">
+                    <li>P.tta Pasquale Graziadei, 40<br>81056 Sparanise (CE)</li>
+                    <li>P. IVA 04967300619</li>
+                    <li><a href="mailto:info@furiaimmobiliare.com">info@furiaimmobiliare.com</a></li>
+                    <li><a href="mailto:furia.immobiliare@pec.it">furia.immobiliare@pec.it</a></li>
+                </ul>
+            </div>
+            <div class="footer-col footer-col--link">
+                <p class="footer-titolo">Link rapidi</p>
+                <ul class="footer-link">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="vendita.html">Vendita</a></li>
+                    <li><a href="affitto.html">Affitto</a></li>
+                    <li><a href="index.html#vendi">Vendi</a></li>
+                    <li><a href="index.html#valuta">Valuta</a></li>
+                    <li><a href="index.html#servizi">Servizi</a></li>
+                    <li><a href="index.html#chi-siamo">Chi siamo</a></li>
+                    <li><a href="index.html#contatti">Contatti</a></li>
+                </ul>
+            </div>
+            <div class="footer-col footer-col--contatti">
+                <p class="footer-titolo">Contatti</p>
+                <p><a href="tel:+393392167130">+39 339 216 7130</a></p>
+                <p><a href="mailto:info@furiaimmobiliare.com">info@furiaimmobiliare.com</a></p>
+            </div>
+            <div class="footer-col footer-col--dx" aria-hidden="true"></div>
+        </div>
+        <p class="footer-copy">© 2026 Furia Immobiliare Srls - Tutti i diritti riservati</p>
+    </footer>
+
+    <a href="https://wa.me/393392167130" class="whatsapp-float" target="_blank" rel="noopener noreferrer"
+        aria-label="Contattaci su WhatsApp al +39 339 216 7130">
+        <img src="assets/images/icons/icon-whatsapp.svg" alt="" width="28" height="28">
+    </a>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="data/annunci.js"></script>
+    <script src="main.js" defer></script>
+</body>
+
+</html>
