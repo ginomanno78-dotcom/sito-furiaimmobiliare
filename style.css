@@ -2932,6 +2932,14 @@ h2 {
 /* Hover card testo (Come / Affidati / Stima): scale + ombra — solo desktop mouse */
 @media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
 
+  /* Colonna card sopra foto banner quando una card è in hover */
+  .valuta-loco-cards:has(.valuta-loco-card--come:hover),
+  .valuta-loco-cards:has(.valuta-loco-card--lato:hover),
+  .valuta-loco-cards:has(.valuta-loco-card--stima-testo:hover) {
+    position: relative;
+    z-index: 20;
+  }
+
   .valuta-loco-card--come,
   .valuta-loco-card--lato,
   .valuta-loco-card--stima-testo {
@@ -2962,20 +2970,61 @@ h2 {
     box-shadow: -2px 2px 8px 2px hsla(0, 0%, 0%, 0.2);
   }
 
-  /* Ombra hover (più pronunciata, sotto) */
+  /* Ombra hover (più pronunciata) — direzione per card */
   .valuta-loco-card--come::after,
   .valuta-loco-card--lato::after,
   .valuta-loco-card--stima-testo::after {
-    box-shadow: -28px 28px 22px 10px hsla(0, 0%, 0%, 0.38);
     opacity: 0;
+  }
+
+  /* Come: 45° diagonale in basso a dx */
+  .valuta-loco-card--come::after {
+    box-shadow: 28px 28px 22px 10px hsla(0, 0%, 0%, 0.6);
+  }
+
+  /* Affidati: diagonale in basso a sx (invariata) */
+  .valuta-loco-card--lato::after {
+    box-shadow: -28px 28px 22px 10px hsla(0, 0%, 0%, 0.6);
+  }
+
+  /* Stima: 225° diagonale in alto a sx */
+  .valuta-loco-card--stima-testo::after {
+    box-shadow: -28px -28px 22px 10px hsla(0, 0%, 0%, 0.6);
   }
 
   .valuta-loco-card--come:hover,
   .valuta-loco-card--lato:hover,
   .valuta-loco-card--stima-testo:hover {
-    z-index: 1;
+    z-index: 20;
     transform: scale(1.1);
     cursor: pointer;
+  }
+
+  /* Come: scale + 3mm più in basso e 3mm più a dx */
+  .valuta-loco-card--come:hover {
+    z-index: 20;
+    transform: scale(1.1) translate(5mm, 3mm);
+  }
+
+  /* Affidati: ingrandimento leggermente spostato a sx */
+  .valuta-loco-card--lato {
+    transform-origin: 70% center;
+  }
+
+  .valuta-loco-card--lato:hover,
+  article.valuta-loco-card.valuta-loco-card--lato:hover {
+    z-index: 20;
+    transform: scale(1.1) translate(-2mm, 3mm);
+  }
+
+  /* Stima: scale + 3mm più in alto e 3mm più a sx */
+  .valuta-loco-card--stima-testo {
+    transform-origin: 70% center;
+  }
+
+  .valuta-loco-card--stima-testo:hover {
+    z-index: 20;
+    transform: scale(1.1) translate(-3mm, -3mm);
   }
 
   .valuta-loco-card--come:hover::before,
@@ -3104,6 +3153,27 @@ h2 {
   color: var(--colore-sfondo);
 }
 
+/* Default (mobile + tablet/iPad portrait): voci in linea con virgole */
+.valuta-loco-card-criteri-voce {
+  display: inline;
+}
+
+.valuta-loco-card-criteri-voce:not(:last-child)::after {
+  content: ", ";
+}
+
+/* Desktop + tablet/iPad landscape: 5 voci su 5 righe */
+@media (min-width: 768px) and (orientation: landscape),
+(min-width: 1367px) {
+  .valuta-loco-card-criteri-voce {
+    display: block;
+  }
+
+  .valuta-loco-card-criteri-voce:not(:last-child)::after {
+    content: none;
+  }
+}
+
 /* Card stima: testi bianco puro */
 .valuta-loco-card--stima h3,
 .valuta-loco-card--stima p,
@@ -3210,24 +3280,66 @@ h2 {
    Mobile landscape resta impilato (come portrait) per non perdere le card piccole. */
 @media (min-width: 1024px) {
   .valuta-loco-inner {
+    /* Luce unica tra card/foto: 0.5cm */
+    --valuta-loco-gap-ref: 0.5cm;
     grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
     align-items: stretch;
-    gap: var(--spazio-4);
+    /* Gap colonna 0: la distanza 0.5cm dalla foto banner la danno le card dx (+1cm vs inset 1.5cm) */
+    gap: 0;
+    min-width: 0;
+    width: 100%;
+    /* Evita che le card +1cm espandano il viewport */
+    overflow-x: clip;
   }
 
   .valuta-loco-cards {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: var(--valuta-loco-gap-ref);
     height: 100%;
+    min-width: 0;
     min-height: 0;
     align-self: stretch;
+    overflow: visible;
   }
 
   .valuta-loco-foto-wrap {
     width: 100%;
+    min-width: 0;
     aspect-ratio: 1 / 1;
     align-self: stretch;
+    /* Area piena per CTA; bordo/alone solo sulla foto ridotta */
+    overflow: visible;
+    border: none;
+    background: transparent;
+  }
+
+  /* Foto −1.5cm, ancorata in alto a dx (si riduce da sx / dal basso) */
+  .valuta-loco-foto {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: calc(100% - 1.5cm);
+    height: calc(100% - 1.5cm);
+    object-fit: cover;
+    object-position: center;
+    border: 1px solid var(--colore-accento);
+    border-radius: 20px;
+  }
+
+  /* CTA: stessa larghezza della foto, radius come foto, baseline card stima, allineato a dx */
+  .valuta-loco-cta {
+    z-index: 2;
+    right: 0;
+    bottom: 0;
+    width: calc(100% - 1.5cm);
+    max-width: none;
+    box-sizing: border-box;
+    border-radius: 20px;
+    min-height: 40px;
+    padding: 8px 18px;
+    font-size: 0.82rem;
+    justify-content: center;
   }
 }
 
@@ -3377,7 +3489,7 @@ h2 {
     grid-area: lato;
     display: flex;
     align-items: flex-end;
-    justify-content: flex-start;
+    justify-content: flex-end;
     padding: 12px 14px;
     box-sizing: border-box;
     height: calc(var(--valuta-stima-h, 10.5rem) * 2 / 3);
@@ -3391,7 +3503,7 @@ h2 {
     font-weight: 700;
     line-height: 1.35;
     color: var(--colore-accento);
-    text-align: left;
+    text-align: right;
     white-space: normal;
     max-width: 100%;
     overflow-wrap: break-word;
@@ -3585,13 +3697,13 @@ h2 {
   .valuta-loco-cards {
     display: grid;
     grid-template-rows: 1fr 1fr;
-    gap: 8px;
+    gap: var(--valuta-loco-gap-ref);
   }
 
   .valuta-loco-card-riga {
     display: grid;
     grid-template-columns: 2fr 1fr;
-    gap: 8px;
+    gap: var(--valuta-loco-gap-ref);
     align-items: stretch;
     min-height: 0;
     height: 100%;
@@ -3599,6 +3711,7 @@ h2 {
 
   .valuta-loco-card-riga--stima {
     grid-template-columns: 1fr 1fr;
+    gap: var(--valuta-loco-gap-ref);
   }
 
   .valuta-loco-card--lato,
@@ -3607,11 +3720,23 @@ h2 {
     min-height: 100%;
   }
 
-  /* Riquadro piccolo: padding simmetrico + specificità alta (prima non si vedeva) */
+  /* «Affidati a noi»: estesa +1cm verso banner; testo in basso a dx */
   article.valuta-loco-card.valuta-loco-card--lato {
     align-items: flex-end;
-    justify-content: flex-start;
+    justify-content: flex-end;
     padding: 16px 14px;
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+    width: calc(100% + 1cm);
+  }
+
+  /* «La stima si basa su»: stessa estensione verso banner */
+  .valuta-loco-card--stima-testo {
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+    width: calc(100% + 1cm);
   }
 
   .valuta-loco-card--stima-lato {
@@ -3692,7 +3817,7 @@ h2 {
     font-weight: 700;
     line-height: 1.35;
     color: var(--colore-accento);
-    text-align: left;
+    text-align: right;
     white-space: normal;
     max-width: 100%;
     overflow-wrap: break-word;
@@ -3713,6 +3838,17 @@ h2 {
 
   .valuta-loco-card--stima-testo .valuta-loco-card-criteri-titolo {
     font-size: 0.95rem;
+  }
+}
+
+/* Stima: +3px sul contenuto — tablet / iPad / desktop (no mobile phone) */
+@media (min-width: 768px) {
+  .valuta-loco-card--stima-testo .valuta-loco-card-criteri-titolo {
+    font-size: calc(0.95rem + 3px);
+  }
+
+  .valuta-loco-card--stima-testo .valuta-loco-card-criteri {
+    font-size: calc(0.78rem + 3px);
   }
 }
 
@@ -3937,6 +4073,13 @@ h2 {
   font-family: var(--font-corpo);
   text-align: left;
   cursor: pointer;
+  /* Touch: evita flash azzurro su tap */
+  -webkit-tap-highlight-color: transparent;
+}
+
+.servizi-toggle:focus-visible {
+  outline: 2px solid var(--colore-accento);
+  outline-offset: 2px;
 }
 
 .servizi-icona {
@@ -4121,18 +4264,43 @@ h2 {
 .chi-siamo-bio-nome {
   margin: 0 0 var(--spazio-2);
   font-family: var(--font-titoli);
-  font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+  font-size: clamp(calc(1.35rem + 2px), calc(2.5vw + 2px), calc(1.75rem + 2px));
   font-weight: 400;
   color: #aa9333;
 }
 
 .chi-siamo-bio-ruolo {
   margin: 0 0 var(--spazio-4);
+  font-family: var(--font-corpo);
   font-size: 0.95rem;
+  font-weight: 400;
+  color: var(--colore-testo);
+}
+
+/* «Il tuo agente immobiliare»: Poppins SemiBold, maiuscolo */
+.chi-siamo-bio-ruolo-agente {
+  font-family: var(--font-corpo);
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+}
+
+/* «Titolare di Furia Immobiliare Srls»: Cardo Bold */
+.chi-siamo-bio-ruolo-linea {
+  font-family: var(--font-titoli);
+  font-size: calc(1rem);
+  font-weight: 700;
+}
+
+/* «Titolare»: senza maiuscolo forzato */
+.chi-siamo-bio-ruolo-titolare {
+  text-transform: none;
+}
+
+/* «Furia Immobiliare Srls»: colore testo, maiuscolo */
+.chi-siamo-bio-ruolo-agenzia {
   color: var(--colore-testo);
+  text-transform: uppercase;
 }
 
 .chi-siamo-bio-testo {
