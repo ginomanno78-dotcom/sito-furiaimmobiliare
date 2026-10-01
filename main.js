@@ -9,6 +9,25 @@ document.addEventListener("DOMContentLoaded", () => {
   const drawer = document.getElementById("mobileDrawer");
   const overlay = document.getElementById("drawerOverlay");
 
+  /* Hero cinematico: una sola volta per sessione di navigazione */
+  const hero = document.querySelector(".hero");
+  if (hero) {
+    const KEY_CINE = "furia-hero-cinematico-visto";
+    const mqCine = window.matchMedia(
+      "(min-width: 1280px) and (orientation: landscape)"
+    );
+    const mqRiduciMotoHero = window.matchMedia("(prefers-reduced-motion: reduce)");
+    try {
+      const giaVisto = sessionStorage.getItem(KEY_CINE) === "1";
+      if (!giaVisto && mqCine.matches && !mqRiduciMotoHero.matches) {
+        hero.classList.add("hero--cinematico-attivo");
+        sessionStorage.setItem(KEY_CINE, "1");
+      }
+    } catch (_) {
+      /* sessionStorage non disponibile */
+    }
+  }
+
   /* === Ombra navbar allo scroll === */
   const onScrollNavbar = () => {
     if (!navbar) return;
@@ -128,42 +147,190 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  /* Lock scroll pagina (drawer / filtri / lightbox) — contatore anti-conflitto */
+  let scrollLockCount = 0;
+  const bloccaScrollPagina = () => {
+    scrollLockCount += 1;
+    if (scrollLockCount === 1) {
+      document.documentElement.classList.add("is-scroll-locked");
+      document.body.classList.add("is-scroll-locked");
+    }
+  };
+  const sbloccaScrollPagina = () => {
+    scrollLockCount = Math.max(0, scrollLockCount - 1);
+    if (scrollLockCount === 0) {
+      document.documentElement.classList.remove("is-scroll-locked");
+      document.body.classList.remove("is-scroll-locked");
+    }
+  };
+
   /* === Drawer mobile === */
+  let drawerTimerChiusura = null;
+  let drawerScrollLocked = false;
+
   const apriDrawer = () => {
     if (!drawer || !overlay || !hamburger) return;
+    if (drawerTimerChiusura) {
+      clearTimeout(drawerTimerChiusura);
+      drawerTimerChiusura = null;
+    }
+    drawer.classList.remove("is-closing");
+    overlay.classList.remove("is-closing");
     drawer.hidden = false;
     overlay.hidden = false;
     hamburger.classList.add("is-open");
     hamburger.setAttribute("aria-expanded", "true");
     hamburger.setAttribute("aria-label", "Chiudi menu");
-    document.body.style.overflow = "hidden";
+    if (!drawerScrollLocked) {
+      bloccaScrollPagina();
+      drawerScrollLocked = true;
+    }
   };
 
   const chiudiDrawer = () => {
     if (!drawer || !overlay || !hamburger) return;
-    drawer.hidden = true;
-    overlay.hidden = true;
+    if (drawer.hidden || drawer.classList.contains("is-closing")) return;
+
     hamburger.classList.remove("is-open");
     hamburger.setAttribute("aria-expanded", "false");
     hamburger.setAttribute("aria-label", "Apri menu");
-    document.body.style.overflow = "";
+
+    const nascondi = () => {
+      drawer.classList.remove("is-closing");
+      overlay.classList.remove("is-closing");
+      drawer.hidden = true;
+      overlay.hidden = true;
+      drawerTimerChiusura = null;
+      /* Sblocca solo a fine animazione (evita scroll sotto la tendina) */
+      if (drawerScrollLocked) {
+        sbloccaScrollPagina();
+        drawerScrollLocked = false;
+      }
+    };
+
+    const riduciMoto = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (riduciMoto) {
+      nascondi();
+      return;
+    }
+
+    /* Tendina + ombra partono insieme, stessa durata 0.36s */
+    drawer.classList.add("is-closing");
+    overlay.classList.add("is-closing");
+    const onFine = (e) => {
+      if (e.target !== drawer) return;
+      drawer.removeEventListener("animationend", onFine);
+      nascondi();
+    };
+    drawer.addEventListener("animationend", onFine);
+    drawerTimerChiusura = setTimeout(() => {
+      drawer.removeEventListener("animationend", onFine);
+      nascondi();
+    }, 360);
   };
+
+  /* Offset sotto navbar (hamburger / touch < 1024) */
+  const mqNavHamburger = window.matchMedia("(max-width: 1023px)");
+  const offsetScrollNavbar = () => {
+    const topCss = navbar ? parseFloat(getComputedStyle(navbar).top) || 8 : 8;
+    const h = navbar ? navbar.offsetHeight : 76;
+    return topCss + h + 12;
+  };
+
+  const scrollASezioneSottoNavbar = (id, smooth) => {
+    const target = document.getElementById(id);
+    if (!target) return;
+    const y =
+      target.getBoundingClientRect().top +
+      window.pageYOffset -
+      offsetScrollNavbar();
+    window.scrollTo({
+      top: Math.max(0, y),
+      behavior: smooth ? "smooth" : "auto",
+    });
+  };
+
+  /* Arrivo da altra pagina su index.html#sezione (solo viewport hamburger) */
+  if (mqNavHamburger.matches && location.hash.length > 1) {
+    const idHash = decodeURIComponent(location.hash.slice(1));
+    if (document.getElementById(idHash)) {
+      if ("scrollRestoration" in history) {
+        history.scrollRestoration = "manual";
+      }
+      const riposiziona = () => scrollASezioneSottoNavbar(idHash, false);
+      riposiziona();
+      requestAnimationFrame(riposiziona);
+      setTimeout(riposiziona, 0);
+      setTimeout(riposiziona, 100);
+      window.addEventListener("load", riposiziona, { once: true });
+    }
+  }
+
+  /* CTA / ancore in-page (#…) su viewport hamburger: non finire sotto la navbar */
+  document.addEventListener("click", (e) => {
+    if (!mqNavHamburger.matches || e.defaultPrevented) return;
+    const link = e.target.closest('a[href^="#"]');
+    if (!link) return;
+    const href = link.getAttribute("href") || "";
+    if (href.length < 2) return;
+    const id = decodeURIComponent(href.slice(1));
+    if (!document.getElementById(id)) return;
+    e.preventDefault();
+    scrollASezioneSottoNavbar(id, true);
+  });
 
   if (hamburger && drawer && overlay) {
     hamburger.addEventListener("click", () => {
-      if (drawer.hidden) apriDrawer();
+      /* Durante chiusura soft: tap riapre */
+      if (drawer.hidden || drawer.classList.contains("is-closing")) apriDrawer();
       else chiudiDrawer();
     });
     overlay.addEventListener("click", chiudiDrawer);
+
     drawer.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", chiudiDrawer);
+      link.addEventListener("click", (e) => {
+        const href = link.getAttribute("href") || "";
+        /* Hash locali su questa pagina */
+        if (href.charAt(0) === "#" && href.length > 1) {
+          const id = decodeURIComponent(href.slice(1));
+          if (document.getElementById(id)) {
+            e.preventDefault();
+            chiudiDrawer();
+            scrollASezioneSottoNavbar(id, true);
+            return;
+          }
+        }
+        chiudiDrawer();
+      });
     });
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && !drawer.hidden) chiudiDrawer();
     });
+
+    /* Sottomenu Immobili / Vendi (come navbar desktop) */
+    drawer.querySelectorAll(".mobile-drawer-toggle").forEach((btn) => {
+      const panelId = btn.getAttribute("aria-controls");
+      const panel = panelId ? document.getElementById(panelId) : null;
+      if (!panel) return;
+
+      /* Se una voce figlia è attiva, apri il gruppo */
+      if (panel.querySelector("a.is-active")) {
+        btn.setAttribute("aria-expanded", "true");
+        panel.hidden = false;
+      }
+
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        const aperto = btn.getAttribute("aria-expanded") === "true";
+        btn.setAttribute("aria-expanded", aperto ? "false" : "true");
+        panel.hidden = aperto;
+      });
+    });
   }
 
   /* === Helper dropdown generico === */
+  const dropdownAperti = [];
+
   const setupDropdown = ({ toggle, menu, onSelect }) => {
     if (!toggle || !menu) return;
 
@@ -173,9 +340,15 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const apri = () => {
+      /* Chiude gli altri dropdown: evita due tendine aperte (es. Immobili + Vendi su touch) */
+      dropdownAperti.forEach((altro) => {
+        if (altro.menu !== menu) altro.chiudi();
+      });
       menu.hidden = false;
       toggle.setAttribute("aria-expanded", "true");
     };
+
+    dropdownAperti.push({ menu, chiudi });
 
     toggle.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -340,12 +513,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const azione = azioneInput ? azioneInput.value : "compra";
       if (azione === "affitta") {
         window.location.href = "affitto.html";
-        return;
-      }
-      if (azione === "vendi") {
-        const target = document.getElementById("vendi");
-        if (target) target.scrollIntoView({ behavior: "smooth" });
-        else window.location.hash = "vendi";
         return;
       }
       /* Compra: tipologia + città/indirizzo → scheda immobile */
@@ -789,14 +956,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const leggiNumeroFiltro = (id) => {
       const el = document.getElementById(id);
       if (!el || el.value === "" || el.value == null) return null;
-      const n = Number(el.value);
+      /* Prezzo formattato it-IT (75.000): togli i puntini migliaia */
+      const grezzo = String(el.value).replace(/\./g, "").replace(/,/g, "").replace(/\s/g, "");
+      if (!grezzo) return null;
+      const n = Number(grezzo);
       return Number.isFinite(n) ? n : null;
     };
 
-    /* Mobile portrait/landscape: Prezzo/Superficie/Locali nel pannello Filtri */
-    const mqFiltriMobilePortrait = window.matchMedia(
-      "(max-width: 767px), (max-width: 1023px) and (orientation: landscape) and (max-height: 499px)"
-    );
+    /* Formatta prezzo con puntini migliaia mentre si digita (es. 75000 → 75.000) */
+    const formattaPrezzoFiltroInput = (el) => {
+      if (!el) return;
+      const soloCifre = String(el.value).replace(/\D/g, "");
+      el.value = soloCifre.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    };
+
+    /* Phone stretto (<600): Prezzo/Superficie/Locali nel pannello Filtri
+       (SE/S8+ landscape e tablet restano in barra) */
+    const mqFiltriMobilePortrait = window.matchMedia("(max-width: 599px)");
     const CHIAVI_FILTRO_BAR = ["prezzo", "superficie", "locali"];
 
     const syncFiltriBarMobilePortrait = () => {
@@ -818,13 +994,16 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       if (!isMobilePortrait) {
-        document.body.classList.remove("is-filtri-vendita-aperti");
+        if (document.body.classList.contains("is-filtri-vendita-aperti")) {
+          document.body.classList.remove("is-filtri-vendita-aperti");
+          sbloccaScrollPagina();
+        }
       }
     };
 
     syncFiltriBarMobilePortrait();
     if (typeof mqFiltriMobilePortrait.addListener === "function" &&
-        typeof mqFiltriMobilePortrait.addEventListener !== "function") {
+      typeof mqFiltriMobilePortrait.addEventListener !== "function") {
       mqFiltriMobilePortrait.addListener(syncFiltriBarMobilePortrait);
     }
 
@@ -862,22 +1041,54 @@ document.addEventListener("DOMContentLoaded", () => {
       const feat = chips("feat");
       if (feat.length) {
         const blob = normalizzaRicerca(
-          [annuncio.pertinenze, annuncio.boxAuto, annuncio.tipologia, annuncio.descrizione]
+          [
+            annuncio.pertinenze,
+            annuncio.boxAuto,
+            annuncio.tipologia,
+            annuncio.descrizione,
+            annuncio.nome,
+          ]
             .filter(Boolean)
             .join(" ")
         );
         const okFeat = feat.every((f) => {
-          if (f === "terrazzo") return blob.includes("terrazz");
-          if (f === "balcone") return (annuncio.balconi != null && annuncio.balconi > 0) || blob.includes("balcon");
+          if (f === "terrazzo") {
+            return (
+              blob.includes("terrazz") ||
+              normalizzaRicerca(annuncio.pertinenze || "").includes("terrazz")
+            );
+          }
+          if (f === "balcone") {
+            return (
+              (annuncio.balconi != null && Number(annuncio.balconi) > 0) ||
+              blob.includes("balcon")
+            );
+          }
           if (f === "ascensore") return annuncio.ascensore === true;
-          if (f === "garage") return blob.includes("garage") || blob.includes("box");
+          if (f === "garage") {
+            return blob.includes("garage") || blob.includes("box auto");
+          }
           if (f === "posto-auto") {
-            return blob.includes("posto auto") || blob.includes("posti auto") || blob.includes("box auto");
+            const box = normalizzaRicerca(annuncio.boxAuto || "");
+            return (
+              box.includes("posto auto") ||
+              box.includes("posti auto") ||
+              blob.includes("posto auto") ||
+              blob.includes("posti auto")
+            );
           }
           if (f === "cantina") return blob.includes("cantina");
-          if (f === "arredato") return annuncio.arredato === true || blob.includes("arredat");
-          if (f === "giardino") return blob.includes("giardino") || blob.includes("giardini");
-          return true;
+          if (f === "arredato") {
+            return annuncio.arredato === true || blob.includes("arredat");
+          }
+          if (f === "giardino") {
+            return (
+              blob.includes("giardino") ||
+              blob.includes("giardini") ||
+              normalizzaRicerca(annuncio.pertinenze || "").includes("giardino")
+            );
+          }
+          return false;
         });
         if (!okFeat) return false;
       }
@@ -953,30 +1164,16 @@ document.addEventListener("DOMContentLoaded", () => {
       return true;
     };
 
-    const aggiornaBadgeFiltriExtra = () => {
+    const aggiornaBadgeFiltriExtra = (nRisultati) => {
       const badge = document.getElementById("filtriAltriBadge");
       if (!badge) return;
-      let n = 0;
-      if (leggiNumeroFiltro("filtroBagniDa") != null) n += 1;
-      if (leggiNumeroFiltro("filtroBagniA") != null) n += 1;
-      /* Su mobile portrait Prezzo/Superficie/Locali stanno nel pannello Filtri */
-      if (mqFiltriMobilePortrait.matches) {
-        [
-          "filtroPrezzoDa",
-          "filtroPrezzoA",
-          "filtroMqDa",
-          "filtroMqA",
-          "filtroLocaliDa",
-          "filtroLocaliA",
-        ].forEach((id) => {
-          if (leggiNumeroFiltro(id) != null) n += 1;
-        });
+      /* Badge = annunci trovati (come Applica), non n. filtri selezionati */
+      let n = nRisultati;
+      if (typeof n !== "number") {
+        n = listaVendita.filter((a) => annuncioPassaFiltri(a)).length;
       }
-      n += document.querySelectorAll(
-        '#filtriAltriPanel input[type="checkbox"]:checked'
-      ).length;
       badge.textContent = String(n);
-      badge.hidden = n === 0;
+      badge.hidden = false;
     };
 
     applicaFiltriVendita = () => {
@@ -986,7 +1183,10 @@ document.addEventListener("DOMContentLoaded", () => {
       listaVendita.forEach((annuncio) => {
         const ok = annuncioPassaFiltri(annuncio);
         const card = venditaLista.querySelector(`.card-annuncio[data-id="${annuncio.id}"]`);
-        if (card) card.hidden = !ok;
+        if (card) {
+          card.hidden = !ok;
+          card.classList.toggle("is-nascosto-filtro", !ok);
+        }
 
         const marker = markerPerId[annuncio.id];
         if (marker && mappaVendita) {
@@ -1012,6 +1212,11 @@ document.addEventListener("DOMContentLoaded", () => {
               : `${nVisibili} immobili trovati.`;
       }
 
+      const filtriAltriApplicaBtn = document.getElementById("filtriAltriApplica");
+      if (filtriAltriApplicaBtn) {
+        filtriAltriApplicaBtn.textContent = `Applica (${nVisibili})`;
+      }
+
       if (mappaVendita) {
         if (bounds.length === 1) {
           mappaVendita.setView(bounds[0], 15);
@@ -1022,7 +1227,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       requestAnimationFrame(adattaTuttiTipiCard);
-      aggiornaBadgeFiltriExtra();
+      aggiornaBadgeFiltriExtra(nVisibili);
     };
 
     /* Debounce input filtri */
@@ -1043,7 +1248,13 @@ document.addEventListener("DOMContentLoaded", () => {
       "filtroBagniA",
     ].forEach((id) => {
       const el = document.getElementById(id);
-      if (el) el.addEventListener("input", schedulaFiltri);
+      if (!el) return;
+      el.addEventListener("input", () => {
+        if (id === "filtroPrezzoDa" || id === "filtroPrezzoA") {
+          formattaPrezzoFiltroInput(el);
+        }
+        schedulaFiltri();
+      });
     });
     if (searchQueryInput) searchQueryInput.addEventListener("input", schedulaFiltri);
     const tipoMenu = document.getElementById("searchTipoMenu");
@@ -1096,14 +1307,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const chiudiPannelloFiltriExtra = () => {
       if (filtriAltriBtn) filtriAltriBtn.setAttribute("aria-expanded", "false");
       if (filtriAltriPanel) filtriAltriPanel.hidden = true;
-      document.body.classList.remove("is-filtri-vendita-aperti");
+      if (document.body.classList.contains("is-filtri-vendita-aperti")) {
+        document.body.classList.remove("is-filtri-vendita-aperti");
+        sbloccaScrollPagina();
+      }
     };
 
     const apriPannelloFiltriExtra = () => {
       if (filtriAltriBtn) filtriAltriBtn.setAttribute("aria-expanded", "true");
       if (filtriAltriPanel) filtriAltriPanel.hidden = false;
       if (mqFiltriMobilePortrait.matches) {
-        document.body.classList.add("is-filtri-vendita-aperti");
+        if (!document.body.classList.contains("is-filtri-vendita-aperti")) {
+          document.body.classList.add("is-filtri-vendita-aperti");
+          bloccaScrollPagina();
+        }
       }
     };
 
@@ -1154,6 +1371,16 @@ document.addEventListener("DOMContentLoaded", () => {
       filtriAltriChiudi.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
+        chiudiPannelloFiltriExtra();
+      });
+    }
+
+    const filtriAltriApplica = document.getElementById("filtriAltriApplica");
+    if (filtriAltriApplica) {
+      filtriAltriApplica.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        applicaFiltriVendita();
         chiudiPannelloFiltriExtra();
       });
     }
@@ -1585,7 +1812,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const chiudiLightbox = () => {
       if (!lightbox) return;
       lightbox.hidden = true;
-      document.body.classList.remove("immobile-lightbox-open");
+      if (document.body.classList.contains("immobile-lightbox-open")) {
+        document.body.classList.remove("immobile-lightbox-open");
+        sbloccaScrollPagina();
+      }
       stato.lightboxMode = "foto";
       if (lightboxPrev) lightboxPrev.hidden = false;
       if (lightboxNext) lightboxNext.hidden = false;
@@ -1608,7 +1838,10 @@ document.addEventListener("DOMContentLoaded", () => {
         ((indice % stato.fotoLista.length) + stato.fotoLista.length) % stato.fotoLista.length;
       aggiornaLightboxFoto();
       lightbox.hidden = false;
-      document.body.classList.add("immobile-lightbox-open");
+      if (!document.body.classList.contains("immobile-lightbox-open")) {
+        document.body.classList.add("immobile-lightbox-open");
+        bloccaScrollPagina();
+      }
       if (lightboxChiudi) lightboxChiudi.focus();
     };
 
@@ -1625,7 +1858,10 @@ document.addEventListener("DOMContentLoaded", () => {
       if (lightboxPrev) lightboxPrev.hidden = lista.length <= 1;
       if (lightboxNext) lightboxNext.hidden = lista.length <= 1;
       lightbox.hidden = false;
-      document.body.classList.add("immobile-lightbox-open");
+      if (!document.body.classList.contains("immobile-lightbox-open")) {
+        document.body.classList.add("immobile-lightbox-open");
+        bloccaScrollPagina();
+      }
       if (lightboxChiudi) lightboxChiudi.focus();
     };
 

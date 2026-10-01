@@ -38,7 +38,7 @@
                             height="16">
                     </button>
                     <ul class="nav-dropdown-menu" id="navImmobiliMenu" hidden>
-                        <li><a href="vendita.html">Vendita</a></li>
+                        <li><a href="vendita.html">Compra</a></li>
                         <li><a href="affitto.html">Affitto</a></li>
                     </ul>
                 </div>
@@ -70,14 +70,37 @@
         </div>
     </header>
 
-    <!-- Drawer mobile -->
+    <!-- Drawer mobile (stessa struttura della navbar desktop) -->
     <div class="drawer-overlay" id="drawerOverlay" hidden></div>
     <nav class="mobile-drawer" id="mobileDrawer" aria-label="Menu mobile" hidden>
-        <a href="index.html">Home</a>
-        <a href="vendita.html">Vendita</a>
-        <a href="affitto.html">Affitto</a>
-        <a href="#vendi">Vendi casa</a>
-        <a href="#valuta">Valuta</a>
+        <a href="index.html" class="is-active">Home</a>
+
+        <div class="mobile-drawer-group">
+            <button type="button" class="mobile-drawer-toggle" id="drawerImmobiliToggle" aria-expanded="false"
+                aria-controls="drawerImmobiliMenu">
+                Immobili
+                <img src="assets/images/icons/icon-chevron-down.svg" alt="" class="icon icon--sm" width="16"
+                    height="16">
+            </button>
+            <div class="mobile-drawer-sub" id="drawerImmobiliMenu" hidden>
+                <a href="vendita.html">Compra</a>
+                <a href="affitto.html">Affitto</a>
+            </div>
+        </div>
+
+        <div class="mobile-drawer-group">
+            <button type="button" class="mobile-drawer-toggle" id="drawerVendiToggle" aria-expanded="false"
+                aria-controls="drawerVendiMenu">
+                Vendi
+                <img src="assets/images/icons/icon-chevron-down.svg" alt="" class="icon icon--sm" width="16"
+                    height="16">
+            </button>
+            <div class="mobile-drawer-sub" id="drawerVendiMenu" hidden>
+                <a href="#vendi">Vendi casa</a>
+                <a href="#valuta">Valuta</a>
+            </div>
+        </div>
+
         <a href="#servizi">Servizi</a>
         <a href="#contatti">Contatti</a>
     </nav>
@@ -103,7 +126,7 @@
                 <!-- Widget ricerca -->
                 <form class="hero-search" id="heroSearchForm" role="search" aria-label="Ricerca immobili">
 
-                    <!-- 1) Compra / Affitta / Vendi -->
+                    <!-- 1) Compra / Affitta -->
                     <div class="search-dropdown search-dropdown--azione">
                         <button type="button" class="search-dropdown-toggle search-dropdown-toggle--oro"
                             id="searchAzioneToggle" aria-expanded="false" aria-haspopup="listbox"
@@ -115,7 +138,6 @@
                         <ul class="search-dropdown-menu" id="searchAzioneMenu" role="listbox" hidden>
                             <li role="option" data-value="compra" aria-selected="true">Compra</li>
                             <li role="option" data-value="affitta" aria-selected="false">Affitta</li>
-                            <li role="option" data-value="vendi" aria-selected="false">Vendi</li>
                         </ul>
                         <input type="hidden" name="azione" id="searchAzione" value="compra">
                     </div>
@@ -124,13 +146,19 @@
                     <div class="search-dropdown search-dropdown--tipo">
                         <button type="button" class="search-dropdown-toggle" id="searchTipoToggle" aria-expanded="false"
                             aria-haspopup="listbox" aria-controls="searchTipoMenu" aria-label="Tipologia immobile">
-                            <img src="assets/images/icons/icon-Home.svg" alt="" class="icon icon--sm icon--cottage"
-                                width="18" height="18">
+                            <img src="assets/images/icons/icon-Home.svg" alt=""
+                                class="icon icon--sm icon--cottage search-tipo-icon" width="18" height="18">
+                            <span class="search-tipo-label" id="searchTipoLabel">Tipologia</span>
                             <img src="assets/images/icons/icon-chevron-down.svg" alt="" class="icon icon--sm" width="16"
                                 height="16">
                         </button>
                         <ul class="search-dropdown-menu search-dropdown-menu--tipo" id="searchTipoMenu" role="listbox"
                             hidden>
+                            <li role="option" data-value="" aria-selected="true">
+                                <img src="assets/images/icons/icon-Home.svg" alt=""
+                                    class="icon icon--sm icon--cottage" width="18" height="18">
+                                Tutte
+                            </li>
                             <li role="option" data-value="case-ville" aria-selected="false">
                                 <img src="assets/images/icons/icon-Home.svg" alt=""
                                     class="icon icon--sm icon--cottage" width="18" height="18">
@@ -159,7 +187,7 @@
                             <li role="option" data-value="nuove-costruzioni" aria-selected="false">
                                 <img src="assets/images/icons/icon-nuove-costruzioni.svg" alt="" class="icon icon--sm"
                                     width="18" height="18">
-                                Nuove Costruzione
+                                Nuove Costruzioni
                             </li>
                         </ul>
                         <input type="hidden" name="tipologia" id="searchTipo" value="">
@@ -1061,7 +1089,7 @@
                 <p class="footer-titolo">Link rapidi</p>
                 <ul class="footer-link">
                     <li><a href="index.html">Home</a></li>
-                    <li><a href="vendita.html">Vendita</a></li>
+                    <li><a href="vendita.html">Compra</a></li>
                     <li><a href="affitto.html">Affitto</a></li>
                     <li><a href="index.html#vendi">Vendi</a></li>
                     <li><a href="index.html#valuta">Valuta</a></li>

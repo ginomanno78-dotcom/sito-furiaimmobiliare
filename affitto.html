@@ -35,7 +35,7 @@
                             height="16">
                     </button>
                     <ul class="nav-dropdown-menu" id="navImmobiliMenu" hidden>
-                        <li><a href="vendita.html">Vendita</a></li>
+                        <li><a href="vendita.html">Compra</a></li>
                         <li><a href="affitto.html" class="is-active">Affitto</a></li>
                     </ul>
                 </div>
@@ -69,10 +69,33 @@
     <div class="drawer-overlay" id="drawerOverlay" hidden></div>
     <nav class="mobile-drawer" id="mobileDrawer" aria-label="Menu mobile" hidden>
         <a href="index.html">Home</a>
-        <a href="vendita.html">Vendita</a>
-        <a href="affitto.html">Affitto</a>
-        <a href="index.html#vendi">Vendi casa</a>
-        <a href="index.html#valuta">Valuta</a>
+
+        <div class="mobile-drawer-group">
+            <button type="button" class="mobile-drawer-toggle" id="drawerImmobiliToggle" aria-expanded="false"
+                aria-controls="drawerImmobiliMenu">
+                Immobili
+                <img src="assets/images/icons/icon-chevron-down.svg" alt="" class="icon icon--sm" width="16"
+                    height="16">
+            </button>
+            <div class="mobile-drawer-sub" id="drawerImmobiliMenu" hidden>
+                <a href="vendita.html">Compra</a>
+                <a href="affitto.html" class="is-active">Affitto</a>
+            </div>
+        </div>
+
+        <div class="mobile-drawer-group">
+            <button type="button" class="mobile-drawer-toggle" id="drawerVendiToggle" aria-expanded="false"
+                aria-controls="drawerVendiMenu">
+                Vendi
+                <img src="assets/images/icons/icon-chevron-down.svg" alt="" class="icon icon--sm" width="16"
+                    height="16">
+            </button>
+            <div class="mobile-drawer-sub" id="drawerVendiMenu" hidden>
+                <a href="index.html#vendi">Vendi casa</a>
+                <a href="index.html#valuta">Valuta</a>
+            </div>
+        </div>
+
         <a href="index.html#servizi">Servizi</a>
         <a href="index.html#contatti">Contatti</a>
     </nav>
@@ -115,7 +138,7 @@
                 <p class="footer-titolo">Link rapidi</p>
                 <ul class="footer-link">
                     <li><a href="index.html">Home</a></li>
-                    <li><a href="vendita.html">Vendita</a></li>
+                    <li><a href="vendita.html">Compra</a></li>
                     <li><a href="affitto.html">Affitto</a></li>
                     <li><a href="index.html#vendi">Vendi</a></li>
                     <li><a href="index.html#valuta">Valuta</a></li>
