@@ -823,7 +823,8 @@ h2 {
 
   /*
    * Anti-flash: html.furia-cine (script in head) mostra già foto 1 e nasconde UI
-   * prima che main.js aggiunga .hero--cinematico-attivo
+   * prima che main.js aggiunga .hero--cinematico-attivo.
+   * La frase resta nascosta: altrimenti comparirebbe già composta e poi ripartirebbe il fade-up.
    */
   html.furia-cine .hero .hero-bg--esterno,
   html.furia-cine .hero .hero-transizione {
@@ -833,10 +834,6 @@ h2 {
   html.furia-cine .hero .hero-bg--interno {
     display: block;
     opacity: 0;
-  }
-
-  html.furia-cine .hero .hero-frase {
-    display: flex;
   }
 
   html.furia-cine .hero .hero-inner {
