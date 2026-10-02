@@ -7970,3 +7970,137 @@ html:has(body.immobile-lightbox-open) {
   /* Icona bianca sul verde WhatsApp */
   filter: brightness(0) invert(1);
 }
+
+/* ===== PAGINA PRIVACY + COOKIE ===== */
+.pagina-privacy {
+  padding: calc(8px + var(--nav-height) + var(--spazio-6)) 0 var(--spazio-8);
+}
+
+.pagina-privacy-inner {
+  max-width: 46rem;
+}
+
+.pagina-privacy-titolo {
+  margin: 0 0 var(--spazio-2);
+  font-family: var(--font-titoli);
+  font-size: clamp(1.85rem, 3.5vw, 2.5rem);
+  color: var(--colore-primario);
+}
+
+.pagina-privacy-meta {
+  margin: 0 0 var(--spazio-4);
+  font-size: 0.9rem;
+  color: var(--colore-muto);
+}
+
+.pagina-privacy-intro p,
+.pagina-privacy-sezione p,
+.pagina-privacy-sezione li {
+  line-height: 1.65;
+  color: var(--colore-testo);
+}
+
+.pagina-privacy-nota {
+  padding: var(--spazio-3);
+  border: 1px solid var(--colore-bordo);
+  border-left: 3px solid var(--colore-primario);
+  background: color-mix(in srgb, var(--colore-secondario) 35%, transparent);
+}
+
+.pagina-privacy-indice {
+  margin: var(--spazio-5) 0;
+  padding: var(--spazio-4);
+  border: 1px solid var(--colore-bordo);
+}
+
+.pagina-privacy-indice-titolo {
+  margin: 0 0 var(--spazio-2);
+  font-family: var(--font-titoli);
+  color: var(--colore-primario);
+}
+
+.pagina-privacy-indice ol {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.pagina-privacy-indice a {
+  color: var(--colore-testo);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.pagina-privacy-indice a:hover {
+  color: var(--colore-primario);
+}
+
+.pagina-privacy-sezione {
+  margin: var(--spazio-6) 0 0;
+  padding-top: var(--spazio-4);
+  border-top: 1px solid var(--colore-bordo);
+}
+
+.pagina-privacy-sezione h2 {
+  margin: 0 0 var(--spazio-3);
+  font-family: var(--font-titoli);
+  font-size: clamp(1.25rem, 2.4vw, 1.55rem);
+  color: var(--colore-primario);
+}
+
+.pagina-privacy-sezione h3 {
+  margin: var(--spazio-4) 0 var(--spazio-2);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--colore-testo);
+}
+
+.pagina-privacy-sezione ul {
+  margin: 0 0 var(--spazio-3);
+  padding-left: 1.2rem;
+}
+
+.pagina-privacy-sezione a {
+  color: var(--colore-primario);
+}
+
+.pagina-privacy-sezione code {
+  font-size: 0.92em;
+  color: var(--colore-muto);
+}
+
+.pagina-privacy-tabella-wrap {
+  overflow-x: auto;
+  margin: var(--spazio-3) 0 var(--spazio-4);
+}
+
+.pagina-privacy-tabella {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.pagina-privacy-tabella th,
+.pagina-privacy-tabella td {
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--colore-bordo);
+  text-align: left;
+  vertical-align: top;
+  line-height: 1.5;
+}
+
+.pagina-privacy-tabella th {
+  font-weight: 600;
+  color: var(--colore-primario);
+  background: color-mix(in srgb, var(--colore-secondario) 45%, transparent);
+}
+
+.pagina-privacy-chiusura {
+  margin: var(--spazio-6) 0 0;
+  padding-top: var(--spazio-4);
+  border-top: 1px solid var(--colore-bordo);
+  color: var(--colore-muto);
+}
+
+.pagina-privacy-chiusura a {
+  color: var(--colore-primario);
+}
