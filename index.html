@@ -15,6 +15,18 @@
     <meta property="og:image" content="assets/images/hero-furia.webp">
     <link rel="icon" type="image/svg+xml" href="assets/logo-furia-favicon.svg">
     <link rel="stylesheet" href="style.css">
+    <!-- Anti-flash hero: decide il cinematico prima del primo paint (stessa logica di main.js) -->
+    <script>
+        (function () {
+            try {
+                var KEY = "furia-hero-cinematico-visto";
+                if (sessionStorage.getItem(KEY) === "1") return;
+                if (!window.matchMedia("(min-width: 1280px) and (orientation: landscape)").matches) return;
+                if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+                document.documentElement.classList.add("furia-cine");
+            } catch (e) { /* sessionStorage / matchMedia non disponibili */ }
+        })();
+    </script>
 </head>
 
 <body>

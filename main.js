@@ -19,9 +19,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const mqRiduciMotoHero = window.matchMedia("(prefers-reduced-motion: reduce)");
     try {
       const giaVisto = sessionStorage.getItem(KEY_CINE) === "1";
-      if (!giaVisto && mqCine.matches && !mqRiduciMotoHero.matches) {
+      const daHead = document.documentElement.classList.contains("furia-cine");
+      /* daHead: già deciso nello script anti-flash in <head> */
+      if (daHead || (!giaVisto && mqCine.matches && !mqRiduciMotoHero.matches)) {
         hero.classList.add("hero--cinematico-attivo");
         sessionStorage.setItem(KEY_CINE, "1");
+        /* La classe head serve solo anti-flash; da qui comanda .hero--cinematico-attivo */
+        document.documentElement.classList.remove("furia-cine");
       }
     } catch (_) {
       /* sessionStorage non disponibile */
