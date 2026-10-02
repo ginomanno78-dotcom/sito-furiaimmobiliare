@@ -699,6 +699,7 @@ h2 {
 /* Default (mobile / tablet / portrait): hero = seconda immagine, niente cinematico */
 .hero-bg--esterno,
 .hero-transizione,
+.hero-frase,
 .hero-brand-finale {
   display: none;
 }
@@ -716,6 +717,36 @@ h2 {
   pointer-events: none;
   background: #0E2B2C;
   opacity: 0;
+}
+
+/* Frase sul primo fotogramma: centro esatto, bianco + bagliore scuro (da PS Outer Glow) */
+.hero-frase {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  margin: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.12em;
+  pointer-events: none;
+  text-align: center;
+  font-family: var(--font-titoli);
+  font-weight: 400;
+  font-size: clamp(2.2rem, 4.8vw, 3.85rem);
+  line-height: 1.15;
+  color: #fff;
+  /* Approssimazione Bagliore esterno PS: #1b1b1b, opacità 90%, size ~30px, spread 25% */
+  text-shadow:
+    0 0 8px rgba(27, 27, 27, 0.9),
+    0 0 16px rgba(27, 27, 27, 0.9),
+    0 0 28px rgba(27, 27, 27, 0.9),
+    0 0 40px rgba(27, 27, 27, 0.85);
+}
+
+.hero-frase-riga {
+  display: block;
 }
 
 .hero-brand-finale {
@@ -763,6 +794,7 @@ h2 {
   /* Stato a riposo (visite successive): solo interno + UI, niente animazione */
   .hero-bg--esterno,
   .hero-transizione,
+  .hero-frase,
   .hero-brand-finale {
     display: none;
   }
@@ -784,8 +816,56 @@ h2 {
     display: block;
   }
 
+  .hero.hero--cinematico-attivo .hero-frase,
   .hero.hero--cinematico-attivo .hero-brand-finale {
     display: flex;
+  }
+
+  /* Uscita frase flyin: insieme allo zoom (frase al 100% ≈2.85s + 1s = 3.85s) */
+  .hero.hero--cinematico-attivo .hero-frase {
+    transform-origin: center center;
+    animation: hero-frase-flyin-esci 1.5s linear 3.85s 1 forwards;
+  }
+
+  /* Entrata frase: foto subito, poi fade-up una riga alla volta */
+  .hero.hero--cinematico-attivo .hero-frase-riga {
+    opacity: 0;
+    transform: translateY(0.55em);
+    animation: hero-frase-fade-up 0.85s ease-out forwards;
+  }
+
+  .hero.hero--cinematico-attivo .hero-frase-riga:nth-child(1) {
+    animation-delay: 1s;
+  }
+
+  .hero.hero--cinematico-attivo .hero-frase-riga:nth-child(2) {
+    animation-delay: 1.5s;
+  }
+
+  .hero.hero--cinematico-attivo .hero-frase-riga:nth-child(3) {
+    animation-delay: 2s;
+  }
+
+  @keyframes hero-frase-fade-up {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Solo tratto d’uscita del demo fly-in: rimpicciolisce, blur e svanisce in lontananza */
+  @keyframes hero-frase-flyin-esci {
+    0% {
+      opacity: 1;
+      filter: blur(0);
+      transform: scale(1);
+    }
+
+    100% {
+      opacity: 0;
+      filter: blur(10px);
+      transform: scale(0.1);
+    }
   }
 
   .hero.hero--cinematico-attivo .hero-bg--esterno,
@@ -794,32 +874,32 @@ h2 {
     will-change: transform, opacity;
   }
 
-  /* UI hero rientra dopo il passaggio continuo brand/interno */
+  /* UI hero rientra subito dopo la fine brand */
   .hero.hero--cinematico-attivo .hero-inner {
     opacity: 0;
-    animation: hero-ui-entra 0.85s ease 7.1s 1 forwards;
+    animation: hero-ui-entra 0.85s ease 8.95s 1 forwards;
   }
 
-  /* Atto A+B: avvicinamento lineare alla porta (leggermente più veloce) */
+  /* Zoom esterno: stesso start dell’uscita frase (3.85s), 1.5s lineare */
   .hero.hero--cinematico-attivo .hero-bg--esterno {
-    animation: hero-esterno-zoom 2.5s linear 1 forwards;
+    animation: hero-esterno-zoom 1.5s linear 3.85s 1 forwards;
   }
 
-  /* Atto C+D: interno già in avvicinamento, compare sotto l’overlay e continua */
+  /* Seconda foto: ancorata alla fine zoom (zoom end 5.35s) */
   .hero.hero--cinematico-attivo .hero-bg--interno {
     opacity: 0;
     transform: scale(1.35);
-    animation: hero-interno-continua 2.8s linear 2.15s 1 forwards;
+    animation: hero-interno-continua 2.8s linear 5s 1 forwards;
   }
 
-  /* Atto C: fondue scura (entra → picco → esce) */
+  /* Fondue scura tra esterno e interno */
   .hero.hero--cinematico-attivo .hero-transizione {
-    animation: hero-overlay-transizione 1.2s linear 1.95s 1 forwards;
+    animation: hero-overlay-transizione 1.2s linear 4.8s 1 forwards;
   }
 
-  /* Atto E: brand in uscita continua (niente stop), contestuale allo zoom interno */
+  /* Brand finale: durata −1s (2.6s), start dopo zoom */
   .hero.hero--cinematico-attivo .hero-brand-finale {
-    animation: hero-brand-finale 3.6s linear 3.06s 1 forwards;
+    animation: hero-brand-finale 2.6s linear 5.91s 1 forwards;
     transform-origin: center center;
   }
 
@@ -914,6 +994,7 @@ h2 {
   .hero.hero--cinematico-attivo .hero-bg--esterno,
   .hero.hero--cinematico-attivo .hero-bg--interno,
   .hero.hero--cinematico-attivo .hero-transizione,
+  .hero.hero--cinematico-attivo .hero-frase,
   .hero.hero--cinematico-attivo .hero-brand-finale,
   .hero.hero--cinematico-attivo .hero-inner {
     animation: none;
@@ -921,6 +1002,7 @@ h2 {
 
   .hero.hero--cinematico-attivo .hero-bg--esterno,
   .hero.hero--cinematico-attivo .hero-transizione,
+  .hero.hero--cinematico-attivo .hero-frase,
   .hero.hero--cinematico-attivo .hero-brand-finale {
     display: none;
   }
@@ -6859,7 +6941,7 @@ h2 {
   }
 
   /* Evita che i figli (nowrap) allarghino la pagina e troncino a dx */
-  .pagina-vendita-search.hero-search > * {
+  .pagina-vendita-search.hero-search>* {
     min-width: 0;
   }
 
