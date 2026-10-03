@@ -24,14 +24,6 @@
                 if (!window.matchMedia("(min-width: 1280px) and (orientation: landscape)").matches) return;
                 if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
                 document.documentElement.classList.add("furia-cine");
-                /* Poster minuscolo inline: evita pagina nera mentre arrivano le foto full */
-                var stile = document.createElement("style");
-                stile.textContent =
-                    'html.furia-cine .hero{' +
-                    'background:#1B1B1B url("data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABcQERQRDhcUEhQaGBcbIjklIh8fIkYyNSk5UkhXVVFIUE5bZoNvW2F8Yk5QcptzfIeLkpSSWG2grJ+OqoOPko3/2wBDARgaGiIeIkMlJUONXlBejY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY3/wAARCAAbADADASIAAhEBAxEB/8QAGgAAAgIDAAAAAAAAAAAAAAAAAwUEBgABAv/EACQQAAICAQQBBAMAAAAAAAAAAAECAxEABBIhMUEFExRhIiOB/8QAFwEAAwEAAAAAAAAAAAAAAAAAAAECA//EABoRAQEAAwEBAAAAAAAAAAAAAAEAAhESIUH/2gAMAwEAAhEDEQA/AGa6yBzSPu5o0DxhEf8AcovjES6kRuaYBhjPSzpJ+Sm6FnMC1WkS+txQytEyksho4M+vIxCohsmusXa9ledysbBuDurvjMhli9gLKLJBa66yunVPOM8XUylQd1X4IGEhmkaZVZrB+srsp2vsAIDbKP1XON5J/jRmUckDgYhZ6KrokkkgAXdfYGNtBGdJCzTECl/mHjijjSkQKPrF0srtHEpNg3YIHg4fZGOvY2/5AMpUjcbAwEs76ZlMaAA8WT1ksilodVnJVWSiLywktHGqnkGxpAzXxx1g5p5IWAlt77AusJFGiPuVaI85uF2lk2SHcpPIIw8hW//Z") center/cover no-repeat;' +
-                    '}' +
-                    'html.furia-cine .hero-inner{opacity:0}';
-                document.head.appendChild(stile);
                 /* Avvia subito il download della foto 1 full */
                 var preload = document.createElement("link");
                 preload.rel = "preload";
