@@ -121,11 +121,21 @@
 
         <!-- ===== HERO ===== -->
         <section class="hero" id="hero" aria-label="Presentazione">
-            <img src="assets/images/hero-furia.webp" alt="" class="hero-bg hero-bg--esterno" width="1920" height="1080"
-                fetchpriority="high">
-            <!-- Interno: usato solo nel cinematico ≥1280px -->
+            <!-- Esterno: src solo se cinematico (evita download ~190KB su mobile / visite successive) -->
+            <img alt="" class="hero-bg hero-bg--esterno" width="1920" height="1080"
+                data-src="assets/images/hero-furia.webp" decoding="async">
+            <!-- Interno: LCP mobile e stato a riposo desktop -->
             <img src="assets/images/hero-furia2.webp" alt="" class="hero-bg hero-bg--interno" width="1920" height="1080"
-                loading="eager" decoding="async">
+                fetchpriority="high" loading="eager" decoding="async">
+            <script>
+                (function () {
+                    if (!document.documentElement.classList.contains("furia-cine")) return;
+                    var el = document.querySelector(".hero-bg--esterno");
+                    if (el && el.getAttribute("data-src") && !el.getAttribute("src")) {
+                        el.src = el.getAttribute("data-src");
+                    }
+                })();
+            </script>
             <div class="hero-transizione" aria-hidden="true"></div>
             <!-- Frase cinematico: tre righe sul primo fotogramma (solo ≥1280px landscape) -->
             <p class="hero-frase" aria-hidden="true">

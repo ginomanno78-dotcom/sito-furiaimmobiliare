@@ -101,7 +101,7 @@ const annunci = {
       classeEnergetica: "C",
       descrizione:
         "Vendesi in Sparanise alla via Kennedy appartamento con doppia esposizione, sita al piano primo di 105 mq calpestabili. Composto da ampio ingresso, salone doppio, cucina, due camere da letto, bagno con antibagno, balcone e cantina. Infissi sostituiti recentemente. Ingresso su Via A. B. Nobel n.1; immobile d’angolo anche con Via Kennedy.",
-      cover: "assets/images/annunci/vendita/sparanise-cinquegrana-via-kennedy/cover-cinquegrana-sparanise.webp",
+      cover: "assets/images/annunci/vendita/sparanise-cinquegrana-via-kennedy/foto-cover.webp",
       /* Foto al passaggio mouse (solo desktop) */
       coverHover:
         "assets/images/annunci/vendita/sparanise-cinquegrana-via-kennedy/foto-05.webp",
@@ -369,7 +369,7 @@ const annunci = {
       descrizione:
         "Lungo la storica e strategica Via Appia a Sparanise, proponiamo in vendita un'esclusiva intera proprietà indipendente dalle straordinarie potenzialità commerciali e residenziali. L’immobile, libero su quattro lati, unisce la comodità di un'ampia abitazione privata alla redditività di un locale commerciale al piano terra, il tutto arricchito da un generoso spazio esterno. Completa la proprietà un immenso valore aggiunto: un terreno edificabile retrostante di ben 1.607 mq, perfetto per futuri ampliamenti strutturali, parcheggi o per la creazione di un'oasi relax.\n\n• Piano Terra (Locale Commerciale): Ampio locale commerciale con eccellente visibilità fronte strada sulla Via Appia, dotato di vetrine e accessi diretti. Uno spazio versatile, perfetto per accogliere un'attività di ristorazione, una reception, una sala colazioni o un negozio al dettaglio.\n\n• Primo Piano (Abitazione): Luminoso appartamento residenziale di generosa metratura, ideale come abitazione principale del proprietario/gestore o riconfigurabile in diverse camere indipendenti con bagno privato per gli ospiti.\n\n• Spazio Esterno & Giardino: Grande cortile interno che garantisce privacy e riservatezza, impreziosito da un patio ideale per allestire zone lounge o aree colazione all'aperto. Il cortile è circondato da un giardino\n\n• Terreno Edificabile: Terreno pianeggiante di 1.607 mq incluso nella proprietà. Rappresenta una vera rarità sul mercato, offrendo la possibilità di edificare ulteriori volumetrie (es. dependance, centro benessere) o di realizzare una piscina con solarium e un ampio parcheggio privato per i clienti.",
       cover:
-        "assets/images/annunci/vendita/palazzo-via-appia-francolise/foto-01.webp",
+        "assets/images/annunci/vendita/palazzo-via-appia-francolise/foto-cover.webp",
       coverHover:
         "assets/images/annunci/vendita/palazzo-via-appia-francolise/foto-03.webp",
       planimetria:

@@ -22,6 +22,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const daHead = document.documentElement.classList.contains("furia-cine");
       /* daHead: già deciso nello script anti-flash in <head> */
       if (daHead || (!giaVisto && mqCine.matches && !mqRiduciMotoHero.matches)) {
+        /* Carica la foto esterno solo quando serve il cinematico */
+        const esterno = hero.querySelector(".hero-bg--esterno");
+        if (esterno && !esterno.getAttribute("src") && esterno.getAttribute("data-src")) {
+          esterno.src = esterno.getAttribute("data-src");
+        }
         hero.classList.add("hero--cinematico-attivo");
         sessionStorage.setItem(KEY_CINE, "1");
         /* La classe head serve solo anti-flash; da qui comanda .hero--cinematico-attivo */
@@ -605,20 +610,25 @@ document.addEventListener("DOMContentLoaded", () => {
     /* Con link a tutta card, Scopri resta solo testo (niente <a> annidati) */
     const cta = `<span class="card-annuncio-cta">Scopri &gt;</span>`;
     const altCover = `${titolo} a ${annuncio.comune}`;
-    /* Cover + eventuale seconda foto per hover desktop (se manca coverHover resta solo cover) */
-    const mediaHover = annuncio.coverHover
-      ? `<img class="card-annuncio-media-hover" src="${annuncio.coverHover}" alt="" width="600" height="400" loading="lazy" aria-hidden="true">`
-      : "";
+    /* Hover foto solo desktop con mouse: su touch non si mette in DOM (niente download inutile) */
+    const puoHoverFoto =
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    const mediaHover =
+      puoHoverFoto && annuncio.coverHover
+        ? `<img class="card-annuncio-media-hover" src="${annuncio.coverHover}" alt="" width="600" height="400" loading="lazy" aria-hidden="true">`
+        : "";
     const mediaImgs = `<img class="card-annuncio-media-cover" src="${annuncio.cover}" alt="${altCover}" width="600" height="400" loading="lazy">${mediaHover}`;
     /* Barra «In vendita» in alto a sx (sopra l’hover foto) */
     const badgeVendita =
       String(annuncio.contratto || "").toLowerCase() === "vendita"
         ? `<span class="card-annuncio-badge-vendita">In vendita</span>`
         : "";
+    const classeMediaHover = puoHoverFoto && annuncio.coverHover ? " card-annuncio-media--hover" : "";
     /* Con hit a tutta card, il media sta sopra (z-index) e ha link proprio così hover+click funzionano */
     const media = href
-      ? `<div class="card-annuncio-media${annuncio.coverHover ? " card-annuncio-media--hover" : ""}"><a class="card-annuncio-media-link" href="${href}" tabindex="-1" aria-hidden="true">${mediaImgs}</a>${badgeVendita}</div>`
-      : `<div class="card-annuncio-media${annuncio.coverHover ? " card-annuncio-media--hover" : ""}">${mediaImgs}${badgeVendita}</div>`;
+      ? `<div class="card-annuncio-media${classeMediaHover}"><a class="card-annuncio-media-link" href="${href}" tabindex="-1" aria-hidden="true">${mediaImgs}</a>${badgeVendita}</div>`
+      : `<div class="card-annuncio-media${classeMediaHover}">${mediaImgs}${badgeVendita}</div>`;
 
     /* Icona condividi (riusabile su tutte le card collegabili) */
     const shareHtml = href
