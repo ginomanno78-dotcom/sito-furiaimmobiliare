@@ -1505,7 +1505,63 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  /* ===== FORM VALUTA ===== */
+  /* ===== FORM VALUTA / CONTATTI → Formspree ===== */
+  const FORMSPREE_ENDPOINT = "https://formspree.io/f/xeaoyvza";
+
+  // Invio AJAX a Formspree (stessa casella per Valuta e Contatti)
+  const inviaFormspree = async (form, msgEl, etichettaForm) => {
+    const btn = form.querySelector('button[type="submit"]');
+    if (btn) btn.disabled = true;
+
+    const dati = new FormData(form);
+    dati.set("_subject", `Furia Immobiliare — ${etichettaForm}`);
+    dati.set("formulario", etichettaForm);
+
+    try {
+      const res = await fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        body: dati,
+        headers: { Accept: "application/json" },
+      });
+
+      if (res.ok) {
+        form.reset();
+        // Ripristina etichette dropdown custom dopo reset native
+        const labelDefault = {
+          valutaTipologiaLabel: "*tipologia",
+          valutaStatoLabel: "stato immobile",
+          contattiIntentoLabel: "Seleziona",
+          contattiDettaglioLabel: "Seleziona",
+        };
+        Object.keys(labelDefault).forEach((id) => {
+          const label = form.querySelector(`#${id}`);
+          if (!label) return;
+          label.textContent = labelDefault[id];
+          label.classList.remove("is-selected");
+        });
+        const detMenu = form.querySelector("#contattiDettaglioMenu");
+        if (detMenu) detMenu.innerHTML = "";
+        if (msgEl) {
+          msgEl.hidden = false;
+          msgEl.classList.remove("is-errore");
+          msgEl.classList.add("is-ok");
+          msgEl.textContent = "Grazie per averci contattato, Ti risponderemo entro 48 ore.";
+        }
+      } else {
+        throw new Error("Formspree non ok");
+      }
+    } catch (err) {
+      if (msgEl) {
+        msgEl.hidden = false;
+        msgEl.classList.remove("is-ok");
+        msgEl.classList.add("is-errore");
+        msgEl.textContent = "Invio non riuscito. Riprova o contattaci telefonicamente.";
+      }
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  };
+
   const formValuta = document.getElementById("formValutazioneOnline");
   const valutaMsg = document.getElementById("valutaFormMsg");
 
@@ -1556,12 +1612,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // TODO: Formspree — invio reale del form
-      if (valutaMsg) {
-        valutaMsg.hidden = false;
-        valutaMsg.classList.add("is-ok");
-        valutaMsg.textContent = "Richiesta pronta. L'invio sarà collegato a Formspree.";
-      }
+      inviaFormspree(formValuta, valutaMsg, "Valutazione online");
     });
   }
 
@@ -1740,12 +1791,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // TODO: Formspree — invio reale del form contatti
-      if (contattiMsg) {
-        contattiMsg.hidden = false;
-        contattiMsg.classList.add("is-ok");
-        contattiMsg.textContent = "Richiesta pronta. L'invio sarà collegato a Formspree.";
-      }
+      inviaFormspree(formContatti, contattiMsg, "Contatti");
     });
   }
 

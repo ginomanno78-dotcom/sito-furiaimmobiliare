@@ -583,7 +583,7 @@ h2 {
 
 .mobile-drawer a {
   padding: var(--spazio-3) 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--colore-primario);
   font-weight: 500;
   color: var(--colore-testo-scuro);
   text-align: center;
@@ -601,7 +601,7 @@ h2 {
 }
 
 .mobile-drawer-group {
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--colore-primario);
 }
 
 .mobile-drawer-toggle {
@@ -827,28 +827,28 @@ h2 {
     opacity: 0;
   }
 
-  /* Uscita frase flyin: insieme allo zoom (frase al 100% ≈3.35s + 1s = 4.35s) */
+  /* Uscita frase flyin: insieme allo zoom (frase al 100% ≈2.85s + 1s = 3.85s) */
   .hero.hero--cinematico-attivo .hero-frase {
     transform-origin: center center;
-    animation: hero-frase-flyin-esci 1.5s linear 4.35s 1 forwards;
+    animation: hero-frase-flyin-esci 1.5s linear 3.85s 1 forwards;
   }
 
-  /* Entrata frase: prima solo foto 1 (~1.5s), poi fade-up una riga alla volta */
+  /* Entrata frase: prima solo foto 1 (~1s), poi fade-up una riga alla volta */
   .hero.hero--cinematico-attivo .hero-frase-riga {
     opacity: 0;
     transform: translateY(0.55em);
   }
 
   .hero.hero--cinematico-attivo .hero-frase-riga:nth-child(1) {
-    animation: hero-frase-fade-up 0.85s ease-out 1.5s forwards;
+    animation: hero-frase-fade-up 0.85s ease-out 1s forwards;
   }
 
   .hero.hero--cinematico-attivo .hero-frase-riga:nth-child(2) {
-    animation: hero-frase-fade-up 0.85s ease-out 2s forwards;
+    animation: hero-frase-fade-up 0.85s ease-out 1.5s forwards;
   }
 
   .hero.hero--cinematico-attivo .hero-frase-riga:nth-child(3) {
-    animation: hero-frase-fade-up 0.85s ease-out 2.5s forwards;
+    animation: hero-frase-fade-up 0.85s ease-out 2s forwards;
   }
 
   @keyframes hero-frase-fade-up {
@@ -882,29 +882,29 @@ h2 {
   /* UI hero rientra subito dopo la fine brand */
   .hero.hero--cinematico-attivo .hero-inner {
     opacity: 0;
-    animation: hero-ui-entra 0.85s ease 9.45s 1 forwards;
+    animation: hero-ui-entra 0.85s ease 8.95s 1 forwards;
   }
 
-  /* Zoom esterno: stesso start dell’uscita frase (4.35s), 1.5s lineare */
+  /* Zoom esterno: stesso start dell’uscita frase (3.85s), 1.5s lineare */
   .hero.hero--cinematico-attivo .hero-bg--esterno {
-    animation: hero-esterno-zoom 1.5s linear 4.35s 1 forwards;
+    animation: hero-esterno-zoom 1.5s linear 3.85s 1 forwards;
   }
 
   /* Seconda foto: ancorata alla fine zoom */
   .hero.hero--cinematico-attivo .hero-bg--interno {
     opacity: 0;
     transform: scale(1.35);
-    animation: hero-interno-continua 2.8s linear 5.5s 1 forwards;
+    animation: hero-interno-continua 2.8s linear 5s 1 forwards;
   }
 
   /* Fondue scura tra esterno e interno */
   .hero.hero--cinematico-attivo .hero-transizione {
-    animation: hero-overlay-transizione 1.2s linear 5.3s 1 forwards;
+    animation: hero-overlay-transizione 1.2s linear 4.8s 1 forwards;
   }
 
   /* Brand finale: durata 2.6s, start dopo zoom */
   .hero.hero--cinematico-attivo .hero-brand-finale {
-    animation: hero-brand-finale 2.6s linear 6.41s 1 forwards;
+    animation: hero-brand-finale 2.6s linear 5.91s 1 forwards;
     transform-origin: center center;
   }
 
@@ -2378,7 +2378,7 @@ h2 {
   color: #fff;
 }
 
-/* Copy editoriale Vendi: headline + supporto, allineato a sx */
+/* Copy editoriale Vendi: tutto Cardo Bold, centrato */
 .vendi-intro {
   width: 100%;
   max-width: none;
@@ -2386,7 +2386,9 @@ h2 {
   padding-inline: 0;
   box-sizing: border-box;
   font-family: var(--font-titoli);
-  text-align: left;
+  font-weight: 700;
+  text-align: center;
+  color: var(--colore-testo);
 }
 
 /* Tagline post-banner: Cardo Bold, centrata, grande, 3 righe a tutta colonna */
@@ -2410,50 +2412,27 @@ h2 {
   hyphens: none;
 }
 
-/* Headline: Cardo Bold, stile normale, un solo rigo */
-.vendi-copy-lead {
+/* Tutte le righe intro: stessa misura della tagline post-banner */
+.vendi-intro-riga {
   margin: 0;
   font-family: var(--font-titoli);
-  font-size: clamp(1.05rem, 2.2vw, 1.75rem);
+  font-size: clamp(1.35rem, 3.2vw, 2.25rem);
   font-weight: 700;
   line-height: 1.35;
   letter-spacing: 0.01em;
   text-transform: none;
   color: var(--colore-testo);
-  white-space: nowrap;
 }
 
-@media (max-width: 767px) {
-  .vendi-copy-lead {
-    white-space: normal;
-  }
+/* Solo la prima riga: un filo più piccola, maiuscolo */
+.vendi-intro-riga.vendi-copy-lead {
+  font-size: clamp(0.95rem, 2vw, 1.55rem);
+  text-transform: uppercase;
 }
 
-/* Aria tra headline e supporto */
+/* Aria tra headline e le righe successive */
 .vendi-copy-lead+.vendi-intro-riga:not(.vendi-copy-lead) {
   margin-top: 0.65em;
-}
-
-/* Supporto intro: Poppins Medium, stile normale */
-.vendi-intro-riga.vendi-intro-supporto {
-  font-family: var(--font-corpo);
-  font-size: clamp(calc(0.95rem + 5px), calc(1.5vw + 5px), calc(1.12rem + 5px));
-  font-weight: 500;
-  line-height: 1.6;
-  letter-spacing: 0.01em;
-  text-transform: none;
-  color: var(--colore-testo-muto);
-}
-
-/* «Come primo passo:»: Poppins Bold, maiuscolo, testo muto */
-.vendi-intro-riga.vendi-intro-passo {
-  font-family: var(--font-corpo);
-  font-size: clamp(0.95rem, 1.5vw, 1.12rem);
-  font-weight: 700;
-  line-height: 1.6;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--colore-testo-muto);
 }
 
 /* Tagline: tutte le righe Cardo Bold, grandi, colore testo */
@@ -2470,7 +2449,7 @@ h2 {
 /* Banner: tutta larghezza — desktop/tablet = composito; mobile portrait = stack */
 .vendi-banner {
   width: 100%;
-  margin: 0 0 var(--spazio-6);
+  margin: 0 0 var(--spazio-5);
   overflow: visible;
 }
 
@@ -3328,7 +3307,18 @@ h2 {
 }
 
 .valuta-form-msg.is-ok {
-  color: var(--colore-successo);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4em;
+  color: var(--colore-primario);
+}
+
+/* Spunta di conferma prima del testo */
+.valuta-form-msg.is-ok::before {
+  content: "✓";
+  flex-shrink: 0;
+  font-weight: 700;
+  line-height: 1.35;
 }
 
 /* Banner valutazione in loco: card a sx + foto quadrata a dx (mockup) */
