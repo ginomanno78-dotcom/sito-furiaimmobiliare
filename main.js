@@ -22,16 +22,40 @@ document.addEventListener("DOMContentLoaded", () => {
       const daHead = document.documentElement.classList.contains("furia-cine");
       /* daHead: già deciso nello script anti-flash in <head> */
       if (daHead || (!giaVisto && mqCine.matches && !mqRiduciMotoHero.matches)) {
-        /* Carica la foto esterno solo quando serve il cinematico */
         const esterno = hero.querySelector(".hero-bg--esterno");
-        if (esterno && !esterno.getAttribute("src") && esterno.getAttribute("data-src")) {
-          esterno.setAttribute("fetchpriority", "high");
-          esterno.src = esterno.getAttribute("data-src");
-        }
-        hero.classList.add("hero--cinematico-attivo");
-        sessionStorage.setItem(KEY_CINE, "1");
-        /* La classe head serve solo anti-flash; da qui comanda .hero--cinematico-attivo */
-        document.documentElement.classList.remove("furia-cine");
+
+        const avviaCinematico = () => {
+          hero.classList.add("hero--cinematico-attivo");
+          sessionStorage.setItem(KEY_CINE, "1");
+          document.documentElement.classList.remove("furia-cine");
+        };
+
+        /* Parte solo quando la foto 1 è decodificata (niente nero / animazione a vuoto) */
+        const avviaQuandoEsternoPronto = () => {
+          if (!esterno) {
+            avviaCinematico();
+            return;
+          }
+          if (!esterno.getAttribute("src") && esterno.getAttribute("data-src")) {
+            esterno.setAttribute("fetchpriority", "high");
+            esterno.src = esterno.getAttribute("data-src");
+          }
+          const parti = () => {
+            if (typeof esterno.decode === "function") {
+              esterno.decode().then(avviaCinematico).catch(avviaCinematico);
+            } else {
+              avviaCinematico();
+            }
+          };
+          if (esterno.complete && esterno.naturalWidth > 0) {
+            parti();
+          } else {
+            esterno.addEventListener("load", parti, { once: true });
+            esterno.addEventListener("error", avviaCinematico, { once: true });
+          }
+        };
+
+        avviaQuandoEsternoPronto();
       }
     } catch (_) {
       /* sessionStorage non disponibile */
