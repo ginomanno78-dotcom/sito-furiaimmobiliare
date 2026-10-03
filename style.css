@@ -827,29 +827,28 @@ h2 {
     opacity: 0;
   }
 
-  /* Uscita frase flyin: insieme allo zoom (frase al 100% ≈2.85s + 1s = 3.85s) */
+  /* Uscita frase flyin: insieme allo zoom (frase al 100% ≈3.35s + 1s = 4.35s) */
   .hero.hero--cinematico-attivo .hero-frase {
     transform-origin: center center;
-    animation: hero-frase-flyin-esci 1.5s linear 3.85s 1 forwards;
+    animation: hero-frase-flyin-esci 1.5s linear 4.35s 1 forwards;
   }
 
-  /* Entrata frase: foto subito, poi fade-up una riga alla volta */
+  /* Entrata frase: prima solo foto 1 (~1.5s), poi fade-up una riga alla volta */
   .hero.hero--cinematico-attivo .hero-frase-riga {
     opacity: 0;
     transform: translateY(0.55em);
-    animation: hero-frase-fade-up 0.85s ease-out forwards;
   }
 
   .hero.hero--cinematico-attivo .hero-frase-riga:nth-child(1) {
-    animation-delay: 1s;
+    animation: hero-frase-fade-up 0.85s ease-out 1.5s forwards;
   }
 
   .hero.hero--cinematico-attivo .hero-frase-riga:nth-child(2) {
-    animation-delay: 1.5s;
+    animation: hero-frase-fade-up 0.85s ease-out 2s forwards;
   }
 
   .hero.hero--cinematico-attivo .hero-frase-riga:nth-child(3) {
-    animation-delay: 2s;
+    animation: hero-frase-fade-up 0.85s ease-out 2.5s forwards;
   }
 
   @keyframes hero-frase-fade-up {
@@ -883,29 +882,29 @@ h2 {
   /* UI hero rientra subito dopo la fine brand */
   .hero.hero--cinematico-attivo .hero-inner {
     opacity: 0;
-    animation: hero-ui-entra 0.85s ease 8.95s 1 forwards;
+    animation: hero-ui-entra 0.85s ease 9.45s 1 forwards;
   }
 
-  /* Zoom esterno: stesso start dell’uscita frase (3.85s), 1.5s lineare */
+  /* Zoom esterno: stesso start dell’uscita frase (4.35s), 1.5s lineare */
   .hero.hero--cinematico-attivo .hero-bg--esterno {
-    animation: hero-esterno-zoom 1.5s linear 3.85s 1 forwards;
+    animation: hero-esterno-zoom 1.5s linear 4.35s 1 forwards;
   }
 
-  /* Seconda foto: ancorata alla fine zoom (zoom end 5.35s) */
+  /* Seconda foto: ancorata alla fine zoom */
   .hero.hero--cinematico-attivo .hero-bg--interno {
     opacity: 0;
     transform: scale(1.35);
-    animation: hero-interno-continua 2.8s linear 5s 1 forwards;
+    animation: hero-interno-continua 2.8s linear 5.5s 1 forwards;
   }
 
   /* Fondue scura tra esterno e interno */
   .hero.hero--cinematico-attivo .hero-transizione {
-    animation: hero-overlay-transizione 1.2s linear 4.8s 1 forwards;
+    animation: hero-overlay-transizione 1.2s linear 5.3s 1 forwards;
   }
 
-  /* Brand finale: durata −1s (2.6s), start dopo zoom */
+  /* Brand finale: durata 2.6s, start dopo zoom */
   .hero.hero--cinematico-attivo .hero-brand-finale {
-    animation: hero-brand-finale 2.6s linear 5.91s 1 forwards;
+    animation: hero-brand-finale 2.6s linear 6.41s 1 forwards;
     transform-origin: center center;
   }
 
