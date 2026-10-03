@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
         /* Carica la foto esterno solo quando serve il cinematico */
         const esterno = hero.querySelector(".hero-bg--esterno");
         if (esterno && !esterno.getAttribute("src") && esterno.getAttribute("data-src")) {
+          esterno.setAttribute("fetchpriority", "high");
           esterno.src = esterno.getAttribute("data-src");
         }
         hero.classList.add("hero--cinematico-attivo");

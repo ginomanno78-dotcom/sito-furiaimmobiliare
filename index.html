@@ -24,6 +24,13 @@
                 if (!window.matchMedia("(min-width: 1280px) and (orientation: landscape)").matches) return;
                 if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
                 document.documentElement.classList.add("furia-cine");
+                /* Avvia subito il download della foto 1 (evita schermata nera in attesa) */
+                var preload = document.createElement("link");
+                preload.rel = "preload";
+                preload.as = "image";
+                preload.href = "assets/images/hero-furia.webp";
+                preload.fetchPriority = "high";
+                document.head.appendChild(preload);
             } catch (e) { /* sessionStorage / matchMedia non disponibili */ }
         })();
     </script>
@@ -132,6 +139,7 @@
                     if (!document.documentElement.classList.contains("furia-cine")) return;
                     var el = document.querySelector(".hero-bg--esterno");
                     if (el && el.getAttribute("data-src") && !el.getAttribute("src")) {
+                        el.setAttribute("fetchpriority", "high");
                         el.src = el.getAttribute("data-src");
                     }
                 })();
