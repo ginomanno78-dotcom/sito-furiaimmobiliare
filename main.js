@@ -1215,8 +1215,34 @@ document.addEventListener("DOMContentLoaded", () => {
       badge.hidden = false;
     };
 
-    applicaFiltriVendita = () => {
+    /* Solo marker + setView/fitBounds (niente card / testi filtri) */
+    const aggiornaVistaMappaVendita = () => {
+      if (!mappaVendita) return;
       const bounds = [];
+
+      listaVendita.forEach((annuncio) => {
+        const ok = annuncioPassaFiltri(annuncio);
+        const marker = markerPerId[annuncio.id];
+        if (!marker) return;
+
+        if (ok) {
+          if (!mappaVendita.hasLayer(marker)) marker.addTo(mappaVendita);
+          if (annuncio.lat != null && annuncio.lng != null) {
+            bounds.push([annuncio.lat, annuncio.lng]);
+          }
+        } else if (mappaVendita.hasLayer(marker)) {
+          mappaVendita.removeLayer(marker);
+        }
+      });
+
+      if (bounds.length === 1) {
+        mappaVendita.setView(bounds[0], 15);
+      } else if (bounds.length > 1) {
+        mappaVendita.fitBounds(bounds, { padding: [28, 28], maxZoom: 14 });
+      }
+    };
+
+    applicaFiltriVendita = () => {
       let nVisibili = 0;
 
       listaVendita.forEach((annuncio) => {
@@ -1225,18 +1251,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (card) {
           card.hidden = !ok;
           card.classList.toggle("is-nascosto-filtro", !ok);
-        }
-
-        const marker = markerPerId[annuncio.id];
-        if (marker && mappaVendita) {
-          if (ok) {
-            if (!mappaVendita.hasLayer(marker)) marker.addTo(mappaVendita);
-            if (annuncio.lat != null && annuncio.lng != null) {
-              bounds.push([annuncio.lat, annuncio.lng]);
-            }
-          } else if (mappaVendita.hasLayer(marker)) {
-            mappaVendita.removeLayer(marker);
-          }
         }
 
         if (ok) nVisibili += 1;
@@ -1256,14 +1270,7 @@ document.addEventListener("DOMContentLoaded", () => {
         filtriAltriApplicaBtn.textContent = `Applica (${nVisibili})`;
       }
 
-      if (mappaVendita) {
-        if (bounds.length === 1) {
-          mappaVendita.setView(bounds[0], 15);
-        } else if (bounds.length > 1) {
-          mappaVendita.fitBounds(bounds, { padding: [28, 28], maxZoom: 14 });
-        }
-        requestAnimationFrame(() => mappaVendita.invalidateSize());
-      }
+      aggiornaVistaMappaVendita();
 
       requestAnimationFrame(adattaTuttiTipiCard);
       aggiornaBadgeFiltriExtra(nVisibili);
@@ -1438,38 +1445,59 @@ document.addEventListener("DOMContentLoaded", () => {
       mqFiltriMobilePortrait.addEventListener("change", onCambioFiltriViewport);
     }
 
-    if (mappaVenditaEl && typeof L !== "undefined") {
-      mappaVendita = L.map(mappaVenditaEl, {
-        scrollWheelZoom: false,
-      });
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        maxZoom: 19,
-      }).addTo(mappaVendita);
+    /* Definita sempre: L può mancare finché Iubenda non attiva Leaflet */
+    window.avviaMappaVenditaFuria = () => {
+      if (window.__furiaMappaVenditaAvviata || mappaVendita) return;
+      if (typeof L === "undefined") return;
+      if (!mappaVenditaEl) return;
 
-      listaVendita.forEach((annuncio) => {
-        if (annuncio.lat == null || annuncio.lng == null) return;
-        const latLng = [annuncio.lat, annuncio.lng];
-        const titolo = typeof formatTipologia === "function"
-          ? formatTipologia(annuncio)
-          : annuncio.tipologia;
-        const href = `immobile.html?id=${encodeURIComponent(annuncio.id)}`;
-        const marker = L.marker(latLng).addTo(mappaVendita);
-        marker.bindPopup(
-          `<strong>${titolo}</strong><br>${annuncio.comune || ""}<br><a href="${href}">Vedi annuncio</a>`
-        );
-        marker.on("click", () => evidenziaCard(annuncio.id));
-        markerPerId[annuncio.id] = marker;
-      });
+      try {
+        mappaVendita = L.map(mappaVenditaEl, {
+          scrollWheelZoom: false,
+        });
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+          maxZoom: 19,
+        }).addTo(mappaVendita);
 
-      /* Abilita zoom rotella solo al focus/hover sulla mappa */
-      mappaVenditaEl.addEventListener("mouseenter", () => mappaVendita.scrollWheelZoom.enable());
-      mappaVenditaEl.addEventListener("mouseleave", () => mappaVendita.scrollWheelZoom.disable());
+        listaVendita.forEach((annuncio) => {
+          if (annuncio.lat == null || annuncio.lng == null) return;
+          const latLng = [annuncio.lat, annuncio.lng];
+          const titolo = typeof formatTipologia === "function"
+            ? formatTipologia(annuncio)
+            : annuncio.tipologia;
+          const href = `immobile.html?id=${encodeURIComponent(annuncio.id)}`;
+          const marker = L.marker(latLng).addTo(mappaVendita);
+          marker.bindPopup(
+            `<strong>${titolo}</strong><br>${annuncio.comune || ""}<br><a href="${href}">Vedi annuncio</a>`
+          );
+          marker.on("click", () => evidenziaCard(annuncio.id));
+          markerPerId[annuncio.id] = marker;
+        });
 
-      window.addEventListener("resize", () => {
+        /* Abilita zoom rotella solo al focus/hover sulla mappa */
+        mappaVenditaEl.addEventListener("mouseenter", () => mappaVendita.scrollWheelZoom.enable());
+        mappaVenditaEl.addEventListener("mouseleave", () => mappaVendita.scrollWheelZoom.disable());
+
+        window.addEventListener("resize", () => {
+          mappaVendita.invalidateSize();
+        });
+
         mappaVendita.invalidateSize();
-      });
-      requestAnimationFrame(() => mappaVendita.invalidateSize());
+        aggiornaVistaMappaVendita();
+        requestAnimationFrame(() => mappaVendita.invalidateSize());
+        window.__furiaMappaVenditaAvviata = true;
+      } catch (err) {
+        console.error(
+          "Furia: init mappa vendita fallita (Leaflet/OSM). Mappa eventualmente a metà.",
+          err
+        );
+      }
+    };
+
+    /* Se Iubenda ha già attivato Leaflet prima di questo script defer */
+    if (window.__furiaLeafletPronto) {
+      window.avviaMappaVenditaFuria();
     }
 
     /* Stato iniziale contatore + bounds */
@@ -2462,6 +2490,92 @@ document.addEventListener("DOMContentLoaded", () => {
         .join("");
     };
 
+    /* Espansioni tipologia solo per meta/og (le card restano abbreviate) */
+    const TIPOLOGIA_SEO = {
+      "Locale comm.": "Locale commerciale"
+    };
+
+    const espandiTipologiaSeo = (tipologia) =>
+      (tipologia && TIPOLOGIA_SEO[tipologia]) || tipologia || "";
+
+    const assicuratiMetaName = (name) => {
+      let el = document.head.querySelector(`meta[name="${name}"]`);
+      if (!el) {
+        el = document.createElement("meta");
+        el.setAttribute("name", name);
+        document.head.appendChild(el);
+      }
+      return el;
+    };
+
+    const assicuratiMetaProperty = (property) => {
+      let el = document.head.querySelector(`meta[property="${property}"]`);
+      if (!el) {
+        el = document.createElement("meta");
+        el.setAttribute("property", property);
+        document.head.appendChild(el);
+      }
+      return el;
+    };
+
+    const assicuratiCanonical = () => {
+      let el = document.head.querySelector('link[rel="canonical"]');
+      if (!el) {
+        el = document.createElement("link");
+        el.setAttribute("rel", "canonical");
+        document.head.appendChild(el);
+      }
+      return el;
+    };
+
+    const rimuoviMetaRobots = () => {
+      const el = document.head.querySelector('meta[name="robots"]');
+      if (el) el.remove();
+    };
+
+    const buildDescrizioneSeo = (annuncio) => {
+      const tip = espandiTipologiaSeo(annuncio.tipologia);
+      const comune = annuncio.comune || "";
+      const parti = [];
+      if (tip && comune) parti.push(`${tip} in vendita a ${comune}`);
+      else if (tip) parti.push(`${tip} in vendita`);
+      else if (comune) parti.push(`In vendita a ${comune}`);
+      if (annuncio.mq != null && annuncio.mq !== "") parti.push(`${annuncio.mq} mq`);
+      if (annuncio.locali != null && annuncio.locali !== "") {
+        parti.push(`${annuncio.locali} locali`);
+      }
+      let testo = parti.join(", ");
+      if (annuncio.prezzo != null && annuncio.prezzo !== "") {
+        const prezzoFmt =
+          typeof annuncio.prezzo === "number"
+            ? annuncio.prezzo.toLocaleString("it-IT")
+            : String(annuncio.prezzo);
+        testo = testo ? `${testo}. €${prezzoFmt}` : `€${prezzoFmt}`;
+      }
+      return testo ? `${testo}. Furia Immobiliare.` : "Furia Immobiliare.";
+    };
+
+    const urlAssolutoCover = (cover) => {
+      if (!cover) return "";
+      const path = String(cover).replace(/^\/+/, "");
+      return `https://www.furiaimmobiliare.com/${path}`;
+    };
+
+    const aggiornaMetaSeoAnnuncio = (annuncio, titoloCompleto) => {
+      rimuoviMetaRobots();
+      const descrizione = buildDescrizioneSeo(annuncio);
+      const canonical = `https://www.furiaimmobiliare.com/immobile.html?id=${encodeURIComponent(annuncio.id)}`;
+      assicuratiMetaName("description").setAttribute("content", descrizione);
+      assicuratiCanonical().setAttribute("href", canonical);
+      assicuratiMetaProperty("og:title").setAttribute("content", titoloCompleto);
+      assicuratiMetaProperty("og:description").setAttribute("content", descrizione);
+      assicuratiMetaProperty("og:url").setAttribute("content", canonical);
+      const ogImage = urlAssolutoCover(annuncio.cover);
+      if (ogImage) {
+        assicuratiMetaProperty("og:image").setAttribute("content", ogImage);
+      }
+    };
+
     const applicaAnnuncio = (annuncio) => {
       stato.annuncio = annuncio;
 
@@ -2478,7 +2592,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       stato.titoloRiga = titoloRiga;
 
-      document.title = `${titoloRiga} — Furia Immobiliare Srls`;
+      const titoloCompleto = `${titoloRiga} — Furia Immobiliare Srls`;
+      document.title = titoloCompleto;
+      aggiornaMetaSeoAnnuncio(annuncio, titoloCompleto);
 
       if (elContratto) elContratto.textContent = contrattoLabel;
       if (elTitolo) elTitolo.textContent = titoloRiga;
@@ -2526,6 +2642,7 @@ document.addEventListener("DOMContentLoaded", () => {
       paginaImmobile.hidden = true;
       if (paginaImmobileErrore) paginaImmobileErrore.hidden = false;
       stato.annuncio = null;
+      assicuratiMetaName("robots").setAttribute("content", "noindex");
     };
 
     const caricaImmobile = (annuncioId, opzioni = {}) => {

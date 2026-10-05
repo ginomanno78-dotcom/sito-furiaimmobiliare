@@ -351,7 +351,7 @@ const annunci = {
       comune: "Francolise (CE)",
       statoConservazione: "Da ristrutturare",
       annoCostruzione: 1950,
-      prezzo: 233000,
+      prezzo: 280000,
       mq: 638,
       locali: "5+",
       camere: null,

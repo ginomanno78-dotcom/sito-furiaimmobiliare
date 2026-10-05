@@ -2486,6 +2486,9 @@ h2 {
   vertical-align: middle;
 }
 
+.vendi-banner-testo { aspect-ratio: 828 / 640; }
+.vendi-banner-foto { aspect-ratio: 1600 / 893; }
+
 /* Solo mobile portrait: testo (immagine) sopra + foto stretta di mano */
 @media (max-width: 767px) and (orientation: portrait) {
   .vendi-banner-desktop {
@@ -5119,7 +5122,16 @@ h2 {
   color: var(--colore-primario);
 }
 
+.contatti-nota {
+  margin: var(--spazio-3) 0 0;
+  font-size: 0.85rem;
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--colore-testo-muto);
+}
+
 .contatti-mappa {
+  position: relative;
   width: 100%;
   min-height: 280px;
   border: 1px solid var(--colore-primario);
@@ -5128,12 +5140,47 @@ h2 {
   background: #d9d9d9;
 }
 
+/* Segnaposto finché l’iframe Maps resta bloccato (src=about:blank) */
+.contatti-mappa-placeholder {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spazio-4);
+  box-sizing: border-box;
+  text-align: center;
+  color: var(--colore-testo-scuro);
+  background: #d9d9d9;
+}
+
+.contatti-mappa-placeholder p {
+  margin: 0;
+  max-width: 28rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.contatti-mappa:has(iframe:not([src="about:blank"])) .contatti-mappa-placeholder {
+  display: none;
+}
+
+/* Nasconde il segnaposto quando Leaflet ha montato la mappa OSM */
+.contatti-mappa:has(.leaflet-container) .contatti-mappa-placeholder {
+  display: none;
+}
+
 .contatti-mappa iframe {
   display: block;
   width: 100%;
   height: 100%;
   min-height: 280px;
   border: 0;
+}
+
+.contatti-mappa iframe[src="about:blank"] {
+  visibility: hidden;
 }
 
 .contatti-aiuto {
@@ -7091,6 +7138,12 @@ h2 {
   border-radius: var(--raggio-md);
   overflow: hidden;
   background: #0a1f20;
+}
+
+/* Altezza piena del wrap: #mappaVendita (height:100%) resta > 0 */
+.pagina-vendita-mappa-wrap .contatti-mappa {
+  height: 100%;
+  min-height: 100%;
 }
 
 .pagina-vendita-mappa {

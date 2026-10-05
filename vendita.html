@@ -3,16 +3,28 @@
 
 <head>
     <meta charset="UTF-8">
+    <script type="text/javascript"
+        src="https://embeds.iubenda.com/widgets/5d729206-1957-4c92-be6f-342a1ac1af5e.js"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RNN298V4VR"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-RNN298V4VR');
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vendita — Furia Immobiliare Srls</title>
+    <title>Immobili in vendita a Sparanise (CE) | Furia Immobiliare</title>
     <meta name="description"
-        content="Immobili in vendita — Furia Immobiliare Srls, Sparanise (CE). Tutti gli annunci con mappa.">
-    <meta property="og:title" content="Vendita — Furia Immobiliare Srls">
+        content="Appartamenti, case e ville, terreni, locali commerciali, garage e nuove costruzioni in vendita a Sparanise e provincia di Caserta. Vedi gli annunci.">
+    <link rel="canonical" href="https://www.furiaimmobiliare.com/vendita.html">
+    <meta property="og:title" content="Immobili in vendita a Sparanise (CE) | Furia Immobiliare">
+    <meta property="og:description" content="Appartamenti, case e ville, terreni, locali commerciali, garage e nuove costruzioni in vendita a Sparanise e provincia di Caserta. Vedi gli annunci.">
+    <meta property="og:url" content="https://www.furiaimmobiliare.com/vendita.html">
+    <meta property="og:image" content="https://www.furiaimmobiliare.com/assets/images/hero-furia2.webp">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="it_IT">
     <link rel="icon" type="image/svg+xml" href="assets/logo-furia-favicon.svg">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+    <link rel="stylesheet" href="assets/vendor/leaflet/leaflet.css">
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -107,7 +119,7 @@
     <main id="main">
         <section class="pagina-vendita" aria-labelledby="titolo-vendita-pagina">
             <div class="container">
-                <h1 class="pagina-vendita-titolo" id="titolo-vendita-pagina">Immobili in vendita</h1>
+                <h1 class="pagina-vendita-titolo" id="titolo-vendita-pagina">Immobili in vendita a Sparanise e provincia di Caserta</h1>
 
                 <!-- Filtri vendita: tipologia + testo + toggle prezzo/superficie/locali -->
                 <form class="hero-search pagina-vendita-search" id="heroSearchForm" role="search"
@@ -377,10 +389,21 @@
                     <!-- Colonna sx: griglia 2 card per riga -->
                     <div class="pagina-vendita-lista" id="venditaLista" aria-label="Elenco immobili in vendita"></div>
 
-                    <!-- Colonna dx: mappa Leaflet -->
+                    <!-- Colonna dx: mappa Leaflet (tiles OSM solo dopo consenso Iubenda) -->
                     <aside class="pagina-vendita-mappa-wrap" aria-label="Mappa immobili">
-                        <div id="mappaVendita" class="pagina-vendita-mappa" role="img"
-                            aria-label="Mappa con la posizione degli immobili in vendita"></div>
+                        <div class="contatti-mappa pagina-vendita-mappa-consent">
+                            <div class="contatti-mappa-placeholder">
+                                <p>
+                                    Per visualizzare la mappa è necessario accettare i cookie di terze parti.
+                                    <a href="#" class="iubenda-cs-preferences-link">Preferenze cookie</a>
+                                    oppure
+                                    <a href="https://www.openstreetmap.org/#map=12/41.186/14.093"
+                                        target="_blank" rel="noopener noreferrer">apri su OpenStreetMap</a>.
+                                </p>
+                            </div>
+                            <div id="mappaVendita" class="pagina-vendita-mappa" role="img"
+                                aria-label="Mappa con la posizione degli immobili in vendita"></div>
+                        </div>
                     </aside>
                 </div>
             </div>
@@ -415,6 +438,7 @@
                     <li><a href="index.html#chi-siamo">Chi siamo</a></li>
                     <li><a href="index.html#contatti">Contatti</a></li>
                     <li><a href="privacy.html">Privacy e Cookie</a></li>
+                    <li><a href="#" class="iubenda-cs-preferences-link">Preferenze cookie</a></li>
                 </ul>
             </div>
             <div class="footer-col footer-col--contatti">
@@ -432,8 +456,15 @@
         <img src="assets/images/icons/icon-whatsapp.svg" alt="" width="28" height="28">
     </a>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- Leaflet: blocco manuale Iubenda fino al consenso (purpose 3) -->
+    <script type="text/plain" class="_iub_cs_activate" data-iub-purposes="3"
+        data-suppressedsrc="assets/vendor/leaflet/leaflet.js"></script>
+    <script type="text/plain" class="_iub_cs_activate" data-iub-purposes="3">
+        window.__furiaLeafletPronto = true;
+        if (typeof window.avviaMappaVenditaFuria === "function") {
+            window.avviaMappaVenditaFuria();
+        }
+    </script>
     <script src="data/annunci.js"></script>
     <script src="main.js" defer></script>
 </body>
