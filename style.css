@@ -1245,6 +1245,65 @@ h2 {
   text-shadow: 1px 2px 1px #000;
 }
 
+/* Mobile / tablet / iPad: fade-right lento e fluido — no desktop mouse */
+@media (max-width: 1366px) {
+  .hero-payoff,
+  .hero-title,
+  .hero-sub {
+    opacity: 0;
+    transform: translate3d(-3.5rem, 0, 0);
+    transition:
+      opacity 1.15s cubic-bezier(0.33, 1, 0.68, 1),
+      transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .hero-payoff.is-in-view,
+  .hero-title.is-in-view,
+  .hero-sub.is-in-view {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  /* CTA: fade-up, stesso ritmo */
+  .hero a.btn.btn--oro.hero-cta {
+    opacity: 0;
+    transform: translate3d(0, 2.5rem, 0);
+    transition:
+      opacity 1.15s cubic-bezier(0.33, 1, 0.68, 1),
+      transform 1.2s cubic-bezier(0.22, 1, 0.36, 1),
+      background 0.2s ease,
+      box-shadow 0.2s ease,
+      filter 0.2s ease;
+  }
+
+  .hero a.btn.btn--oro.hero-cta.is-in-view {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (max-width: 1366px) and (prefers-reduced-motion: reduce) {
+  .hero-payoff,
+  .hero-title,
+  .hero-sub,
+  .hero a.btn.btn--oro.hero-cta {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Desktop mouse: niente fade hero (annulla la regola ≤1366) */
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+  .hero-payoff,
+  .hero-title,
+  .hero-sub,
+  .hero a.btn.btn--oro.hero-cta {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 .hero-cta {
   text-transform: lowercase;
   border: 1px solid #000;
@@ -1289,14 +1348,16 @@ h2 {
   text-transform: lowercase;
 }
 
-/* Mobile portrait stretti: CTA hero su un solo rigo */
-@media (max-width: 349px) and (orientation: portrait) {
+/* Mobile portrait: CTA hero sempre su un solo rigo */
+@media (max-width: 599px) and (orientation: portrait) {
   .hero a.btn.btn--oro.hero-cta {
     white-space: nowrap;
-    font-size: 0.78rem;
+    font-size: clamp(0.72rem, 3.6vw, 0.88rem);
     padding-left: 12px;
     padding-right: 12px;
     gap: 6px;
+    max-width: 100%;
+    width: fit-content;
   }
 }
 
@@ -1816,6 +1877,9 @@ h2 {
   -ms-overflow-style: none;
   padding: 4px 2px 12px;
   cursor: grab;
+  /* Swipe orizzontale nativo (phone landscape / Android) */
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x pan-y;
 }
 
 .carousel-track::-webkit-scrollbar {
@@ -2456,22 +2520,11 @@ h2 {
   color: var(--colore-testo);
 }
 
-/* Solo la prima riga: un filo più piccola, maiuscolo */
-.vendi-intro-riga.vendi-copy-lead {
-  font-size: clamp(0.95rem, 2vw, 1.55rem);
-  text-transform: uppercase;
-}
-
-/* Aria tra headline e il blocco successivo */
-.vendi-copy-lead+.vendi-intro-blocco {
-  margin-top: 0.65em;
-}
-
 .vendi-intro-blocco {
   display: block;
 }
 
-/* Fade-down allo scroll (frase singola + blocco «Come primo passo») */
+/* Fade-down allo scroll (blocco «Come primo passo») */
 .vendi-scroll-fade-down {
   opacity: 0;
   transform: translateY(-4.5rem);
@@ -3130,7 +3183,7 @@ h2 {
 .valuta-headline {
   margin: 0 0 var(--spazio-2);
   font-family: var(--font-titoli);
-  font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+  font-size: clamp(1.05rem, 2.5vw, 1.45rem);
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -3139,10 +3192,22 @@ h2 {
 }
 
 .valuta-subhead {
-  margin: 0 0 var(--spazio-6);
+  margin: 0 0 var(--spazio-4);
   text-align: center;
   font-size: 1rem;
   color: #fff;
+}
+
+/* Stessa misura di «Valutazione in loco» */
+.valuta-online-titolo {
+  margin: 0 0 var(--spazio-5);
+  font-family: var(--font-titoli);
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: center;
+  color: #E4E4DE;
 }
 
 .valuta-form {
@@ -3545,8 +3610,9 @@ h2 {
   }
 }
 
-/* Reveal allo scroll: solo desktop mouse (no tablet/iPad touch) */
-@media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+/* Reveal allo scroll: desktop mouse + tablet/iPad landscape ≥1220px */
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine),
+(min-width: 1220px) and (orientation: landscape) {
 
   /* Clip spento fino a fine animazione (se torna subito, restano nel box) */
   .sezione-valuta:has(.valuta-loco:not(.is-reveal-done)),
@@ -3618,7 +3684,8 @@ h2 {
   }
 }
 
-@media (min-width: 1024px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: reduce) {
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: reduce),
+(min-width: 1220px) and (orientation: landscape) and (prefers-reduced-motion: reduce) {
 
   .valuta-loco-card--stima-testo,
   .valuta-loco-card--stima-lato,
@@ -4115,6 +4182,22 @@ h2 {
     max-width: 100%;
     overflow-wrap: break-word;
   }
+
+  /* «(entro i 50 km).» sempre su un solo rigo */
+  .valuta-loco-km {
+    white-space: nowrap;
+  }
+}
+
+/* Sotto i 345px: «Affidati a noi per una» su un solo rigo */
+@media (max-width: 344px) and (orientation: portrait) {
+  .valuta-loco-br--dopo-per {
+    display: none;
+  }
+
+  .valuta-loco-affidati-prima {
+    white-space: nowrap;
+  }
 }
 
 @media (max-width: 599px) and (orientation: portrait) and (prefers-reduced-motion: reduce) {
@@ -4174,6 +4257,30 @@ h2 {
   article.valuta-loco-card.valuta-loco-card--lato.is-in-view {
     opacity: 1;
     translate: 0 0;
+  }
+
+  /* Default ≥344px: «Affidati a noi per una» su un rigo */
+  .valuta-loco-br--dopo-per {
+    display: none;
+  }
+
+  .valuta-loco-affidati-prima {
+    white-space: nowrap;
+  }
+}
+
+/* 345–365px: «Affidati a noi per» / «una consulenza…» */
+@media (min-width: 345px) and (max-width: 365px) and (orientation: portrait) {
+  .valuta-loco-br--dopo-per {
+    display: block;
+  }
+
+  .valuta-loco-br--dopo-una {
+    display: none;
+  }
+
+  .valuta-loco-affidati-prima {
+    white-space: normal;
   }
 }
 
@@ -4335,6 +4442,74 @@ h2 {
     align-self: auto;
     max-width: calc(100% - 24px);
     width: fit-content;
+  }
+}
+
+/* Tablet / iPad portrait ≥600px: «Affidati a noi per una» su un solo rigo */
+@media (min-width: 600px) and (max-width: 1366px) and (orientation: portrait) {
+  .valuta-loco-br--dopo-per {
+    display: none;
+  }
+
+  .valuta-loco-affidati-prima {
+    white-space: nowrap;
+  }
+}
+
+/* Da 768px in poi (tutti i modelli): «Affidati a noi per una» su un solo rigo */
+@media (min-width: 768px) {
+  .valuta-loco-br--dopo-per {
+    display: none;
+  }
+
+  .valuta-loco-affidati-prima {
+    white-space: nowrap;
+  }
+}
+
+/* Tablet / iPad portrait 600–1024: reveal AOS card Valuta in loco */
+@media (min-width: 600px) and (max-width: 1024px) and (orientation: portrait) {
+  .valuta-loco-card--come {
+    opacity: 0;
+    transform: translate3d(0, -2.5rem, 0);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .valuta-loco-card--stima-testo {
+    opacity: 0;
+    transform: translate3d(-2.5rem, 0, 0);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .valuta-loco-card--stima-lato {
+    opacity: 0;
+    transform: translate3d(2.5rem, 0, 0);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  article.valuta-loco-card.valuta-loco-card--lato {
+    opacity: 0;
+    transform: translate3d(0, 2.5rem, 0);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .valuta-loco-card--come.is-in-view,
+  .valuta-loco-card--stima-testo.is-in-view,
+  .valuta-loco-card--stima-lato.is-in-view,
+  article.valuta-loco-card.valuta-loco-card--lato.is-in-view {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (min-width: 600px) and (max-width: 1024px) and (orientation: portrait) and (prefers-reduced-motion: reduce) {
+  .valuta-loco-card--come,
+  .valuta-loco-card--stima-testo,
+  .valuta-loco-card--stima-lato,
+  article.valuta-loco-card.valuta-loco-card--lato {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }
 
@@ -4675,6 +4850,18 @@ h2 {
   margin-bottom: var(--spazio-6);
 }
 
+/* Default: titoli card su una riga (br nascosto) */
+.sezione-servizi .vendi-card-titolo-br {
+  display: none;
+}
+
+/* Landscape <1107px: titoli sempre su due righe */
+@media (max-width: 1106px) and (orientation: landscape) {
+  .sezione-servizi .vendi-card-titolo-br {
+    display: block;
+  }
+}
+
 /* Solo mobile portrait: fade-up tipo AOS (atterraggio con saltello) */
 @media (max-width: 599px) and (orientation: portrait) {
   .sezione-servizi .vendi-card {
@@ -4931,6 +5118,28 @@ h2 {
   border-radius: var(--raggio-md);
 }
 
+/* Solo mobile portrait: fade-left tipo AOS (duration 500) */
+@media (max-width: 599px) and (orientation: portrait) {
+  .chi-siamo-foto {
+    opacity: 0;
+    transform: translate3d(100px, 0, 0);
+    transition: opacity 500ms ease, transform 500ms ease;
+  }
+
+  .chi-siamo-foto.is-in-view {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (max-width: 599px) and (orientation: portrait) and (prefers-reduced-motion: reduce) {
+  .chi-siamo-foto {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 .chi-siamo-bio-nome {
   margin: 0 0 var(--spazio-2);
   font-family: var(--font-titoli);
@@ -5009,11 +5218,72 @@ h2 {
     width: 95%;
     max-width: 95%;
     justify-self: start;
+    /* Fade-right tipo AOS (duration 500) */
+    opacity: 0;
+    transform: translate3d(-100px, 0, 0);
+    transition: opacity 500ms ease, transform 500ms ease;
+  }
+
+  .chi-siamo-foto.is-in-view {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
   }
 
   /* Bio 3mm più in alto */
   .chi-siamo-bio {
     margin-top: -3mm;
+  }
+}
+
+@media (min-width: 1024px) and (prefers-reduced-motion: reduce) {
+  .chi-siamo-foto {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Tablet / iPad portrait: fade-right tipo AOS (duration 500; dopo desktop per iPad Pro) */
+@media (min-width: 600px) and (max-width: 1366px) and (orientation: portrait) {
+  .chi-siamo-foto {
+    opacity: 0;
+    transform: translate3d(-100px, 0, 0);
+    transition: opacity 500ms ease, transform 500ms ease;
+  }
+
+  .chi-siamo-foto.is-in-view {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (min-width: 600px) and (max-width: 1366px) and (orientation: portrait) and (prefers-reduced-motion: reduce) {
+  .chi-siamo-foto {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Mobile / tablet / iPad landscape: fade-right tipo AOS (duration 500) */
+@media (max-width: 1366px) and (orientation: landscape) {
+  .chi-siamo-foto {
+    opacity: 0;
+    transform: translate3d(-100px, 0, 0);
+    transition: opacity 500ms ease, transform 500ms ease;
+  }
+
+  .chi-siamo-foto.is-in-view {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (max-width: 1366px) and (orientation: landscape) and (prefers-reduced-motion: reduce) {
+  .chi-siamo-foto {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }
 
