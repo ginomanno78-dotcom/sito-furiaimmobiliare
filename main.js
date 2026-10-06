@@ -126,6 +126,72 @@ document.addEventListener("DOMContentLoaded", () => {
     aggiornaScala();
   }
 
+  /* === Testi Vendi: fade allo scroll in discesa (ripetibile, tutti i viewport) === */
+  {
+    const mqRiduciMotoFade = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let ultimaScrollY = window.scrollY || 0;
+    let scrollInDiscesa = false;
+    const osservatoriFade = [];
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        const y = window.scrollY || 0;
+        scrollInDiscesa = y > ultimaScrollY;
+        ultimaScrollY = y;
+      },
+      { passive: true }
+    );
+
+    const avviaFadeScrollVendi = () => {
+      osservatoriFade.splice(0).forEach((obs) => obs.disconnect());
+      const elementi = [
+        ...document.querySelectorAll(".vendi-tagline"),
+        ...document.querySelectorAll(".vendi-scroll-fade-down"),
+      ];
+      if (!elementi.length) return;
+
+      if (mqRiduciMotoFade.matches) {
+        elementi.forEach((el) => el.classList.add("is-in-view"));
+        return;
+      }
+
+      elementi.forEach((el) => {
+        el.classList.remove("is-in-view");
+        /* threshold 1 = elemento tutto in vista */
+        const obs = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                if (scrollInDiscesa) {
+                  /* Discesa: fade con effetto */
+                  el.classList.add("is-in-view");
+                } else {
+                  /* Salita: resta/diventa visibile senza effetto */
+                  el.classList.add("is-no-trans");
+                  el.classList.add("is-in-view");
+                  requestAnimationFrame(() => {
+                    requestAnimationFrame(() => el.classList.remove("is-no-trans"));
+                  });
+                }
+              } else if (entry.boundingClientRect.bottom < 0) {
+                /* Uscito sopra (solo dopo discesa): reset per il prossimo fade */
+                el.classList.remove("is-in-view");
+              }
+              /* Uscito sotto in salita: non togliere is-in-view */
+            });
+          },
+          { threshold: 1, rootMargin: "0px 0px 0px 0px" }
+        );
+        obs.observe(el);
+        osservatoriFade.push(obs);
+      });
+    };
+
+    avviaFadeScrollVendi();
+    mqRiduciMotoFade.addEventListener("change", avviaFadeScrollVendi);
+  }
+
   /* === Valuta in loco: reveal direzionale allo scroll (solo desktop, una volta) === */
   const valutaLoco = document.querySelector(".valuta-loco");
   if (valutaLoco) {
@@ -221,9 +287,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  const chiudiDrawer = () => {
+  /* immediato = true: niente dissolvenza (click voce menu / cambio pagina) */
+  const chiudiDrawer = (immediato = false) => {
     if (!drawer || !overlay || !hamburger) return;
-    if (drawer.hidden || drawer.classList.contains("is-closing")) return;
+    if (drawer.hidden && !drawer.classList.contains("is-closing")) return;
+    /* Chiusura soft già in corso: non riavviare (salvo chiusura istantanea) */
+    if (!immediato && drawer.classList.contains("is-closing")) return;
+
+    if (drawerTimerChiusura) {
+      clearTimeout(drawerTimerChiusura);
+      drawerTimerChiusura = null;
+    }
 
     hamburger.classList.remove("is-open");
     hamburger.setAttribute("aria-expanded", "false");
@@ -235,7 +309,7 @@ document.addEventListener("DOMContentLoaded", () => {
       drawer.hidden = true;
       overlay.hidden = true;
       drawerTimerChiusura = null;
-      /* Sblocca solo a fine animazione (evita scroll sotto la tendina) */
+      /* Sblocca scroll pagina */
       if (drawerScrollLocked) {
         sbloccaScrollPagina();
         drawerScrollLocked = false;
@@ -243,7 +317,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const riduciMoto = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (riduciMoto) {
+    if (immediato || riduciMoto) {
       nascondi();
       return;
     }
@@ -329,12 +403,13 @@ document.addEventListener("DOMContentLoaded", () => {
           const id = decodeURIComponent(href.slice(1));
           if (document.getElementById(id)) {
             e.preventDefault();
-            chiudiDrawer();
+            chiudiDrawer(true);
             scrollASezioneSottoNavbar(id, true);
             return;
           }
         }
-        chiudiDrawer();
+        /* Cambio pagina: chiudi all'istante (niente fade durante il caricamento) */
+        chiudiDrawer(true);
       });
     });
     document.addEventListener("keydown", (e) => {
@@ -892,7 +967,7 @@ document.addEventListener("DOMContentLoaded", () => {
     trackEl.addEventListener("scroll", aggiornaDots, { passive: true });
     aggiornaFrecce();
 
-    /* Rotella mouse: scorrimento orizzontale del carosello */
+    /* Rotella mouse: orizzontale sul carosello; a inizio/fine riprende lo scroll pagina */
     trackEl.addEventListener(
       "wheel",
       (e) => {
@@ -900,6 +975,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (trackEl.scrollWidth <= trackEl.clientWidth + 2) return;
         const delta = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
         if (!delta) return;
+        const maxScroll = trackEl.scrollWidth - trackEl.clientWidth;
+        const allInizio = trackEl.scrollLeft <= 2;
+        const allaFine = trackEl.scrollLeft >= maxScroll - 2;
+        /* Corsa finita nella direzione della rotella: lascia passare lo scroll della pagina */
+        if ((delta > 0 && allaFine) || (delta < 0 && allInizio)) return;
         e.preventDefault();
         trackEl.style.scrollSnapType = "none";
         trackEl.scrollLeft += delta;

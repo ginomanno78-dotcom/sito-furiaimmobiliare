@@ -2405,6 +2405,29 @@ h2 {
   font-family: var(--font-titoli);
   font-weight: 700;
   text-align: center;
+  /* Fade-up allo scroll (blocco intero; tutti i viewport) */
+  opacity: 0;
+  transform: translateY(4.5rem);
+  transition: opacity 1.15s ease-in-out, transform 1.15s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.vendi-tagline.is-in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Salita: mostra subito senza rilanciare la transizione */
+.vendi-tagline.is-no-trans,
+.vendi-scroll-fade-down.is-no-trans {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vendi-tagline {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
 
 .vendi-intro-riga,
@@ -2434,9 +2457,33 @@ h2 {
   text-transform: uppercase;
 }
 
-/* Aria tra headline e le righe successive */
-.vendi-copy-lead+.vendi-intro-riga:not(.vendi-copy-lead) {
+/* Aria tra headline e il blocco successivo */
+.vendi-copy-lead+.vendi-intro-blocco {
   margin-top: 0.65em;
+}
+
+.vendi-intro-blocco {
+  display: block;
+}
+
+/* Fade-down allo scroll (frase singola + blocco «Come primo passo») */
+.vendi-scroll-fade-down {
+  opacity: 0;
+  transform: translateY(-4.5rem);
+  transition: opacity 1.15s ease-in-out, transform 1.15s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.vendi-scroll-fade-down.is-in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vendi-scroll-fade-down {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
 
 /* Tagline: tutte le righe Cardo Bold, grandi, colore testo */
