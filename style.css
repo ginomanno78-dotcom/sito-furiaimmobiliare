@@ -1690,6 +1690,11 @@ h2 {
   text-transform: uppercase;
 }
 
+/* Immobili in Evidenza: solo iniziale maiuscola su «Evidenza» */
+#titolo-vendita .sezione-titolo-testo span {
+  text-transform: none;
+}
+
 .carousel {
   position: relative;
   display: grid;
@@ -4061,10 +4066,26 @@ h2 {
 
   .valuta-loco-card--come {
     grid-area: come;
+    /* Flip-up allo scroll */
+    opacity: 0;
+    transform: perspective(900px) rotateX(55deg) translateY(1.25rem);
+    transform-origin: center bottom;
+    transition: opacity 0.85s ease-out, transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .valuta-loco-card--stima-testo {
     grid-area: stima;
+    /* Flip-up allo scroll (dopo «Come funziona») */
+    opacity: 0;
+    transform: perspective(900px) rotateX(55deg) translateY(1.25rem);
+    transform-origin: center bottom;
+    transition: opacity 0.85s ease-out, transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .valuta-loco-card--come.is-in-view,
+  .valuta-loco-card--stima-testo.is-in-view {
+    opacity: 1;
+    transform: perspective(900px) rotateX(0deg) translateY(0);
   }
 
   .valuta-loco-card--stima-lato {
@@ -4096,6 +4117,15 @@ h2 {
   }
 }
 
+@media (max-width: 599px) and (orientation: portrait) and (prefers-reduced-motion: reduce) {
+  .valuta-loco-card--come,
+  .valuta-loco-card--stima-testo {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 /* Mobile portrait ≥344px: terza riga a metà — foto-stima | Affidati */
 @media (min-width: 344px) and (max-width: 599px) and (orientation: portrait) {
   .valuta-loco-cards {
@@ -4113,8 +4143,14 @@ h2 {
     overflow: hidden;
     border: 3px solid #8D7A2A;
     box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
     height: calc(var(--valuta-stima-h, 10.5rem) * 2 / 3);
     min-height: 0;
+    /* Fade-right: entra da sinistra (translate, non transform: evita conflitti) */
+    opacity: 0;
+    translate: -2.75rem 0;
+    transition: opacity 0.9s ease-out, translate 0.9s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .valuta-loco-card--stima-lato .valuta-loco-card-foto {
@@ -4123,6 +4159,30 @@ h2 {
     height: 100%;
     object-fit: cover;
     object-position: center;
+  }
+
+  /* Fade-left: entra da destra (simultaneo alla foto) */
+  article.valuta-loco-card.valuta-loco-card--lato {
+    width: 100%;
+    min-width: 0;
+    opacity: 0;
+    translate: 2.75rem 0;
+    transition: opacity 0.9s ease-out, translate 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .valuta-loco-card--stima-lato.is-in-view,
+  article.valuta-loco-card.valuta-loco-card--lato.is-in-view {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@media (min-width: 344px) and (max-width: 599px) and (orientation: portrait) and (prefers-reduced-motion: reduce) {
+  .valuta-loco-card--stima-lato,
+  article.valuta-loco-card.valuta-loco-card--lato {
+    opacity: 1;
+    translate: none;
+    transition: none;
   }
 }
 
@@ -4613,6 +4673,30 @@ h2 {
 /* Spazio tra le card overview e l'accordion dettaglio */
 .sezione-servizi .vendi-cards {
   margin-bottom: var(--spazio-6);
+}
+
+/* Solo mobile portrait: fade-up tipo AOS (atterraggio con saltello) */
+@media (max-width: 599px) and (orientation: portrait) {
+  .sezione-servizi .vendi-card {
+    opacity: 0;
+    transform: translate3d(0, 3.25rem, 0);
+    transition:
+      opacity 0.7s ease,
+      transform 0.95s cubic-bezier(0.22, 1.85, 0.36, 1);
+  }
+
+  .sezione-servizi .vendi-card.is-in-view {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (max-width: 599px) and (orientation: portrait) and (prefers-reduced-motion: reduce) {
+  .sezione-servizi .vendi-card {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
 
 .servizi-accordion {

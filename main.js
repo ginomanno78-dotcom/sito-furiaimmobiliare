@@ -129,6 +129,9 @@ document.addEventListener("DOMContentLoaded", () => {
   /* === Testi Vendi: fade allo scroll in discesa (ripetibile, tutti i viewport) === */
   {
     const mqRiduciMotoFade = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const mqMobilePortraitVendi = window.matchMedia(
+      "(max-width: 599px) and (orientation: portrait)"
+    );
     let ultimaScrollY = window.scrollY || 0;
     let scrollInDiscesa = false;
     const osservatoriFade = [];
@@ -143,42 +146,41 @@ document.addEventListener("DOMContentLoaded", () => {
       { passive: true }
     );
 
+    const applicaFadeVista = (el, conEffetto) => {
+      if (conEffetto) {
+        el.classList.add("is-in-view");
+        return;
+      }
+      el.classList.add("is-no-trans");
+      el.classList.add("is-in-view");
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => el.classList.remove("is-no-trans"));
+      });
+    };
+
     const avviaFadeScrollVendi = () => {
       osservatoriFade.splice(0).forEach((obs) => obs.disconnect());
-      const elementi = [
-        ...document.querySelectorAll(".vendi-tagline"),
-        ...document.querySelectorAll(".vendi-scroll-fade-down"),
-      ];
-      if (!elementi.length) return;
+      const tagline = document.querySelectorAll(".vendi-tagline");
+      const fadeDown = document.querySelectorAll(".vendi-scroll-fade-down");
+      const titoloVendi = document.getElementById("titolo-vendi");
+      if (!tagline.length && !fadeDown.length) return;
 
       if (mqRiduciMotoFade.matches) {
-        elementi.forEach((el) => el.classList.add("is-in-view"));
+        [...tagline, ...fadeDown].forEach((el) => el.classList.add("is-in-view"));
         return;
       }
 
-      elementi.forEach((el) => {
+      /* Tagline: invariata (tutto in vista) */
+      tagline.forEach((el) => {
         el.classList.remove("is-in-view");
-        /* threshold 1 = elemento tutto in vista */
         const obs = new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
               if (entry.isIntersecting) {
-                if (scrollInDiscesa) {
-                  /* Discesa: fade con effetto */
-                  el.classList.add("is-in-view");
-                } else {
-                  /* Salita: resta/diventa visibile senza effetto */
-                  el.classList.add("is-no-trans");
-                  el.classList.add("is-in-view");
-                  requestAnimationFrame(() => {
-                    requestAnimationFrame(() => el.classList.remove("is-no-trans"));
-                  });
-                }
+                applicaFadeVista(el, scrollInDiscesa);
               } else if (entry.boundingClientRect.bottom < 0) {
-                /* Uscito sopra (solo dopo discesa): reset per il prossimo fade */
                 el.classList.remove("is-in-view");
               }
-              /* Uscito sotto in salita: non togliere is-in-view */
             });
           },
           { threshold: 1, rootMargin: "0px 0px 0px 0px" }
@@ -186,10 +188,80 @@ document.addEventListener("DOMContentLoaded", () => {
         obs.observe(el);
         osservatoriFade.push(obs);
       });
+
+      /*
+       * Intro fade-down — mobile portrait: parte quando #titolo-vendi
+       * è poco prima di metà schermo (non al bordo inferiore).
+       * Altri viewport: threshold 1 come prima.
+       */
+      if (mqMobilePortraitVendi.matches && titoloVendi && fadeDown.length) {
+        fadeDown.forEach((el) => el.classList.remove("is-in-view"));
+        const leadIntro = document.querySelector(
+          ".vendi-copy-lead.vendi-scroll-fade-down"
+        );
+        const bloccoIntro = document.querySelector(
+          ".vendi-intro-blocco.vendi-scroll-fade-down"
+        );
+
+        /* Lead: quando il titolo Vendi è poco prima di metà schermo */
+        const obsTitolo = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (!leadIntro) return;
+              if (entry.isIntersecting) {
+                applicaFadeVista(leadIntro, scrollInDiscesa);
+              } else if (entry.boundingClientRect.bottom < 0) {
+                leadIntro.classList.remove("is-in-view");
+              }
+            });
+          },
+          /* Fascia ~38%–52% dall’alto */
+          { threshold: 0, rootMargin: "-38% 0px -48% 0px" }
+        );
+        obsTitolo.observe(titoloVendi);
+        osservatoriFade.push(obsTitolo);
+
+        /* Blocco «Come primo passo»: a seguire, quando entra in fascia media */
+        if (bloccoIntro) {
+          const obsBlocco = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                  applicaFadeVista(bloccoIntro, scrollInDiscesa);
+                } else if (entry.boundingClientRect.bottom < 0) {
+                  bloccoIntro.classList.remove("is-in-view");
+                }
+              });
+            },
+            { threshold: 0.35, rootMargin: "-20% 0px -35% 0px" }
+          );
+          obsBlocco.observe(bloccoIntro);
+          osservatoriFade.push(obsBlocco);
+        }
+      } else {
+        fadeDown.forEach((el) => {
+          el.classList.remove("is-in-view");
+          const obs = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                  applicaFadeVista(el, scrollInDiscesa);
+                } else if (entry.boundingClientRect.bottom < 0) {
+                  el.classList.remove("is-in-view");
+                }
+              });
+            },
+            { threshold: 1, rootMargin: "0px 0px 0px 0px" }
+          );
+          obs.observe(el);
+          osservatoriFade.push(obs);
+        });
+      }
     };
 
     avviaFadeScrollVendi();
     mqRiduciMotoFade.addEventListener("change", avviaFadeScrollVendi);
+    mqMobilePortraitVendi.addEventListener("change", avviaFadeScrollVendi);
   }
 
   /* === Valuta in loco: reveal direzionale allo scroll (solo desktop, una volta) === */
@@ -245,6 +317,279 @@ document.addEventListener("DOMContentLoaded", () => {
     mqRiduciMotoValuta.addEventListener("change", (e) => {
       if (e.matches) rivelaValutaLoco(false);
     });
+  }
+
+  /* === Valuta loco mobile portrait: Come → Stima → foto|Affidati (sequenza unica) === */
+  {
+    const cardCome = document.querySelector(".valuta-loco-card--come");
+    const cardStima = document.querySelector(".valuta-loco-card--stima-testo");
+    const fotoStima = document.querySelector(".valuta-loco-card--stima-lato");
+    const cardAffidati = document.querySelector(".valuta-loco-card--lato");
+    const mqMobilePortrait = window.matchMedia(
+      "(max-width: 599px) and (orientation: portrait)"
+    );
+    /* Foto|Affidati affiancate solo da 344px */
+    const mqCoppiaFoto = window.matchMedia(
+      "(min-width: 344px) and (max-width: 599px) and (orientation: portrait)"
+    );
+    const mqRiduciMoto = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const rivelati = new Set();
+    let osservatoreCome = null;
+    let cleanupScatti = null;
+    let timerStima = null;
+    const DURATA_ANIM_MS = 900;
+    /* Stima parte a metà flip di Come (niente attesa rotella tra le due) */
+    /* Leggermente dopo l’avvio di «Come funziona» */
+    const RITARDO_STIMA_MS = 520;
+    const PX_PER_SCATTO = 100;
+
+    const rivela = (el) => {
+      if (!el || rivelati.has(el)) return;
+      el.classList.add("is-in-view");
+      rivelati.add(el);
+    };
+
+    const rivelaCoppia = () => {
+      rivela(fotoStima);
+      rivela(cardAffidati);
+    };
+
+    const fermaScatti = () => {
+      if (typeof cleanupScatti === "function") {
+        cleanupScatti();
+        cleanupScatti = null;
+      }
+    };
+
+    const quandoAnimCompletata = (el, cb) => {
+      let fatto = false;
+      const fine = () => {
+        if (fatto) return;
+        fatto = true;
+        el.removeEventListener("transitionend", onTrans);
+        clearTimeout(timer);
+        cb();
+      };
+      const onTrans = (e) => {
+        if (e.target !== el) return;
+        if (
+          e.propertyName !== "transform" &&
+          e.propertyName !== "opacity" &&
+          e.propertyName !== "translate"
+        ) {
+          return;
+        }
+        fine();
+      };
+      el.addEventListener("transitionend", onTrans);
+      const timer = setTimeout(fine, DURATA_ANIM_MS);
+    };
+
+    /* n scatti rotella in discesa (o n×100px scroll) dopo il momento corrente */
+    const attendiScatti = (n, cb) => {
+      fermaScatti();
+      let scatti = 0;
+      const y0 = window.scrollY || 0;
+      const prova = () => {
+        const dy = (window.scrollY || 0) - y0;
+        if (scatti >= n || dy >= n * PX_PER_SCATTO) {
+          fermaScatti();
+          cb();
+        }
+      };
+      const onWheel = (e) => {
+        if (e.deltaY > 0) {
+          scatti += 1;
+          prova();
+        }
+      };
+      window.addEventListener("wheel", onWheel, { passive: true });
+      window.addEventListener("scroll", prova, { passive: true });
+      cleanupScatti = () => {
+        window.removeEventListener("wheel", onWheel);
+        window.removeEventListener("scroll", prova);
+      };
+    };
+
+    const avviaSequenzaValutaMobile = () => {
+      if (osservatoreCome) {
+        osservatoreCome.disconnect();
+        osservatoreCome = null;
+      }
+      fermaScatti();
+      if (timerStima) {
+        clearTimeout(timerStima);
+        timerStima = null;
+      }
+      if (!cardCome || !cardStima) return;
+
+      const mostraTutto = () => {
+        rivela(cardCome);
+        rivela(cardStima);
+        rivelaCoppia();
+      };
+
+      if (!mqMobilePortrait.matches || mqRiduciMoto.matches) {
+        if (mqRiduciMoto.matches || rivelati.size) mostraTutto();
+        return;
+      }
+
+      /* Ripresa a metà sequenza (es. cambio orientation) */
+      if (rivelati.has(cardAffidati) || rivelati.has(fotoStima)) {
+        mostraTutto();
+        return;
+      }
+      if (rivelati.has(cardStima)) {
+        cardCome.classList.add("is-in-view");
+        cardStima.classList.add("is-in-view");
+        quandoAnimCompletata(cardStima, () => {
+          attendiScatti(1, () => {
+            if (mqCoppiaFoto.matches) rivelaCoppia();
+            else rivela(cardAffidati);
+          });
+        });
+        return;
+      }
+      const dopoStimaVersoCoppia = () => {
+        quandoAnimCompletata(cardStima, () => {
+          attendiScatti(1, () => {
+            if (mqCoppiaFoto.matches) rivelaCoppia();
+            else rivela(cardAffidati);
+          });
+        });
+      };
+
+      const avviaStimaDopoCome = () => {
+        if (timerStima) clearTimeout(timerStima);
+        timerStima = window.setTimeout(() => {
+          timerStima = null;
+          rivela(cardStima);
+          dopoStimaVersoCoppia();
+        }, RITARDO_STIMA_MS);
+      };
+
+      if (rivelati.has(cardCome)) {
+        cardCome.classList.add("is-in-view");
+        if (!rivelati.has(cardStima)) avviaStimaDopoCome();
+        else dopoStimaVersoCoppia();
+        return;
+      }
+
+      cardCome.classList.remove("is-in-view");
+      cardStima.classList.remove("is-in-view");
+      if (fotoStima) fotoStima.classList.remove("is-in-view");
+      if (cardAffidati) cardAffidati.classList.remove("is-in-view");
+
+      /* 1) Come → 2) Stima subito dopo (~0,3s) → 3) foto|Affidati (+1 scatto a Stima finita) */
+      osservatoreCome = new IntersectionObserver(
+        (entries) => {
+          if (!entries.some((entry) => entry.isIntersecting)) return;
+          rivela(cardCome);
+          osservatoreCome.disconnect();
+          osservatoreCome = null;
+          avviaStimaDopoCome();
+        },
+        { threshold: 0, rootMargin: "-55% 0px -20% 0px" }
+      );
+      osservatoreCome.observe(cardCome);
+    };
+
+    avviaSequenzaValutaMobile();
+    mqMobilePortrait.addEventListener("change", avviaSequenzaValutaMobile);
+    mqCoppiaFoto.addEventListener("change", avviaSequenzaValutaMobile);
+    mqRiduciMoto.addEventListener("change", avviaSequenzaValutaMobile);
+  }
+
+  /* === Servizi: flip-right card overview (solo mobile portrait, sequenziale) === */
+  {
+    const titoloServizi = document.getElementById("titolo-servizi");
+    const cardServizi = document.querySelectorAll(".sezione-servizi .vendi-card");
+    const mqMobilePortraitServizi = window.matchMedia(
+      "(max-width: 599px) and (orientation: portrait)"
+    );
+    const mqRiduciMotoServizi = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let osservatoreTitolo = null;
+    const osservatoriCard = [];
+    let titoloAncorato = false;
+    const rivelate = new Set();
+
+    const rivelaCard = (el) => {
+      if (!el || rivelate.has(el)) return;
+      el.classList.add("is-in-view");
+      rivelate.add(el);
+    };
+
+    const rivelaTutte = () => {
+      cardServizi.forEach((el) => rivelaCard(el));
+    };
+
+    const fermaOsservatoriCard = () => {
+      osservatoriCard.splice(0).forEach((obs) => obs.disconnect());
+    };
+
+    const avviaOsservatoriCard = () => {
+      fermaOsservatoriCard();
+      cardServizi.forEach((el) => {
+        if (rivelate.has(el)) {
+          el.classList.add("is-in-view");
+          return;
+        }
+        el.classList.remove("is-in-view");
+        /* Man mano che la card entra in vista in discesa */
+        const obs = new IntersectionObserver(
+          (entries) => {
+            if (!titoloAncorato) return;
+            if (!entries.some((entry) => entry.isIntersecting)) return;
+            rivelaCard(el);
+            obs.disconnect();
+            const i = osservatoriCard.indexOf(obs);
+            if (i >= 0) osservatoriCard.splice(i, 1);
+          },
+          { threshold: 0.25, rootMargin: "0px 0px -12% 0px" }
+        );
+        obs.observe(el);
+        osservatoriCard.push(obs);
+      });
+    };
+
+    const avviaFlipServiziMobile = () => {
+      if (osservatoreTitolo) {
+        osservatoreTitolo.disconnect();
+        osservatoreTitolo = null;
+      }
+      fermaOsservatoriCard();
+      if (!titoloServizi || !cardServizi.length) return;
+
+      if (!mqMobilePortraitServizi.matches || mqRiduciMotoServizi.matches) {
+        if (mqRiduciMotoServizi.matches || rivelate.size) rivelaTutte();
+        return;
+      }
+
+      if (titoloAncorato) {
+        avviaOsservatoriCard();
+        return;
+      }
+
+      cardServizi.forEach((el) => el.classList.remove("is-in-view"));
+
+      /* Trigger: titolo Servizi ancorato in alto nel viewport */
+      osservatoreTitolo = new IntersectionObserver(
+        (entries) => {
+          const entry = entries[0];
+          if (!entry || !entry.isIntersecting) return;
+          titoloAncorato = true;
+          osservatoreTitolo.disconnect();
+          osservatoreTitolo = null;
+          avviaOsservatoriCard();
+        },
+        { threshold: 1, rootMargin: "-8px 0px -55% 0px" }
+      );
+      osservatoreTitolo.observe(titoloServizi);
+    };
+
+    avviaFlipServiziMobile();
+    mqMobilePortraitServizi.addEventListener("change", avviaFlipServiziMobile);
+    mqRiduciMotoServizi.addEventListener("change", avviaFlipServiziMobile);
   }
 
   /* Lock scroll pagina (drawer / filtri / lightbox) — contatore anti-conflitto */
@@ -1594,10 +1939,8 @@ document.addEventListener("DOMContentLoaded", () => {
       "(max-width: 599px) and (orientation: portrait), (max-width: 1023px) and (orientation: landscape)"
     );
     if (mq.matches) {
-      cards.style.setProperty(
-        "--valuta-stima-h",
-        `${stima.getBoundingClientRect().height}px`
-      );
+      /* offsetHeight: ignora transform (flip-up), altrimenti foto/Affidati restano schiacciate */
+      cards.style.setProperty("--valuta-stima-h", `${stima.offsetHeight}px`);
     } else {
       cards.style.removeProperty("--valuta-stima-h");
     }
