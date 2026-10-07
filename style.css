@@ -770,9 +770,9 @@ h2 {
 /* Cinematico solo ≥1280px in landscape (desktop + tablet/iPad larghi) */
 @media (min-width: 1280px) and (orientation: landscape) {
   .hero {
-    height: 100dvh;
+    height: auto;
     min-height: 100dvh;
-    max-height: 100dvh;
+    max-height: none;
   }
 
   /* Stato a riposo (visite successive): solo interno + UI, niente animazione */
@@ -1563,7 +1563,7 @@ h2 {
   }
 
   .hero-content {
-    margin-left: -3cm;
+    margin-left: max(-3cm, calc(-8px - (100vw - 1280px) / 2));
   }
 }
 
@@ -2306,23 +2306,35 @@ h2 {
 
 .carousel-dots {
   display: flex;
-  gap: 8px;
+  gap: 0;
   align-items: center;
   justify-content: center;
 }
 
 .carousel-dot {
-  width: 9px;
-  height: 9px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   border: none;
   padding: 0;
-  background: var(--colore-primario);
-  opacity: 0.35;
+  background: transparent;
+  opacity: 1;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.carousel-dot.is-active {
+.carousel-dot::after {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--colore-primario);
+  opacity: 0.35;
+}
+
+.carousel-dot.is-active::after {
   opacity: 1;
 }
 
@@ -2489,6 +2501,16 @@ h2 {
 .vendi-tagline.is-no-trans,
 .vendi-scroll-fade-down.is-no-trans {
   transition: none;
+}
+
+/* Elemento già visto in questa sessione: compare subito, senza animazione (hero, valuta, servizi, chi siamo) */
+.is-no-trans,
+.valuta-loco.is-no-trans .valuta-loco-card--stima-testo,
+.valuta-loco.is-no-trans .valuta-loco-card--stima-lato,
+.valuta-loco.is-no-trans .valuta-loco-card--come,
+.valuta-loco.is-no-trans .valuta-loco-card--lato,
+.valuta-loco.is-no-trans .valuta-loco-foto-wrap {
+  transition: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2974,9 +2996,9 @@ h2 {
 @media (min-width: 1024px) and (orientation: landscape),
 (min-width: 1367px) {
   #immobili-vendita .carousel-track {
-    padding-left: 0;
-    padding-right: 0;
-    scroll-padding-inline: 0;
+    padding-left: 2px;
+    padding-right: 2px;
+    scroll-padding-inline: 2px;
   }
 
   /* (100% − 2 gap da 20px) / 3 = larghezza esatta di ogni card */

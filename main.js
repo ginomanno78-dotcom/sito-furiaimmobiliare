@@ -9,6 +9,34 @@ document.addEventListener("DOMContentLoaded", () => {
   const drawer = document.getElementById("mobileDrawer");
   const overlay = document.getElementById("drawerOverlay");
 
+  /* === Effetti di comparsa: ogni elemento si mostra UNA SOLA VOLTA per sessione di navigazione ===
+     Un effetto conta come "visto" solo quando parte davvero (l'utente arriva con lo scroll al suo punto). */
+  const CHIAVE_EFFETTI = "furia-effetti-visti";
+  const effettiVisti = (() => {
+    try {
+      return new Set(JSON.parse(sessionStorage.getItem(CHIAVE_EFFETTI) || "[]"));
+    } catch (e) {
+      return new Set();
+    }
+  })();
+  const effettoVisto = (nome) => effettiVisti.has(nome);
+  const segnaEffettoVisto = (nome) => {
+    if (effettiVisti.has(nome)) return;
+    effettiVisti.add(nome);
+    try {
+      sessionStorage.setItem(CHIAVE_EFFETTI, JSON.stringify([...effettiVisti]));
+    } catch (e) { /* sessionStorage non disponibile */ }
+  };
+  /* Mostra l'elemento subito, senza animazione (già visto in questa sessione) */
+  const mostraSubito = (el) => {
+    if (!el) return;
+    el.classList.add("is-no-trans", "is-in-view");
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => el.classList.remove("is-no-trans"));
+    });
+  };
+  const NOMI_CARD_VALUTA = ["valuta-come", "valuta-stima", "valuta-foto", "valuta-affidati"];
+
   /* Hero cinematico: una sola volta per sessione di navigazione */
   const hero = document.querySelector(".hero");
   if (hero) {
@@ -126,15 +154,32 @@ document.addEventListener("DOMContentLoaded", () => {
     aggiornaScala();
   }
 
-  /* === Testi Vendi: fade allo scroll in discesa (ripetibile, tutti i viewport) === */
+  /* === Testi Vendi: fade-in UNA SOLA VOLTA, solo scorrendo in discesa === */
   {
+    const CHIAVE_FADE_VENDI = "furia-vendi-fade-visti";
     const mqRiduciMotoFade = window.matchMedia("(prefers-reduced-motion: reduce)");
     const mqMobilePortraitVendi = window.matchMedia(
       "(max-width: 599px) and (orientation: portrait)"
     );
     let ultimaScrollY = window.scrollY || 0;
     let scrollInDiscesa = false;
-    const osservatoriFade = [];
+    const osservatoriFade = new Map();
+
+    const chiaveFade = (el) => (el.classList.contains("vendi-tagline") ? "tagline" : "intro");
+
+    const leggiVisti = () => {
+      try {
+        return new Set(JSON.parse(sessionStorage.getItem(CHIAVE_FADE_VENDI) || "[]"));
+      } catch (e) {
+        return new Set();
+      }
+    };
+    const visti = leggiVisti();
+    const salvaVisti = () => {
+      try {
+        sessionStorage.setItem(CHIAVE_FADE_VENDI, JSON.stringify([...visti]));
+      } catch (e) { /* sessionStorage non disponibile */ }
+    };
 
     window.addEventListener(
       "scroll",
@@ -146,95 +191,80 @@ document.addEventListener("DOMContentLoaded", () => {
       { passive: true }
     );
 
-    const applicaFadeVista = (el, conEffetto) => {
+    /* Rivela e chiude: da qui in poi l'elemento non viene piu' osservato ne' nascosto */
+    const rivela = (el, conEffetto) => {
+      if (el.classList.contains("is-in-view")) return;
       if (conEffetto) {
         el.classList.add("is-in-view");
-        return;
+      } else {
+        el.classList.add("is-no-trans");
+        el.classList.add("is-in-view");
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => el.classList.remove("is-no-trans"));
+        });
       }
-      el.classList.add("is-no-trans");
-      el.classList.add("is-in-view");
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => el.classList.remove("is-no-trans"));
-      });
+      visti.add(chiaveFade(el));
+      salvaVisti();
+      const obs = osservatoriFade.get(el);
+      if (obs) {
+        obs.disconnect();
+        osservatoriFade.delete(el);
+      }
     };
 
-    /* Reset solo se uscito sopra; in salita resta/diventa visibile senza effetto */
+    /* Solo effetto in discesa; in salita o se gia' superato: mostra subito, senza effetto */
     const gestisciFadeEntry = (el, entry) => {
+      if (el.classList.contains("is-in-view")) return;
       if (entry.isIntersecting) {
-        applicaFadeVista(el, scrollInDiscesa);
+        rivela(el, scrollInDiscesa);
         return;
       }
-      if (entry.boundingClientRect.bottom < 0) {
-        el.classList.remove("is-in-view");
+      const r = entry.boundingClientRect;
+      if (r.bottom <= 0) {
+        rivela(el, false); /* gia' sopra la vista: mai visto, niente buchi */
         return;
       }
-      /* Fuori dalla fascia trigger ma ancora in viewport (tipico in salita) */
-      if (!scrollInDiscesa && entry.boundingClientRect.top < (window.innerHeight || 0)) {
-        applicaFadeVista(el, false);
+      if (!scrollInDiscesa && r.top < (window.innerHeight || 0)) {
+        rivela(el, false);
       }
+    };
+
+    const osserva = (el, target, opzioni) => {
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => gestisciFadeEntry(el, entry));
+      }, opzioni);
+      obs.observe(target);
+      osservatoriFade.set(el, obs);
     };
 
     const avviaFadeScrollVendi = () => {
-      osservatoriFade.splice(0).forEach((obs) => obs.disconnect());
-      const tagline = document.querySelectorAll(".vendi-tagline");
-      const fadeDown = document.querySelectorAll(".vendi-scroll-fade-down");
-      const titoloVendi = document.getElementById("titolo-vendi");
-      if (!tagline.length && !fadeDown.length) return;
+      osservatoriFade.forEach((obs) => obs.disconnect());
+      osservatoriFade.clear();
+      const tagline = [...document.querySelectorAll(".vendi-tagline")];
+      const fadeDown = [...document.querySelectorAll(".vendi-scroll-fade-down")];
+      const tutti = [...tagline, ...fadeDown];
+      if (!tutti.length) return;
 
-      if (mqRiduciMotoFade.matches) {
-        [...tagline, ...fadeDown].forEach((el) => el.classList.add("is-in-view"));
-        return;
-      }
-
-      /* Tagline: invariata (tutto in vista) */
-      tagline.forEach((el) => {
-        el.classList.remove("is-in-view");
-        const obs = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => gestisciFadeEntry(el, entry));
-          },
-          { threshold: 1, rootMargin: "0px 0px 0px 0px" }
-        );
-        obs.observe(el);
-        osservatoriFade.push(obs);
-      });
-
-      /*
-       * Intro fade-down — mobile portrait: parte quando #titolo-vendi
-       * è poco prima di metà schermo (non al bordo inferiore).
-       * Altri viewport: threshold 1 come prima.
-       */
-      if (mqMobilePortraitVendi.matches && titoloVendi && fadeDown.length) {
-        fadeDown.forEach((el) => el.classList.remove("is-in-view"));
-        const bloccoIntro = document.querySelector(
-          ".vendi-intro-blocco.vendi-scroll-fade-down"
-        );
-
-        /* Blocco intro: trigger in discesa sul titolo; in salita non sparisce */
-        if (bloccoIntro) {
-          const obsTitolo = new IntersectionObserver(
-            (entries) => {
-              entries.forEach((entry) => gestisciFadeEntry(bloccoIntro, entry));
-            },
-            /* Fascia ~38%–52% dall’alto */
-            { threshold: 0, rootMargin: "-38% 0px -48% 0px" }
-          );
-          obsTitolo.observe(titoloVendi);
-          osservatoriFade.push(obsTitolo);
+      /* Gia' rivelati (questa pagina o sessione) o movimento ridotto: visibili, nessun effetto */
+      tutti.forEach((el) => {
+        if (mqRiduciMotoFade.matches || visti.has(chiaveFade(el))) {
+          el.classList.add("is-no-trans", "is-in-view");
         }
-      } else {
-        fadeDown.forEach((el) => {
-          el.classList.remove("is-in-view");
-          const obs = new IntersectionObserver(
-            (entries) => {
-              entries.forEach((entry) => gestisciFadeEntry(el, entry));
-            },
-            { threshold: 1, rootMargin: "0px 0px 0px 0px" }
-          );
-          obs.observe(el);
-          osservatoriFade.push(obs);
-        });
-      }
+      });
+      if (mqRiduciMotoFade.matches) return;
+      const daOsservare = tutti.filter((el) => !el.classList.contains("is-in-view"));
+      if (!daOsservare.length) return;
+
+      const titoloVendi = document.getElementById("titolo-vendi");
+      daOsservare.forEach((el) => {
+        const isIntro = el.classList.contains("vendi-intro-blocco");
+        if (isIntro && mqMobilePortraitVendi.matches && titoloVendi) {
+          /* Mobile portrait: l'intro parte quando #titolo-vendi e' nella fascia ~38%-52% */
+          osserva(el, titoloVendi, { threshold: 0, rootMargin: "-38% 0px -48% 0px" });
+        } else {
+          osserva(el, el, { threshold: 1, rootMargin: "0px 0px 0px 0px" });
+        }
+      });
     };
 
     avviaFadeScrollVendi();
@@ -279,11 +309,21 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
       if (valutaLoco.classList.contains("is-revealed")) return;
+      if (NOMI_CARD_VALUTA.every(effettoVisto)) {
+        /* Già visto in questa sessione: le card compaiono subito, senza animazione */
+        valutaLoco.classList.add("is-no-trans");
+        rivelaValutaLoco(false);
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => valutaLoco.classList.remove("is-no-trans"));
+        });
+        return;
+      }
 
       osservatoreValuta = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (!entry.isIntersecting) return;
+            NOMI_CARD_VALUTA.forEach(segnaEffettoVisto);
             rivelaValutaLoco(true);
             if (osservatoreValuta) {
               osservatoreValuta.disconnect();
@@ -323,10 +363,21 @@ document.addEventListener("DOMContentLoaded", () => {
     /* Fascia centrale: parte al passaggio in discesa */
     const ROOT_MARGINE = "-45% 0px -40% 0px";
 
-    const rivela = (el) => {
+    const nomeCard = (el) =>
+      el === cardCome
+        ? "valuta-come"
+        : el === cardStima
+          ? "valuta-stima"
+          : el === fotoStima
+            ? "valuta-foto"
+            : "valuta-affidati";
+
+    /* memorizza=false: mostra senza segnare come "visto" (es. rotazione, movimento ridotto) */
+    const rivela = (el, memorizza = true) => {
       if (!el || rivelati.has(el)) return;
       el.classList.add("is-in-view");
       rivelati.add(el);
+      if (memorizza) segnaEffettoVisto(nomeCard(el));
     };
 
     const rivelaCoppia = () => {
@@ -422,10 +473,21 @@ document.addEventListener("DOMContentLoaded", () => {
       fermaScrollGate();
       if (!cardCome || !cardStima) return;
 
+      /* Card già viste in questa sessione (anche in un'altra pagina): subito a posto, senza effetto */
+      if (mqMobilePortrait.matches) {
+        [cardCome, cardStima, fotoStima, cardAffidati].forEach((el) => {
+          if (el && !rivelati.has(el) && effettoVisto(nomeCard(el))) {
+            mostraSubito(el);
+            rivelati.add(el);
+          }
+        });
+      }
+
       const mostraTutto = () => {
-        rivela(cardCome);
-        rivela(cardStima);
-        rivelaCoppia();
+        rivela(cardCome, false);
+        rivela(cardStima, false);
+        rivela(fotoStima, false);
+        rivela(cardAffidati, false);
       };
 
       if (!mqMobilePortrait.matches || mqRiduciMoto.matches) {
@@ -488,10 +550,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const osservatori = [];
     const rivelati = new Set();
 
-    const rivela = (el) => {
+    const nomeCard = (el) =>
+      el === cardCome
+        ? "valuta-come"
+        : el === cardStima
+          ? "valuta-stima"
+          : el === fotoStima
+            ? "valuta-foto"
+            : "valuta-affidati";
+
+    /* memorizza=false: mostra senza segnare come "visto" (es. rotazione, movimento ridotto) */
+    const rivela = (el, memorizza = true) => {
       if (!el || rivelati.has(el)) return;
       el.classList.add("is-in-view");
       rivelati.add(el);
+      if (memorizza) segnaEffettoVisto(nomeCard(el));
     };
 
     const fermaOsservatori = () => {
@@ -503,9 +576,19 @@ document.addEventListener("DOMContentLoaded", () => {
       const cards = [cardCome, cardStima, fotoStima, cardAffidati].filter(Boolean);
       if (!cards.length) return;
 
+      /* Card già viste in questa sessione (anche in un'altra pagina): subito a posto, senza effetto */
+      if (mqTabletPortraitValuta.matches) {
+        cards.forEach((el) => {
+          if (!rivelati.has(el) && effettoVisto(nomeCard(el))) {
+            mostraSubito(el);
+            rivelati.add(el);
+          }
+        });
+      }
+
       if (!mqTabletPortraitValuta.matches || mqRiduciMotoTablet.matches) {
         if (mqRiduciMotoTablet.matches || rivelati.size) {
-          cards.forEach((el) => rivela(el));
+          cards.forEach((el) => rivela(el, false));
         }
         return;
       }
@@ -549,14 +632,18 @@ document.addEventListener("DOMContentLoaded", () => {
     let titoloAncorato = false;
     const rivelate = new Set();
 
-    const rivelaCard = (el) => {
+    const nomeCardServizi = (el) => `servizi-${[...cardServizi].indexOf(el)}`;
+
+    /* memorizza=false: mostra senza segnare come "visto" (es. rotazione, movimento ridotto) */
+    const rivelaCard = (el, memorizza = true) => {
       if (!el || rivelate.has(el)) return;
       el.classList.add("is-in-view");
       rivelate.add(el);
+      if (memorizza) segnaEffettoVisto(nomeCardServizi(el));
     };
 
     const rivelaTutte = () => {
-      cardServizi.forEach((el) => rivelaCard(el));
+      cardServizi.forEach((el) => rivelaCard(el, false));
     };
 
     const fermaOsservatoriCard = () => {
@@ -596,6 +683,16 @@ document.addEventListener("DOMContentLoaded", () => {
       fermaOsservatoriCard();
       if (!titoloServizi || !cardServizi.length) return;
 
+      /* Card già viste in questa sessione (anche in un'altra pagina): subito a posto, senza effetto */
+      if (mqMobilePortraitServizi.matches) {
+        cardServizi.forEach((el) => {
+          if (!rivelate.has(el) && effettoVisto(nomeCardServizi(el))) {
+            mostraSubito(el);
+            rivelate.add(el);
+          }
+        });
+      }
+
       if (!mqMobilePortraitServizi.matches || mqRiduciMotoServizi.matches) {
         if (mqRiduciMotoServizi.matches || rivelate.size) rivelaTutte();
         return;
@@ -606,7 +703,9 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      cardServizi.forEach((el) => el.classList.remove("is-in-view"));
+      cardServizi.forEach((el) => {
+        if (!rivelate.has(el)) el.classList.remove("is-in-view");
+      });
 
       /* Trigger: titolo Servizi ancorato in alto nel viewport */
       osservatoreTitolo = new IntersectionObserver(
@@ -644,7 +743,7 @@ document.addEventListener("DOMContentLoaded", () => {
     /* Durata CSS ~1.2s: partenza scalata, fluida */
     const RITARDO_TRA_MS = 620;
     const timerHero = [];
-    let giaRivelato = false;
+    let giaRivelato = effettoVisto("hero");
 
     const fermaTimerHero = () => {
       timerHero.splice(0).forEach((id) => clearTimeout(id));
@@ -663,11 +762,14 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (giaRivelato) {
-        heroEls.forEach((el) => el.classList.add("is-in-view"));
+        heroEls.forEach((el) => mostraSubito(el));
         return;
       }
 
       heroEls.forEach((el) => el.classList.remove("is-in-view"));
+
+      /* Si segna come visto subito: se cambi pagina durante l'effetto, non riparte */
+      segnaEffettoVisto("hero");
 
       /* Allo start: payoff → h1 → sottotitolo → CTA */
       heroEls.forEach((el, i) => {
@@ -701,12 +803,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const mqDesktopChi = window.matchMedia("(min-width: 1024px)");
     const mqRiduciMotoChi = window.matchMedia("(prefers-reduced-motion: reduce)");
     let osservatoreAncora = null;
-    let giaRivelata = false;
+    let giaRivelata = effettoVisto("chi-siamo");
 
     const rivelaFoto = () => {
       if (!fotoChiSiamo || giaRivelata) return;
       fotoChiSiamo.classList.add("is-in-view");
       giaRivelata = true;
+      segnaEffettoVisto("chi-siamo");
     };
 
     const avviaFadeFotoChiSiamo = () => {
@@ -729,7 +832,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (giaRivelata) {
-        fotoChiSiamo.classList.add("is-in-view");
+        mostraSubito(fotoChiSiamo);
         return;
       }
 
@@ -1435,7 +1538,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const target = list[Math.min(i, list.length - 1)];
         if (target) {
           trackEl.style.scrollSnapType = "x mandatory";
-          target.scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
+          const padSx = parseFloat(getComputedStyle(trackEl).scrollPaddingLeft) || 0;
+          const left = trackEl.scrollLeft
+            + target.getBoundingClientRect().left
+            - trackEl.getBoundingClientRect().left
+            - padSx;
+          trackEl.scrollTo({ left: Math.max(0, left), behavior: "smooth" });
         }
       });
       dotsEl.appendChild(dot);
