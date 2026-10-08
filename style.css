@@ -4857,14 +4857,52 @@ h2 {
 }
 
 /* Prefazione breve prima delle card overview */
+/* Come le frasi Vendi (intro + tagline): Cardo Bold, centrata, stessa misura */
 .servizi-prefazione {
+  width: 100%;
+  max-width: none;
   margin: calc(var(--spazio-3) * -1) 0 var(--spazio-5);
-  max-width: 40rem;
-  font-family: var(--font-corpo);
-  font-size: clamp(0.95rem, 1.6vw, 1.08rem);
-  font-weight: 400;
-  line-height: 1.55;
+  padding-inline: 0;
+  box-sizing: border-box;
+  font-family: var(--font-titoli);
+  font-size: clamp(1.35rem, 3.2vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  text-align: center;
+  text-transform: none;
   color: var(--colore-testo);
+}
+
+/* Mobile / tablet / iPad: flusso continuo; 3 righe solo desktop mouse */
+.servizi-prefazione-riga {
+  display: inline;
+}
+
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+  .servizi-prefazione-riga {
+    display: block;
+  }
+}
+
+/* Riempimento colore allo scroll (desktop + touch): tono spento → testo (--fill 0→1 via JS) */
+.servizi-prefazione.is-fill-scroll .servizi-prefazione-riga {
+  /* #252525: grigio più spento (prima #2e2e2e), ancora leggermente sopra lo sfondo #1B1B1B */
+  color: color-mix(
+    in srgb,
+    var(--colore-testo) calc(var(--fill, 0) * 100%),
+    #252525
+  );
+}
+
+.servizi-prefazione.is-fill-done .servizi-prefazione-riga {
+  color: var(--colore-testo);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .servizi-prefazione.is-fill-scroll .servizi-prefazione-riga {
+    color: var(--colore-testo);
+  }
 }
 
 /* Spazio tra le card overview e l'accordion dettaglio */

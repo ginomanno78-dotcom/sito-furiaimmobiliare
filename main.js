@@ -161,6 +161,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const mqMobilePortraitVendi = window.matchMedia(
       "(max-width: 599px) and (orientation: portrait)"
     );
+    const mqDesktopMouseVendi = window.matchMedia(
+      "(min-width: 1024px) and (hover: hover) and (pointer: fine)"
+    );
     let ultimaScrollY = window.scrollY || 0;
     let scrollInDiscesa = false;
     const osservatoriFade = new Map();
@@ -261,6 +264,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (isIntro && mqMobilePortraitVendi.matches && titoloVendi) {
           /* Mobile portrait: l'intro parte quando #titolo-vendi e' nella fascia ~38%-52% */
           osserva(el, titoloVendi, { threshold: 0, rootMargin: "-38% 0px -48% 0px" });
+        } else if (isIntro && mqDesktopMouseVendi.matches) {
+          /* Desktop mouse: parte un filo più tardi (serve più ingresso dal basso) */
+          osserva(el, el, { threshold: 1, rootMargin: "0px 0px -14% 0px" });
         } else {
           osserva(el, el, { threshold: 1, rootMargin: "0px 0px 0px 0px" });
         }
@@ -270,6 +276,7 @@ document.addEventListener("DOMContentLoaded", () => {
     avviaFadeScrollVendi();
     mqRiduciMotoFade.addEventListener("change", avviaFadeScrollVendi);
     mqMobilePortraitVendi.addEventListener("change", avviaFadeScrollVendi);
+    mqDesktopMouseVendi.addEventListener("change", avviaFadeScrollVendi);
   }
 
   /* === Valuta in loco: reveal direzionale allo scroll (desktop mouse + tablet landscape ≥1220) === */
@@ -350,6 +357,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const cardStima = document.querySelector(".valuta-loco-card--stima-testo");
     const fotoStima = document.querySelector(".valuta-loco-card--stima-lato");
     const cardAffidati = document.querySelector(".valuta-loco-card--lato");
+    const titoloLoco = document.querySelector(".valuta-loco-titolo");
     const mqMobilePortrait = window.matchMedia(
       "(max-width: 599px) and (orientation: portrait)"
     );
@@ -360,8 +368,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const mqRiduciMoto = window.matchMedia("(prefers-reduced-motion: reduce)");
     const rivelati = new Set();
     const osservatori = [];
-    /* Fascia centrale: parte al passaggio in discesa */
-    const ROOT_MARGINE = "-45% 0px -40% 0px";
+    /* Titolo «Valutazione in loco» a metà schermo → parte Come */
+    const ROOT_MARGINE_TITOLO = "-48% 0px -48% 0px";
+    /* Ritardi fissi: 3 scatti (320ms × 3 = 960ms) */
+    const RITARDO_SCATTO_STIMA_MS = 960;
+    const RITARDO_SCATTO_COPPIA_MS = 960;
+    let timerScattoStima = null;
+    let timerScattoCoppia = null;
 
     const nomeCard = (el) =>
       el === cardCome
@@ -387,6 +400,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const fermaOsservatori = () => {
       osservatori.splice(0).forEach((obs) => obs.disconnect());
+    };
+
+    const fermaTimerScatto = () => {
+      if (timerScattoStima != null) {
+        clearTimeout(timerScattoStima);
+        timerScattoStima = null;
+      }
+      if (timerScattoCoppia != null) {
+        clearTimeout(timerScattoCoppia);
+        timerScattoCoppia = null;
+      }
     };
 
     let cleanupScrollGate = null;
@@ -419,58 +443,61 @@ document.addEventListener("DOMContentLoaded", () => {
       };
     };
 
-    const osservaFinoAVista = (el, onVisto) => {
-      if (!el || rivelati.has(el)) {
-        if (onVisto) onVisto();
-        return;
+    /* Dopo Stima: due scatti, poi foto-stima + card Affidati */
+    const dopoStimaAvviaCoppia = () => {
+      if (timerScattoCoppia != null) {
+        clearTimeout(timerScattoCoppia);
+        timerScattoCoppia = null;
       }
-      el.classList.remove("is-in-view");
-      const obs = new IntersectionObserver(
-        (entries) => {
-          if (!entries.some((entry) => entry.isIntersecting)) return;
-          rivela(el);
-          obs.disconnect();
-          const i = osservatori.indexOf(obs);
-          if (i >= 0) osservatori.splice(i, 1);
-          if (onVisto) onVisto();
-        },
-        { threshold: 0, rootMargin: ROOT_MARGINE }
-      );
-      obs.observe(el);
-      osservatori.push(obs);
+      timerScattoCoppia = window.setTimeout(() => {
+        timerScattoCoppia = null;
+        rivelaCoppia();
+      }, RITARDO_SCATTO_COPPIA_MS);
     };
 
-    const avviaOsservatoreCoppia = () => {
-      if (rivelati.has(cardAffidati) || rivelati.has(fotoStima)) {
-        rivelaCoppia();
+    /* Dopo Come: uno scatto, poi Stima */
+    const dopoComeAvviaStima = () => {
+      if (timerScattoStima != null) {
+        clearTimeout(timerScattoStima);
+        timerScattoStima = null;
+      }
+      timerScattoStima = window.setTimeout(() => {
+        timerScattoStima = null;
+        rivela(cardStima);
+        dopoStimaAvviaCoppia();
+      }, RITARDO_SCATTO_STIMA_MS);
+    };
+
+    /* Titolo a metà schermo → rivela Come, poi catena ritardi */
+    const osservaTitoloPerCome = () => {
+      if (rivelati.has(cardCome)) {
+        dopoComeAvviaStima();
         return;
       }
-      /* Trigger sulla riga foto|Affidati (o solo Affidati sotto i 344px) */
-      const targetCoppia =
-        mqCoppiaFoto.matches && fotoStima ? fotoStima : cardAffidati;
-      if (!targetCoppia) return;
-      targetCoppia.classList.remove("is-in-view");
-      if (fotoStima && targetCoppia !== fotoStima) {
-        fotoStima.classList.remove("is-in-view");
+      if (!titoloLoco) {
+        rivela(cardCome);
+        dopoComeAvviaStima();
+        return;
       }
       const obs = new IntersectionObserver(
         (entries) => {
           if (!entries.some((entry) => entry.isIntersecting)) return;
-          if (mqCoppiaFoto.matches) rivelaCoppia();
-          else rivela(cardAffidati);
+          rivela(cardCome);
           obs.disconnect();
           const i = osservatori.indexOf(obs);
           if (i >= 0) osservatori.splice(i, 1);
+          dopoComeAvviaStima();
         },
-        { threshold: 0, rootMargin: ROOT_MARGINE }
+        { threshold: 0, rootMargin: ROOT_MARGINE_TITOLO }
       );
-      obs.observe(targetCoppia);
+      obs.observe(titoloLoco);
       osservatori.push(obs);
     };
 
     const avviaSequenzaValutaMobile = () => {
       fermaOsservatori();
       fermaScrollGate();
+      fermaTimerScatto();
       if (!cardCome || !cardStima) return;
 
       /* Card già viste in questa sessione (anche in un'altra pagina): subito a posto, senza effetto */
@@ -503,16 +530,12 @@ document.addEventListener("DOMContentLoaded", () => {
       if (rivelati.has(cardStima)) {
         cardCome.classList.add("is-in-view");
         cardStima.classList.add("is-in-view");
-        dopoScrollDiscesa(avviaOsservatoreCoppia);
+        dopoStimaAvviaCoppia();
         return;
       }
       if (rivelati.has(cardCome)) {
         cardCome.classList.add("is-in-view");
-        dopoScrollDiscesa(() => {
-          osservaFinoAVista(cardStima, () => {
-            dopoScrollDiscesa(avviaOsservatoreCoppia);
-          });
-        });
+        dopoComeAvviaStima();
         return;
       }
 
@@ -521,14 +544,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (fotoStima) fotoStima.classList.remove("is-in-view");
       if (cardAffidati) cardAffidati.classList.remove("is-in-view");
 
-      /* 1) Come → scroll → 2) Stima → scroll → 3) foto|Affidati */
-      osservaFinoAVista(cardCome, () => {
-        dopoScrollDiscesa(() => {
-          osservaFinoAVista(cardStima, () => {
-            dopoScrollDiscesa(avviaOsservatoreCoppia);
-          });
-        });
-      });
+      /* Titolo a metà schermo → Come → +640ms Stima → +640ms foto|Affidati */
+      osservaTitoloPerCome();
     };
 
     avviaSequenzaValutaMobile();
@@ -725,6 +742,99 @@ document.addEventListener("DOMContentLoaded", () => {
     avviaFlipServiziMobile();
     mqMobilePortraitServizi.addEventListener("change", avviaFlipServiziMobile);
     mqRiduciMotoServizi.addEventListener("change", avviaFlipServiziMobile);
+  }
+
+  /* === Servizi prefazione: riempimento colore allo scroll (desktop + touch, 1 volta) === */
+  {
+    const prefazione = document.querySelector(".servizi-prefazione");
+    const righe = prefazione
+      ? [...prefazione.querySelectorAll(".servizi-prefazione-riga")]
+      : [];
+    const mqRiduciMoto = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const NOME_EFFETTO = "servizi-prefazione";
+    let attivo = false;
+    let completato = false;
+    let ticking = false;
+
+    const resetStiliFill = () => {
+      righe.forEach((el) => el.style.removeProperty("--fill"));
+    };
+
+    const marcaCompletato = () => {
+      if (!prefazione || completato) return;
+      completato = true;
+      attivo = false;
+      prefazione.classList.remove("is-fill-scroll");
+      prefazione.classList.add("is-fill-done");
+      resetStiliFill();
+      segnaEffettoVisto(NOME_EFFETTO);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+
+    const aggiornaFill = () => {
+      if (!prefazione || !righe.length || completato) return;
+      if (mqRiduciMoto.matches || effettoVisto(NOME_EFFETTO)) {
+        return;
+      }
+
+      const vh = window.innerHeight || 1;
+      /* Fascia più corta (~60%→48%): passaggio spento→acceso più rapido */
+      const yInizio = vh * 0.6;
+      const yFine = vh * 0.48;
+      const span = yInizio - yFine || 1;
+
+      let tuttePiene = true;
+      righe.forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        const y = rect.top + rect.height / 2;
+        const lineare = Math.min(1, Math.max(0, (yInizio - y) / span));
+        /* Curva un filo più netta: meno tempo sui grigi medi (k=1.7) */
+        const p =
+          lineare < 0.5
+            ? Math.pow(2 * lineare, 1.7) / 2
+            : 1 - Math.pow(2 * (1 - lineare), 1.7) / 2;
+        el.style.setProperty("--fill", String(p));
+        if (p < 0.995) tuttePiene = false;
+      });
+
+      if (tuttePiene) marcaCompletato();
+    };
+
+    const onScroll = () => {
+      if (!attivo || ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        aggiornaFill();
+        ticking = false;
+      });
+    };
+
+    const avviaFillPrefazione = () => {
+      if (!prefazione || !righe.length) return;
+
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      attivo = false;
+      completato = false;
+      prefazione.classList.remove("is-fill-scroll", "is-fill-done");
+      resetStiliFill();
+
+      /* Moto ridotto / già visto: colore naturale, niente effetto */
+      if (mqRiduciMoto.matches || effettoVisto(NOME_EFFETTO)) {
+        prefazione.classList.add("is-fill-done");
+        return;
+      }
+
+      prefazione.classList.add("is-fill-scroll");
+      attivo = true;
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll, { passive: true });
+      aggiornaFill();
+    };
+
+    avviaFillPrefazione();
+    mqRiduciMoto.addEventListener("change", avviaFillPrefazione);
   }
 
   /* === Hero: fade sequenziale allo start (mobile–iPad, no desktop) === */
