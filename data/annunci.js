@@ -332,23 +332,23 @@ const annunci = {
       ],
       ...DINTORNI_SANTA_MARIA_1KM
     },
-    /* Palazzo — Francolise, SS7 km 187 */
+    /* Palazzo — Sparanise, SS7 km 187 */
     {
-      id: "palazzo-via-appia-francolise",
+      id: "palazzo-via-appia-sparanise",
       collegabile: true,
       placeholder: false,
-      nome: "Francolise",
+      nome: "Sparanise",
       tipologia: "Palazzo",
       contratto: "Vendita",
       via: "Strada provinciale SS7, 21",
       /* Query mappa con indirizzo esatto */
-      mapsQuery: "SS7, 21, Francolise (CE)",
-      /* Pin esatto SS7, 21 Francolise (allineato a Google Maps) */
+      mapsQuery: "SS7, 21, Sparanise (CE)",
+      /* Pin esatto SS7, 21 Sparanise (allineato a Google Maps) */
       lat: 41.176872,
       lng: 14.094442,
       angoloCon: "",
       categoriaAnnuncio: "",
-      comune: "Francolise (CE)",
+      comune: "Sparanise (CE)",
       statoConservazione: "Da ristrutturare",
       annoCostruzione: 1950,
       prezzo: 280000,

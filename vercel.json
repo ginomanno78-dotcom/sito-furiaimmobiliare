@@ -1,0 +1,21 @@
+{
+  "redirects": [
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/immobile.html",
+      "has": [
+        {
+          "type": "query",
+          "key": "id",
+          "value": "palazzo-via-appia-francolise"
+        }
+      ],
+      "destination": "/immobile.html?id=palazzo-via-appia-sparanise",
+      "permanent": true
+    }
+  ]
+}

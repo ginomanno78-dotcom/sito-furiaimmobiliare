@@ -3343,6 +3343,113 @@ document.addEventListener("DOMContentLoaded", () => {
       if (el) el.remove();
     };
 
+    const assicuratiJsonLdAnnuncio = () => {
+      let el = document.getElementById("jsonld-annuncio");
+      if (!el) {
+        el = document.createElement("script");
+        el.type = "application/ld+json";
+        el.id = "jsonld-annuncio";
+        document.head.appendChild(el);
+      }
+      return el;
+    };
+
+    const rimuoviJsonLdAnnuncio = () => {
+      const el = document.getElementById("jsonld-annuncio");
+      if (el) el.remove();
+    };
+
+    /* Primo paragrafo della descrizione (fino a \\n\\n), spazi normalizzati */
+    const primoParagrafoDescrizione = (testo) => {
+      if (testo == null || testo === "") return "";
+      const primo = String(testo).split(/\n\n/)[0] || "";
+      return primo.replace(/\s+/g, " ").trim();
+    };
+
+    /* Località senza suffisso provincia tra parentesi, es. «Sparanise (CE)» → «Sparanise» */
+    const localitaSenzaProvincia = (comune) => {
+      if (!comune) return "";
+      return String(comune)
+        .replace(/\s*\([^)]*\)\s*$/, "")
+        .trim();
+    };
+
+    const buildJsonLdAnnuncio = (annuncio, descrizioneSeo) => {
+      const canonical = `https://www.furiaimmobiliare.com/immobile.html?id=${encodeURIComponent(annuncio.id)}`;
+      const partiNome = [];
+      if (annuncio.tipologia) partiNome.push(annuncio.tipologia);
+      if (annuncio.via) partiNome.push(annuncio.via);
+      const name =
+        partiNome.length === 2
+          ? `${partiNome[0]} in ${partiNome[1]}`
+          : partiNome[0] || annuncio.nome || "";
+
+      const descLd = primoParagrafoDescrizione(annuncio.descrizione) || descrizioneSeo;
+
+      const data = {
+        "@context": "https://schema.org",
+        "@type": "RealEstateListing"
+      };
+      if (name) data.name = name;
+      if (descLd) data.description = descLd;
+      data.url = canonical;
+
+      const ogImage = urlAssolutoCover(annuncio.cover);
+      if (ogImage) data.image = ogImage;
+
+      const about = { "@type": "Place" };
+      const locality = localitaSenzaProvincia(annuncio.comune);
+      if (locality || annuncio.comune) {
+        about.address = {
+          "@type": "PostalAddress",
+          addressRegion: "CE",
+          addressCountry: "IT"
+        };
+        if (locality) about.address.addressLocality = locality;
+      }
+      if (
+        typeof annuncio.lat === "number" &&
+        Number.isFinite(annuncio.lat) &&
+        typeof annuncio.lng === "number" &&
+        Number.isFinite(annuncio.lng)
+      ) {
+        about.geo = {
+          "@type": "GeoCoordinates",
+          latitude: annuncio.lat,
+          longitude: annuncio.lng
+        };
+      }
+      if (annuncio.mq != null && annuncio.mq !== "" && Number.isFinite(Number(annuncio.mq))) {
+        about.floorSize = {
+          "@type": "QuantitativeValue",
+          value: Number(annuncio.mq),
+          unitCode: "MTK"
+        };
+      }
+      if (about.address || about.geo || about.floorSize) {
+        data.about = about;
+      }
+
+      if (typeof annuncio.prezzo === "number" && Number.isFinite(annuncio.prezzo)) {
+        data.offers = {
+          "@type": "Offer",
+          price: annuncio.prezzo,
+          priceCurrency: "EUR",
+          seller: {
+            "@type": "RealEstateAgent",
+            name: "Furia Immobiliare Srls",
+            url: "https://www.furiaimmobiliare.com/"
+          }
+        };
+      }
+
+      if (typeof annuncio.locali === "number" && Number.isFinite(annuncio.locali)) {
+        data.numberOfRooms = annuncio.locali;
+      }
+
+      return data;
+    };
+
     const buildDescrizioneSeo = (annuncio) => {
       const tip = espandiTipologiaSeo(annuncio.tipologia);
       const comune = annuncio.comune || "";
@@ -3384,6 +3491,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (ogImage) {
         assicuratiMetaProperty("og:image").setAttribute("content", ogImage);
       }
+      assicuratiJsonLdAnnuncio().textContent = JSON.stringify(
+        buildJsonLdAnnuncio(annuncio, descrizione)
+      );
     };
 
     const applicaAnnuncio = (annuncio) => {
@@ -3453,6 +3563,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (paginaImmobileErrore) paginaImmobileErrore.hidden = false;
       stato.annuncio = null;
       assicuratiMetaName("robots").setAttribute("content", "noindex");
+      rimuoviJsonLdAnnuncio();
     };
 
     const caricaImmobile = (annuncioId, opzioni = {}) => {

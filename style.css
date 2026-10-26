@@ -6503,7 +6503,7 @@ h2 {
   background: var(--colore-secondario);
 }
 
-/* Box unità in evidenza (es. terreno Francolise) */
+/* Box unità in evidenza (es. terreno) */
 .immobile-unita-box--evidenza {
   border: 2px solid var(--colore-primario);
   background: var(--colore-secondario);
