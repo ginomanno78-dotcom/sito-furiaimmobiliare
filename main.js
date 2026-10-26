@@ -3420,13 +3420,14 @@ document.addEventListener("DOMContentLoaded", () => {
         };
       }
       if (annuncio.mq != null && annuncio.mq !== "" && Number.isFinite(Number(annuncio.mq))) {
-        about.floorSize = {
-          "@type": "QuantitativeValue",
+        about.additionalProperty = {
+          "@type": "PropertyValue",
+          name: "Superficie",
           value: Number(annuncio.mq),
           unitCode: "MTK"
         };
       }
-      if (about.address || about.geo || about.floorSize) {
+      if (about.address || about.geo || about.additionalProperty) {
         data.about = about;
       }
 
@@ -3478,6 +3479,34 @@ document.addEventListener("DOMContentLoaded", () => {
       return `https://www.furiaimmobiliare.com/${path}`;
     };
 
+    /* Title / og:title: tipologia intera + comune + via (viaBreve o via senza «Strada provinciale ») */
+    const buildTitleSeoAnnuncio = (annuncio) => {
+      const tip = espandiTipologiaSeo(annuncio.tipologia).trim();
+      const comune = (annuncio.comune || "").trim();
+      const verbo =
+        annuncio.categoriaAnnuncio && /affitto/i.test(String(annuncio.categoriaAnnuncio))
+          ? "in affitto"
+          : "in vendita";
+      let via = "";
+      if (annuncio.viaBreve) {
+        via = String(annuncio.viaBreve).trim();
+      } else if (annuncio.via) {
+        via = String(annuncio.via)
+          .replace(/^Strada provinciale\s+/i, "")
+          .trim();
+      }
+
+      let core = "";
+      if (tip && comune) core = `${tip} ${verbo} a ${comune}`;
+      else if (tip) core = `${tip} ${verbo}`;
+      else if (comune) core = `${verbo} a ${comune}`;
+
+      let title = core;
+      if (via) title = title ? `${title} — ${via}` : via;
+      title = title ? `${title} | Furia Immobiliare` : "Furia Immobiliare";
+      return title.replace(/\s+/g, " ").trim();
+    };
+
     const aggiornaMetaSeoAnnuncio = (annuncio, titoloCompleto) => {
       rimuoviMetaRobots();
       const descrizione = buildDescrizioneSeo(annuncio);
@@ -3512,7 +3541,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       stato.titoloRiga = titoloRiga;
 
-      const titoloCompleto = `${titoloRiga} — Furia Immobiliare Srls`;
+      const titoloCompleto = buildTitleSeoAnnuncio(annuncio);
       document.title = titoloCompleto;
       aggiornaMetaSeoAnnuncio(annuncio, titoloCompleto);
 
