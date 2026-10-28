@@ -1211,8 +1211,9 @@ h2 {
 
 .hero-title {
   margin: 0 0 var(--spazio-4);
-  color: #E4E4DE;
-  text-shadow: 2px 2px 1px #000;
+  color: #ffffff;
+  /* Ombra: nero, angolo -145°, distanza 3px, blur 4px, opacity 80% */
+  text-shadow: -2.46px -1.72px 4px rgba(0, 0, 0, 0.8);
 }
 
 /* Due span in HTML; nowrap solo da desktop per evitare overflow */
@@ -1221,12 +1222,18 @@ h2 {
 }
 
 .hero-payoff {
+  display: inline-block;
   margin: 0 0 var(--spazio-3);
-  color: var(--colore-secondario);
+  padding: 0.2em 0.45em;
+  color: var(--colore-primario);
+  background: color-mix(in srgb, var(--colore-secondario) 80%, transparent);
+  /* Solo angoli alto-sx e basso-dx */
+  border-radius: 10px 0 10px 0;
   font-family: var(--font-corpo);
-  font-size: calc(1.05rem + 2px);
+  font-size: calc(1.05rem + 3px);
   font-weight: 700;
-  letter-spacing: 0.01em;
+  /* Tracking 25 (Photoshop) = 0.025em */
+  letter-spacing: 0.025em;
   word-spacing: -0.05em;
   text-transform: uppercase;
   text-shadow: none;
@@ -1242,7 +1249,8 @@ h2 {
   font-size: 1.2rem;
   line-height: 1.65;
   max-width: 540px;
-  text-shadow: 1px 2px 1px #000;
+  /* Ombra: nero, angolo 180° (sx), distanza 2px, blur 1px, opacity 80% */
+  text-shadow: -2px 0 1px rgba(0, 0, 0, 0.8);
 }
 
 /* Mobile / tablet / iPad: fade-right lento e fluido — no desktop mouse */
@@ -1358,6 +1366,19 @@ h2 {
     gap: 6px;
     max-width: 100%;
     width: fit-content;
+  }
+}
+
+/* Mobile portrait: payoff sempre su un solo rigo (stretto → largo) */
+@media (max-width: 767px) and (orientation: portrait) {
+  .hero-payoff {
+    white-space: nowrap;
+    max-width: 100%;
+    box-sizing: border-box;
+    /* Scala il font sui viewport stretti così non va a capo */
+    font-size: clamp(0.68rem, 2.8vw + 0.35rem, calc(1.05rem + 3px));
+    padding-left: clamp(0.25em, 1.5vw, 0.45em);
+    padding-right: clamp(0.25em, 1.5vw, 0.45em);
   }
 }
 

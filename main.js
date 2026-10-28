@@ -1238,38 +1238,43 @@ document.addEventListener("DOMContentLoaded", () => {
   /* === Dropdown ricerca: tipologia === */
   const tipoInput = document.getElementById("searchTipo");
   const tipoToggle = document.getElementById("searchTipoToggle");
+  const tipoMenuEl = document.getElementById("searchTipoMenu");
+
+  /* Aggiorna hidden + label + icona del dropdown tipologia */
+  const applicaSelezioneTipo = (item) => {
+    if (!item) return;
+    const valore = item.getAttribute("data-value") || "";
+    const icona = item.querySelector("img");
+    const labelEl = document.getElementById("searchTipoLabel");
+    if (tipoInput) tipoInput.value = valore;
+    if (tipoToggle && icona) {
+      const iconaToggle =
+        tipoToggle.querySelector(".search-tipo-icon") || tipoToggle.querySelector("img");
+      if (iconaToggle) {
+        iconaToggle.src = icona.src;
+        iconaToggle.classList.toggle(
+          "icon--cottage",
+          valore === "case-ville" || valore === ""
+        );
+      }
+    }
+    /* Su vendita: mostra nome tipologia per intero (o «Tipologia» se Tutte) */
+    if (labelEl) {
+      const testo = item.textContent.replace(/\s+/g, " ").trim();
+      labelEl.textContent = valore ? testo : "Tipologia";
+    }
+    item.parentElement.querySelectorAll('[role="option"]').forEach((opt) => {
+      opt.setAttribute("aria-selected", String(opt === item));
+    });
+  };
 
   setupDropdown({
     toggle: tipoToggle,
-    menu: document.getElementById("searchTipoMenu"),
-    onSelect: (item) => {
-      const valore = item.getAttribute("data-value") || "";
-      const icona = item.querySelector("img");
-      const labelEl = document.getElementById("searchTipoLabel");
-      if (tipoInput) tipoInput.value = valore;
-      if (tipoToggle && icona) {
-        const iconaToggle =
-          tipoToggle.querySelector(".search-tipo-icon") || tipoToggle.querySelector("img");
-        if (iconaToggle) {
-          iconaToggle.src = icona.src;
-          iconaToggle.classList.toggle(
-            "icon--cottage",
-            valore === "case-ville" || valore === ""
-          );
-        }
-      }
-      /* Su vendita: mostra nome tipologia per intero (o «Tipologia» se Tutte) */
-      if (labelEl) {
-        const testo = item.textContent.replace(/\s+/g, " ").trim();
-        labelEl.textContent = valore ? testo : "Tipologia";
-      }
-      item.parentElement.querySelectorAll('[role="option"]').forEach((opt) => {
-        opt.setAttribute("aria-selected", String(opt === item));
-      });
-    },
+    menu: tipoMenuEl,
+    onSelect: (item) => applicaSelezioneTipo(item),
   });
 
-  /* === Submit ricerca hero: apre l’annuncio coerente (compra) === */
+  /* === Submit ricerca hero: Compra → vendita.html filtrata (AND tipologia + luogo) === */
   const normalizzaRicerca = (testo) =>
     (testo || "")
       .toLowerCase()
@@ -1310,18 +1315,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return tokens.length > 0 && tokens.every((tok) => hay.includes(tok));
   };
 
-  const trovaAnnuncioDaRicerca = (tipo, query) => {
-    const lista =
-      typeof annunci !== "undefined" && Array.isArray(annunci.vendita)
-        ? annunci.vendita.filter((a) => !a.placeholder && a.collegabile)
-        : [];
-    return (
-      lista.find(
-        (a) => tipologiaMatchSearch(a.tipologia, tipo) && luogoMatchSearch(a, query)
-      ) || null
-    );
-  };
-
   const vaiAgliAnnunciVendita = () => {
     const target = document.getElementById("immobili-vendita");
     if (target) {
@@ -1329,6 +1322,16 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
     window.location.href = "vendita.html";
+  };
+
+  /* Home hero → lista vendita con ?tipologia=&q= (scheda solo da card/carosello) */
+  const vaiAVenditaConRicerca = (tipo, query) => {
+    const params = new URLSearchParams();
+    if (tipo) params.set("tipologia", tipo);
+    const q = (query || "").trim();
+    if (q) params.set("q", q);
+    const qs = params.toString();
+    window.location.href = qs ? `vendita.html?${qs}` : "vendita.html";
   };
 
   const heroSearchForm = document.getElementById("heroSearchForm");
@@ -1349,19 +1352,14 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "affitto.html";
         return;
       }
-      /* Compra: tipologia + città/indirizzo → scheda immobile */
+      /* Compra: tipologia e/o comune → vendita.html (filtri AND) */
       const tipo = tipoInput ? tipoInput.value : "";
       const query = searchQueryInput ? searchQueryInput.value : "";
       if (!tipo && !normalizzaRicerca(query)) {
         vaiAgliAnnunciVendita();
         return;
       }
-      const trovato = trovaAnnuncioDaRicerca(tipo, query);
-      if (trovato) {
-        window.location.href = `immobile.html?id=${encodeURIComponent(trovato.id)}`;
-        return;
-      }
-      vaiAgliAnnunciVendita();
+      vaiAVenditaConRicerca(tipo, query);
     });
   }
 
@@ -2310,6 +2308,21 @@ document.addEventListener("DOMContentLoaded", () => {
     /* Se Iubenda ha già attivato Leaflet prima di questo script defer */
     if (window.__furiaLeafletPronto) {
       window.avviaMappaVenditaFuria();
+    }
+
+    /* Arrivo da hero home: ?tipologia= & ?q= → valorizza i campi poi filtra */
+    const paramsRicerca = new URLSearchParams(window.location.search);
+    const tipoDaUrl = paramsRicerca.get("tipologia") || "";
+    const qDaUrl = paramsRicerca.get("q");
+    if (qDaUrl != null && searchQueryInput) {
+      searchQueryInput.value = qDaUrl;
+    }
+    if (tipoDaUrl && tipoMenuEl) {
+      const optTipo = [...tipoMenuEl.querySelectorAll('[role="option"]')].find(
+        (opt) => (opt.getAttribute("data-value") || "") === tipoDaUrl
+      );
+      if (optTipo) applicaSelezioneTipo(optTipo);
+      else if (tipoInput) tipoInput.value = tipoDaUrl;
     }
 
     /* Stato iniziale contatore + bounds */
