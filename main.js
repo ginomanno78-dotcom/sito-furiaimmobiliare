@@ -2897,7 +2897,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const annuncio = stato.annuncio;
       if (!elScheda || !annuncio) return;
 
-      const siNo = (v) => (v ? "Sì" : "No");
+      const siNo = (v) => (v ? "Si" : "No");
       const righe = [
         ["Superficie", annuncio.mq != null ? `${annuncio.mq} mq` : null],
         ["Locali", annuncio.locali],
@@ -2909,9 +2909,10 @@ document.addEventListener("DOMContentLoaded", () => {
         ["Stato conservazione", annuncio.statoConservazione],
         ["Anno di costruzione", annuncio.annoCostruzione],
         ["Ascensore", annuncio.ascensore == null ? null : siNo(annuncio.ascensore)],
-        ["Balconi", annuncio.balconi],
         ["Box auto", annuncio.boxAuto],
         ["Arredato", annuncio.arredato == null ? null : siNo(annuncio.arredato)],
+        /* Si se balconi > 0, altrimenti No (anche se campo assente) */
+        ["Balcone", siNo(annuncio.balconi != null && Number(annuncio.balconi) > 0)],
         ["Pertinenze", annuncio.pertinenze],
         ["Riscaldamento", annuncio.riscaldamento],
         ["Classe energetica", annuncio.classeEnergetica]

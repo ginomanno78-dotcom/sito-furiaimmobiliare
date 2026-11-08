@@ -67,6 +67,110 @@ const DINTORNI_SANTA_MARIA_1KM = creaDintorni({
 
 const annunci = {
   vendita: [
+    /* Appartamento 2° piano Di Maio — Via De Renzis 52, Sparanise */
+    {
+      id: "appartamento-secondo-piano-dimaio-sparanise",
+      collegabile: true,
+      placeholder: false,
+      nome: "Appartamento via de Renzis 52 - II Piano",
+      tipologia: "Appartamento",
+      contratto: "Vendita",
+      via: "Via De Renzis n.52",
+      angoloCon: "",
+      categoriaAnnuncio: "",
+      comune: "Sparanise (CE)",
+      /* Stesso civico del locale Di Maio e dell’appartamento al 1° */
+      lat: 41.19003,
+      lng: 14.093031,
+      statoConservazione: "Ottimo / ristrutturato",
+      annoCostruzione: 1965,
+      prezzo: 120000,
+      mq: 102,
+      locali: 5,
+      camere: null,
+      bagni: 1,
+      piano: 2,
+      pianiEdificio: 3,
+      ascensore: false,
+      cucina: "",
+      balconi: 1,
+      arredato: false,
+      pertinenze: "",
+      riscaldamento: "",
+      classeEnergetica: "A2",
+      descrizione:
+        "Proponiamo in vendita un luminoso appartamento di 102 m² situato in una posizione centrale e strategica a Sparanise, precisamente in Via de Renzis 52. L'immobile si presenta in ottimo stato grazie a una recente ristrutturazione ed è pronto per essere abitato fin da subito, ideale sia per famiglie che per giovani coppie. Non arredato.",
+      cover:
+        "assets/images/annunci/vendita/appartamento-secondo-piano-dimaio-sparanise/foto-cover.webp",
+      coverHover:
+        "assets/images/annunci/vendita/appartamento-secondo-piano-dimaio-sparanise/foto-cover2.webp",
+      galleria: [
+        "assets/images/annunci/vendita/appartamento-secondo-piano-dimaio-sparanise/foto-01.webp",
+        "assets/images/annunci/vendita/appartamento-secondo-piano-dimaio-sparanise/foto-02.webp",
+        "assets/images/annunci/vendita/appartamento-secondo-piano-dimaio-sparanise/foto-03.webp",
+        "assets/images/annunci/vendita/appartamento-secondo-piano-dimaio-sparanise/foto-04.webp",
+        "assets/images/annunci/vendita/appartamento-secondo-piano-dimaio-sparanise/foto-05.webp",
+        "assets/images/annunci/vendita/appartamento-secondo-piano-dimaio-sparanise/foto-06.webp",
+        "assets/images/annunci/vendita/appartamento-secondo-piano-dimaio-sparanise/foto-07.webp",
+        "assets/images/annunci/vendita/appartamento-secondo-piano-dimaio-sparanise/foto-08.webp",
+        "assets/images/annunci/vendita/appartamento-secondo-piano-dimaio-sparanise/foto-09.webp",
+        "assets/images/annunci/vendita/appartamento-secondo-piano-dimaio-sparanise/foto-010.webp",
+        "assets/images/annunci/vendita/appartamento-secondo-piano-dimaio-sparanise/foto-011.webp"
+      ],
+      ...DINTORNI_SPARANISE_1KM
+    },
+    /* Appartamento 1° piano Di Maio — Via De Renzis 52, Sparanise (sopra il locale commerciale) */
+    {
+      id: "appartamento-primo-piano-dimaio-sparanise",
+      collegabile: true,
+      placeholder: false,
+      nome: "Appartamento via de Renzis 52",
+      tipologia: "Appartamento",
+      contratto: "Vendita",
+      via: "Via De Renzis n.52",
+      angoloCon: "",
+      categoriaAnnuncio: "",
+      comune: "Sparanise (CE)",
+      /* Stesso civico del locale Di Maio (piano terra); appartamento al 1° */
+      lat: 41.19003,
+      lng: 14.093031,
+      statoConservazione: "Ottimo / ristrutturato",
+      annoCostruzione: 1965,
+      prezzo: 128000,
+      mq: 107,
+      locali: 5,
+      camere: null,
+      bagni: 1,
+      piano: 1,
+      pianiEdificio: 3,
+      ascensore: false,
+      cucina: "",
+      balconi: 1,
+      arredato: false,
+      pertinenze: "",
+      riscaldamento: "",
+      classeEnergetica: "A2",
+      descrizione:
+        "Proponiamo in vendita un luminoso appartamento di 107 m² situato in una posizione centrale e strategica a Sparanise, precisamente in Via de Renzis 52, al piano primo. L'immobile si presenta in ottimo stato grazie a una recente ristrutturazione ed è pronto per essere abitato fin da subito, ideale sia per famiglie che per giovani coppie. Non arredato.",
+      cover:
+        "assets/images/annunci/vendita/appartamento-primo-piano-dimaio-sparanise/foto-cover.webp",
+      coverHover:
+        "assets/images/annunci/vendita/appartamento-primo-piano-dimaio-sparanise/foto-cover2.webp",
+      galleria: [
+        "assets/images/annunci/vendita/appartamento-primo-piano-dimaio-sparanise/foto-01.webp",
+        "assets/images/annunci/vendita/appartamento-primo-piano-dimaio-sparanise/foto-02.webp",
+        "assets/images/annunci/vendita/appartamento-primo-piano-dimaio-sparanise/foto-03.webp",
+        "assets/images/annunci/vendita/appartamento-primo-piano-dimaio-sparanise/foto-04.webp",
+        "assets/images/annunci/vendita/appartamento-primo-piano-dimaio-sparanise/foto-05.webp",
+        "assets/images/annunci/vendita/appartamento-primo-piano-dimaio-sparanise/foto-06.webp",
+        "assets/images/annunci/vendita/appartamento-primo-piano-dimaio-sparanise/foto-07.webp",
+        "assets/images/annunci/vendita/appartamento-primo-piano-dimaio-sparanise/foto-08.webp",
+        "assets/images/annunci/vendita/appartamento-primo-piano-dimaio-sparanise/foto-09.webp",
+        "assets/images/annunci/vendita/appartamento-primo-piano-dimaio-sparanise/foto-010.webp",
+        "assets/images/annunci/vendita/appartamento-primo-piano-dimaio-sparanise/foto-011.webp"
+      ],
+      ...DINTORNI_SPARANISE_1KM
+    },
     {
       id: "sparanise-cinquegrana-via-kennedy",
       collegabile: true,
